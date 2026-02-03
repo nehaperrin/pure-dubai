@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic (Now with Sidebar & Tabs)
+# Custom CSS - The "Aesop" Aesthetic
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -24,13 +24,13 @@ st.markdown("""
         background-color: #F9F9F7; /* Main: Rice Paper */
     }
 
-    /* SIDEBAR: Pale Sage (Aesop Style) */
+    /* SIDEBAR: Pale Sage */
     [data-testid="stSidebar"] {
-        background-color: #F4F6F4; /* Pale Sage Background */
+        background-color: #F4F6F4;
         border-right: 1px solid #E0E6E0;
     }
     
-    /* TABS: Clean Charcoal Styling */
+    /* TABS: Charcoal Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 20px;
     }
@@ -46,7 +46,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
     .stTabs [aria-selected="true"] {
-        color: #333 !important; /* Active Tab: Charcoal */
+        color: #333 !important;
         border-bottom: 2px solid #333 !important;
     }
 
@@ -114,6 +114,16 @@ st.markdown("""
         text-align: center;
     }
 
+    /* KNOWLEDGE BOX (New Sage Visuals) */
+    .knowledge-box {
+        background-color: #F4F6F4; /* Pale Sage */
+        border-left: 3px solid #7FA182; /* Muted Green Accent */
+        padding: 20px;
+        border-radius: 0px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
     /* PRODUCT CARD */
     .product-card {
         background-color: #FFFFFF;
@@ -142,7 +152,7 @@ st.markdown("""
         margin: 15px 0;
     }
     
-    /* BUTTONS: Earthy Charcoal */
+    /* BUTTONS */
     div.stButton > button {
         background-color: #333;
         color: white;
@@ -179,7 +189,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS (V31 LOGIC) ---
+# --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -219,6 +229,7 @@ df = load_data()
 
 
 
+
 # --- 5. SYNONYM ENGINE ---
 SYNONYMS = {
     "snacks": ["chips", "crisps", "popcorn", "nuts", "bars", "bites", "crackers", "rice cakes"],
@@ -231,7 +242,7 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR (With Profile Creator) ---
+# --- 6. SIDEBAR ---
 with st.sidebar:
     st.markdown("### ⚙️ PREFERENCES")
     shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
@@ -252,7 +263,6 @@ with st.sidebar:
         st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
         active_filters = current_defaults
 
-    # PROFILE TOOL (Restored)
     st.divider()
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
@@ -298,7 +308,7 @@ with st.expander("The Founder's Note", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS (Renamed Saved -> FAVOURITES)
+# TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
 # --- TAB 1: SEARCH ---
@@ -411,33 +421,52 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (RESTORED TEXT) ---
+# --- TAB 2: KNOWLEDGE (NEW SAGE VISUALS) ---
 with tab2:
     st.markdown("### 🧠 The Gut-Brain Connection")
-    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
+    
+    st.markdown("""
+    <div class="knowledge-box">
+    <b>Did you know?</b> 95% of your serotonin (the happiness hormone) is produced in your gut.
+    </div>
+    """, unsafe_allow_html=True)
+
     col_n1, col_n2 = st.columns(2)
     with col_n1:
-        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
+        st.markdown("""
+        <div class="knowledge-box">
+        <b>Why Gut Health Matters</b><br>
+        Modern research connects our gut microbiome to everything from ADHD in children to immunity and mental health in adults.
+        The food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.
+        </div>
+        """, unsafe_allow_html=True)
     with col_n2:
-        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
+        st.markdown("""
+        <div class="knowledge-box">
+        <b>The ADHD Link</b><br>
+        Studies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.
+        </div>
+        """, unsafe_allow_html=True)
 
-# --- TAB 3: HOW IT WORKS (RESTORED TRAFFIC LIGHTS) ---
+# --- TAB 3: HOW IT WORKS (RESTORED FULL INSTRUCTIONS) ---
 with tab3:
     st.markdown("### 🚦 The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.success("✓ VERIFIED SAFE")
-        st.caption("Clean. No active filters detected.")
+        st.markdown("**STEP 1: SELECT**")
+        st.caption("You have two options: 1) Manually select filters in the sidebar (e.g. Sugar, Oils), or 2) Use a pre-saved Profile (e.g. 'Max Allergy') for one-click setup.")
     with c2:
-        st.warning("⚠️ CHECK LABEL")
-        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
+        st.markdown("**STEP 2: SCAN**")
+        st.caption("Enter a product type (e.g. 'Yoghurt'). Our engine scans the database, reading every label for synonyms and hidden ingredients.")
     with c3:
-        st.error("✕ AVOID")
-        st.caption("Contains active filters or high sugar/salt.")
-        
+        st.markdown("**STEP 3: DECIDE**")
+        st.caption("We flag items as Safe, Warning (Check Label), or Avoid. Use the Traffic Light system to make quick, safe decisions.")
+    
     st.divider()
     
     st.markdown("### 🔍 Filter Glossary (The Rules)")
+    st.caption("The thresholds we use to protect you:")
+    
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
             if "Added Sugar" in category:
@@ -456,13 +485,12 @@ with tab3:
                  st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (Renamed from Saved) ---
+# --- TAB 4: FAVOURITES ---
 with tab4:
     if not st.session_state['wishlist']:
         st.info("No favourites yet.")
     else:
         for idx, item in enumerate(st.session_state['wishlist']):
-            # Render as a mini card instead of just text
             st.markdown(f"**{item['Product']}**")
             st.caption(f"{item['Brand']}")
             if st.button(f"Add to Basket", key=f"move_{idx}"):
@@ -481,4 +509,6 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy List:", value=export_text, height=150)
+
+
 
