@@ -22,26 +22,35 @@ st.markdown("""
         background-color: #Fdfdfd;
     }
 
-    /* Founder Note Styling */
+    /* Founder Note Styling (WITH FADED FAMILY PHOTO) */
     .founder-box {
-        background-color: #F9FBFD;
-        padding: 25px;
+        background-color: #F9FBFD; /* Fallback color */
+        
+        /* This creates the Faded Effect: 90% White overlay on top of the image */
+        background-image: linear-gradient(rgba(255, 255, 255, 0.90), rgba(255, 255, 255, 0.90)), 
+                          url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
+        
+        background-size: cover;
+        background-position: center;
+        
+        padding: 30px;
         border-radius: 12px;
         border-left: 4px solid #A8D0E6;
         margin-bottom: 20px;
     }
+    
     .founder-text {
         font-family: 'Lora', serif;
         font-size: 16px;
         color: #2C3E50;
-        line-height: 1.7;
-        font-weight: 400;
+        line-height: 1.8;
+        font-weight: 500; /* Slightly bolder text to pop against image */
     }
     .founder-sig {
         font-family: 'Lora', serif;
         font-style: italic;
         margin-top: 15px;
-        color: #555;
+        color: #444;
     }
 
     /* Product Card Styling */
@@ -160,7 +169,8 @@ df = load_data()
 
 
 
-# --- 5. SYNONYM ENGINE (THE SMART SEARCH) ---
+
+# --- 5. SYNONYM ENGINE ---
 SYNONYMS = {
     "snacks": ["chips", "crisps", "popcorn", "nuts", "bars", "bites", "crackers", "rice cakes"],
     "chips": ["crisps", "snacks", "popcorn"],
@@ -222,6 +232,7 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
+# UPDATED FOUNDER NOTE (WITH FADED BACKGROUND IMAGE)
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -254,13 +265,10 @@ with tab1:
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
         
         # --- SYNONYM EXPANSION ---
-        search_terms = [clean_query] # Start with what user typed
-        
-        # If the user typed "snacks", add ["chips", "crisps", etc] to the search list
+        search_terms = [clean_query] 
         if clean_query in SYNONYMS:
             search_terms.extend(SYNONYMS[clean_query])
             
-        # Create a giant search pattern: "snacks|chips|crisps|popcorn..."
         search_pattern = "|".join(search_terms)
 
         results = df[df['Product'].str.contains(search_pattern, case=False, na=False) | 
@@ -427,4 +435,5 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
+
 
