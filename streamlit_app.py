@@ -22,50 +22,47 @@ st.markdown("""
         background-color: #Fdfdfd;
     }
 
-    /* Founder Note Styling (THE VERTICAL PORTRAIT FIX) */
+    /* Founder Note Styling (TALL & SIMPLE) */
     .founder-box {
         background-color: #F9FBFD;
         
-        /* 1. THE GRADIENT: Transparent at top (faces) -> White at bottom (text) */
-        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.95) 80%), 
+        /* 1. FADE: 85% White Overlay (Readable Text + Visible Photo) */
+        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
                           url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
         
         background-size: cover;
-        background-position: center top; /* Anchor to the top (Husband's head) */
+        background-position: top center; /* Starts at top (Husband's head) */
         
-        /* 2. THE HEIGHT: Force it to be tall enough for the whole family */
-        min-height: 600px;
-        
-        /* 3. LAYOUT: Push text to the bottom */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+        /* 2. HEIGHT: 800px Tall to fit the whole portrait photo */
+        min-height: 800px;
         
         padding: 40px;
         border-radius: 12px;
-        border: 1px solid #eee;
+        border-left: 4px solid #A8D0E6;
         margin-bottom: 20px;
+        
+        /* Center text vertically */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     
     .founder-text {
         font-family: 'Lora', serif;
-        font-size: 16px;
+        font-size: 18px; /* Slightly larger text for the big box */
         color: #2C3E50;
-        line-height: 1.8;
-        font-weight: 600;
-        
-        /* Ensure text is readable against the white bottom fade */
-        background: rgba(255, 255, 255, 0.6);
-        padding: 20px;
-        border-radius: 10px;
-        backdrop-filter: blur(5px);
+        line-height: 2.0;
+        font-weight: 600; 
+        text-align: center; /* Centered text looks better in a tall box */
+        max-width: 800px;
+        margin: 0 auto;
     }
-    
     .founder-sig {
         font-family: 'Lora', serif;
         font-style: italic;
-        margin-top: 15px;
+        margin-top: 20px;
         color: #444;
+        text-align: center;
     }
 
     /* Product Card Styling */
@@ -247,7 +244,7 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# UPDATED FOUNDER NOTE (VERTICAL PORTRAIT MODE)
+# UPDATED FOUNDER NOTE (TALL & SIMPLE)
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
