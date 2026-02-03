@@ -161,6 +161,7 @@ def load_data():
 df = load_data()
 
 
+
 # --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
@@ -370,7 +371,16 @@ with tab3:
             
             st.write(", ".join(ingredients))
             
-    st.markdown('<div class="disclaimer-box">Disclaimer: We are not nutritionists.</div>', unsafe_allow_html=True)
+    # RESTORED FULL DISCLAIMER
+    st.markdown("""
+    <div class="disclaimer-box">
+    <b>⚠️ DISCLAIMER:</b><br>
+    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
+    Product ingredients are subject to change by manufacturers at any time. 
+    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
+    <b>Always read the physical label on the product before consumption.</b>
+    </div>
+    """, unsafe_allow_html=True)
 
 with tab4:
     if not st.session_state['wishlist']:
@@ -394,3 +404,5 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
+
+
