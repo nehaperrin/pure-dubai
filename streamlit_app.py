@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic
+# Custom CSS - The "Aesop" Aesthetic (Now with Sidebar & Tabs)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -21,10 +21,36 @@ st.markdown("""
     }
     
     .stApp {
-        background-color: #F9F9F7; /* "Rice Paper" Background */
+        background-color: #F9F9F7; /* Main: Rice Paper */
     }
 
-    /* TYPOGRAPHY: The "SIFT" Brand Voice */
+    /* SIDEBAR: Pale Sage (Aesop Style) */
+    [data-testid="stSidebar"] {
+        background-color: #F4F6F4; /* Pale Sage Background */
+        border-right: 1px solid #E0E6E0;
+    }
+    
+    /* TABS: Clean Charcoal Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 20px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        background-color: transparent;
+        border-radius: 0px;
+        color: #888;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #333 !important; /* Active Tab: Charcoal */
+        border-bottom: 2px solid #333 !important;
+    }
+
+    /* TYPOGRAPHY */
     h1, h2, h3 {
         font-family: 'Cormorant Garamond', serif;
         font-weight: 600;
@@ -32,13 +58,13 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
     
-    /* THE LOGO: Concept 1 (Pure Typography) */
+    /* THE LOGO */
     .brand-logo {
         font-family: 'Cormorant Garamond', serif;
         font-size: 60px;
         font-weight: 600;
         color: #1A1A1A;
-        letter-spacing: 4px; /* The "Aesop" wide spacing */
+        letter-spacing: 4px;
         margin-bottom: 0px;
         line-height: 1.0;
     }
@@ -52,7 +78,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* FOUNDER NOTE: Portrait Mode (Tall & Elegant) */
+    /* FOUNDER NOTE */
     .founder-box {
         background-color: #F0F0EE;
         background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
@@ -61,7 +87,7 @@ st.markdown("""
         background-position: top center;
         min-height: 800px;
         padding: 40px;
-        border: 1px solid #E0E0E0; /* Thinner, sharper border */
+        border: 1px solid #E0E0E0;
         margin-bottom: 40px;
         display: flex;
         flex-direction: column;
@@ -88,49 +114,23 @@ st.markdown("""
         text-align: center;
     }
 
-    /* PRODUCT CARD: The "Clinical Lab Report" Look */
+    /* PRODUCT CARD */
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
-        border: 1px solid #E6E6E6; /* Precise, thin border */
-        border-radius: 0px; /* Sharp corners for that "medical" feel */
+        border: 1px solid #E6E6E6;
+        border-radius: 0px;
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
     .product-card:hover {
-        border-color: #B0B0B0; /* Subtle hover effect */
+        border-color: #B0B0B0;
     }
 
-    /* TAGS: Muted, Earthy Tones */
-    .safe-tag {
-        background-color: #E8F0E9; /* Pale Sage */
-        color: #2E5C38;
-        padding: 4px 10px;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 1px solid #CFE0D1;
-    }
-
-    .avoid-tag {
-        background-color: #F7EAE9; /* Pale Clay */
-        color: #8A3C34;
-        padding: 4px 10px;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 1px solid #EBD5D3;
-    }
-    
-    .warning-tag {
-        background-color: #FAF5E6; /* Pale Straw */
-        color: #856404;
-        padding: 4px 10px;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 1px solid #F0E6C8;
-    }
+    /* TAGS */
+    .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
+    .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
+    .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
     
     .nutrition-row {
         font-family: 'Montserrat', sans-serif;
@@ -142,7 +142,7 @@ st.markdown("""
         margin: 15px 0;
     }
     
-    /* Custom Button Styling */
+    /* BUTTONS: Earthy Charcoal */
     div.stButton > button {
         background-color: #333;
         color: white;
@@ -179,7 +179,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS ---
+# --- 3. FILTER DEFINITIONS (V31 LOGIC) ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -219,7 +219,6 @@ df = load_data()
 
 
 
-
 # --- 5. SYNONYM ENGINE ---
 SYNONYMS = {
     "snacks": ["chips", "crisps", "popcorn", "nuts", "bars", "bites", "crackers", "rice cakes"],
@@ -232,7 +231,7 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR (PROFILE CREATOR RESTORED) ---
+# --- 6. SIDEBAR (With Profile Creator) ---
 with st.sidebar:
     st.markdown("### ⚙️ PREFERENCES")
     shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
@@ -253,7 +252,7 @@ with st.sidebar:
         st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
         active_filters = current_defaults
 
-    # THE RESTORED PROFILE TOOL
+    # PROFILE TOOL (Restored)
     st.divider()
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
@@ -284,7 +283,7 @@ with col_brand:
     st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (The V34 Text + Tall Portrait)
+# FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -299,8 +298,8 @@ with st.expander("The Founder's Note", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "SAVED", "BASKET"])
+# TABS (Renamed Saved -> FAVOURITES)
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
 # --- TAB 1: SEARCH ---
 with tab1:
@@ -407,7 +406,7 @@ with tab1:
                                 st.toast("Added to Basket")
                             if st.button("SAVE", key=f"save_{index}"):
                                 st.session_state['wishlist'].append(row)
-                                st.toast("Saved to Wishlist")
+                                st.toast("Saved to Favourites")
                         else:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
@@ -418,10 +417,8 @@ with tab2:
     st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
     col_n1, col_n2 = st.columns(2)
     with col_n1:
-        # RESTORED TEXT
         st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
     with col_n2:
-        # RESTORED TEXT
         st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
 # --- TAB 3: HOW IT WORKS (RESTORED TRAFFIC LIGHTS) ---
@@ -443,38 +440,32 @@ with tab3:
     st.markdown("### 🔍 Filter Glossary (The Rules)")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            # RESTORED GLOSSARY DETAILS
             if "Added Sugar" in category:
                  st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
-            
             if "High Natural Sugars" in category:
                  st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
-            
             if "Sodium" in category:
                  st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
-            
             if "Inflammatory Oils" in category:
                  st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
-
             if "Artificial Sweeteners" in category:
                  st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
-
             if "Artificial Colours" in category:
                  st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
-                 
             if "Gut Irritants" in category:
                  st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
-            
             st.write(", ".join(ingredients))
 
-# --- TAB 4: SAVED (WISHLIST) ---
+# --- TAB 4: FAVOURITES (Renamed from Saved) ---
 with tab4:
     if not st.session_state['wishlist']:
-        st.info("No saved items yet.")
+        st.info("No favourites yet.")
     else:
         for idx, item in enumerate(st.session_state['wishlist']):
+            # Render as a mini card instead of just text
             st.markdown(f"**{item['Product']}**")
-            if st.button(f"Move to Basket", key=f"move_{idx}"):
+            st.caption(f"{item['Brand']}")
+            if st.button(f"Add to Basket", key=f"move_{idx}"):
                 st.session_state['basket'].append(item)
                 st.session_state['wishlist'].pop(idx)
                 st.rerun()
