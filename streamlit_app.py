@@ -163,7 +163,6 @@ df = load_data()
 
 
 
-
 # --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
@@ -424,4 +423,10 @@ with tab5:
         st.info("Basket is empty.")
     else:
         for item in st.session_state['basket']:
-            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price
+            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
+        st.divider()
+        st.markdown("**Option 1: Send to Partner**")
+        export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
+        st.text_area("Copy Text:", value=export_text, height=150)
+
+
