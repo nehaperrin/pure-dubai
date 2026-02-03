@@ -232,7 +232,7 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR (RESTORED PROFILE CREATOR) ---
+# --- 6. SIDEBAR (PROFILE CREATOR RESTORED) ---
 with st.sidebar:
     st.markdown("### ⚙️ PREFERENCES")
     shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
@@ -253,7 +253,7 @@ with st.sidebar:
         st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
         active_filters = current_defaults
 
-    # RESTORED: THE CREATE NEW PROFILE SECTION
+    # THE RESTORED PROFILE TOOL
     st.divider()
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
@@ -284,7 +284,7 @@ with col_brand:
     st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE
+# FOUNDER NOTE (The V34 Text + Tall Portrait)
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -313,7 +313,6 @@ with tab1:
     if search_query or search_btn:
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
         
-        # --- SYNONYM EXPANSION ---
         search_terms = [clean_query] 
         if clean_query in SYNONYMS:
             search_terms.extend(SYNONYMS[clean_query])
@@ -413,35 +412,38 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE ---
+# --- TAB 2: KNOWLEDGE (RESTORED TEXT) ---
 with tab2:
-    st.markdown("### The Science of Sifting")
-    c1, c2 = st.columns(2)
-    with c1:
-        st.info("**The Gut-Brain Axis**\n95% of your serotonin is produced in your gut. What you eat directly impacts your mood and focus.")
-    with c2:
-        st.info("**The 15g Rule**\nEven natural sugars spike insulin. We filter anything above 15g per serving to keep energy stable.")
+    st.markdown("### 🧠 The Gut-Brain Connection")
+    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
+    col_n1, col_n2 = st.columns(2)
+    with col_n1:
+        # RESTORED TEXT
+        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
+    with col_n2:
+        # RESTORED TEXT
+        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
-# --- TAB 3: HOW IT WORKS (RESTORED STEPS) ---
+# --- TAB 3: HOW IT WORKS (RESTORED TRAFFIC LIGHTS) ---
 with tab3:
     st.markdown("### 🚦 The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown("**STEP 1: SELECT**")
-        st.caption("Choose your profile or manually select ingredients to avoid (e.g. Sugar, Oils, Nuts).")
+        st.success("✓ VERIFIED SAFE")
+        st.caption("Clean. No active filters detected.")
     with c2:
-        st.markdown("**STEP 2: SCAN**")
-        st.caption("Our engine reads the ingredient label so you don't have to. We check for synonyms and hidden names.")
+        st.warning("⚠️ CHECK LABEL")
+        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
     with c3:
-        st.markdown("**STEP 3: DECIDE**")
-        st.caption("We flag items as Safe, Warning (Check Label), or Avoid based on your strict criteria.")
-    
+        st.error("✕ AVOID")
+        st.caption("Contains active filters or high sugar/salt.")
+        
     st.divider()
     
     st.markdown("### 🔍 Filter Glossary (The Rules)")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            # RESTORED DETAILED WARNINGS
+            # RESTORED GLOSSARY DETAILS
             if "Added Sugar" in category:
                  st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
             
