@@ -232,7 +232,7 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR ---
+# --- 6. SIDEBAR (RESTORED PROFILE CREATOR) ---
 with st.sidebar:
     st.markdown("### ⚙️ PREFERENCES")
     shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
@@ -253,6 +253,18 @@ with st.sidebar:
         st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
         active_filters = current_defaults
 
+    # RESTORED: THE CREATE NEW PROFILE SECTION
+    st.divider()
+    with st.expander("➕ Create New Profile"):
+        new_name = st.text_input("Name (e.g. Grandma)")
+        new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
+        if st.button("Save Profile"):
+            if new_name and new_defaults:
+                st.session_state['profiles'][new_name] = new_defaults
+                st.success(f"Saved {new_name}!")
+                time.sleep(1)
+                st.rerun()
+
     st.divider()
     st.markdown("### 🛒 BASKET")
     if not st.session_state['basket']:
@@ -272,7 +284,7 @@ with col_brand:
     st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (UPDATED TEXT)
+# FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -410,24 +422,47 @@ with tab2:
     with c2:
         st.info("**The 15g Rule**\nEven natural sugars spike insulin. We filter anything above 15g per serving to keep energy stable.")
 
-# --- TAB 3: HOW IT WORKS ---
+# --- TAB 3: HOW IT WORKS (RESTORED STEPS) ---
 with tab3:
-    st.markdown("### 🚦 How to Read Results")
+    st.markdown("### 🚦 The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.success("✓ VERIFIED SAFE")
-        st.caption("Clean. No active filters detected.")
+        st.markdown("**STEP 1: SELECT**")
+        st.caption("Choose your profile or manually select ingredients to avoid (e.g. Sugar, Oils, Nuts).")
     with c2:
-        st.warning("⚠️ CHECK LABEL")
-        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
+        st.markdown("**STEP 2: SCAN**")
+        st.caption("Our engine reads the ingredient label so you don't have to. We check for synonyms and hidden names.")
     with c3:
-        st.error("✕ AVOID")
-        st.caption("Contains active filters or high sugar/salt.")
-        
+        st.markdown("**STEP 3: DECIDE**")
+        st.caption("We flag items as Safe, Warning (Check Label), or Avoid based on your strict criteria.")
+    
     st.divider()
-    st.markdown("### 🔍 Filter Glossary")
+    
+    st.markdown("### 🔍 Filter Glossary (The Rules)")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
+            # RESTORED DETAILED WARNINGS
+            if "Added Sugar" in category:
+                 st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
+            
+            if "High Natural Sugars" in category:
+                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
+            
+            if "Sodium" in category:
+                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
+            
+            if "Inflammatory Oils" in category:
+                 st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
+
+            if "Artificial Sweeteners" in category:
+                 st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
+
+            if "Artificial Colours" in category:
+                 st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
+                 
+            if "Gut Irritants" in category:
+                 st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
+            
             st.write(", ".join(ingredients))
 
 # --- TAB 4: SAVED (WISHLIST) ---
