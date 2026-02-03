@@ -162,7 +162,6 @@ df = load_data()
 
 
 
-
 # --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
@@ -248,7 +247,11 @@ with tab1:
         # SPELLING TRANSLATOR
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
         
-        results = df[df['Product'].str.contains(clean_query, case=False, na=False) | df['Brand'].str.contains(clean_query, case=False, na=False) | df['Category'].str.contains(clean_query, case=False, na=False)]
+        # SEARCH LOGIC: Now checks Ingredients too!
+        results = df[df['Product'].str.contains(clean_query, case=False, na=False) | 
+                     df['Brand'].str.contains(clean_query, case=False, na=False) | 
+                     df['Category'].str.contains(clean_query, case=False, na=False) |
+                     df['Ingredients'].str.contains(clean_query, case=False, na=False)]
         
         if results.empty:
             st.warning("No matches found. Try 'Fade Fit' or 'Yoghurt'.")
@@ -282,7 +285,7 @@ with tab1:
                             else:
                                 warnings.append(f"Contains {bad} ({sugar_g}g)")
                                 
-                        # LOGIC C: High Natural Sugar Exception (NEW! Skip here, check later)
+                        # LOGIC C: High Natural Sugar Exception (Skip here, check later)
                         elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
                             continue 
                             
@@ -428,5 +431,4 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
-
 
