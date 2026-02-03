@@ -130,13 +130,14 @@ def load_data():
     try:
         # Load the CSV
         df = pd.read_csv("products.csv")
-        # Ensure Total Sugar is a number (handling any errors)
+        # Ensure Total Sugar is a number
         df['Total Sugar (g)'] = pd.to_numeric(df['Total Sugar (g)'], errors='coerce').fillna(0)
         return df
     except FileNotFoundError:
         return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Category": "Error", "Ingredients": "Please upload products.csv to GitHub", "Total Sugar (g)": 0, "Image": ""}])
 
 df = load_data()
+
 
 
 # --- 5. SIDEBAR ---
@@ -288,7 +289,7 @@ with tab2:
     with col_n2:
         st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
-# --- TAB 3: HOW IT WORKS & GLOSSARY ---
+# --- TAB 3: HOW IT WORKS & GLOSSARY (UPDATED) ---
 with tab3:
     st.markdown("### 🎯 Aim of the Game")
     st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
@@ -312,6 +313,9 @@ with tab3:
     
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
+            # Special explanation for High Natural Sugars
+            if "High Natural Sugars" in category:
+                 st.info("⚠️ **Health Note:** Even natural sugars (like date syrup or fruit concentrates) can spike insulin. We flag products with **>15g of sugar per serving** because high natural sugar intake should be monitored for diabetic concerns and weight loss.")
             st.write(", ".join(ingredients))
 
     st.divider()
