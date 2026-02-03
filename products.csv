@@ -1,11 +1,19 @@
 Product,Brand,Price,Category,Ingredients,Total Sugar (g),Salt (g),Fat (g),Carbs (g),Image
+Nabta Coconut Yoghurt (Plain),Nabta,28 AED,Dairy,"Coconut Milk, Tapioca Starch, Live Vegan Cultures",0.5,0.01,15,4,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Yeo Valley Organic Natural,Yeo Valley,18 AED,Dairy,"Organic Milk, Milk Solids, Live Cultures",5.8,0.1,4.2,6,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Little Yeo Fruity Favourites,Yeo Valley,15 AED,Dairy,"Organic Milk, Organic Fruit Puree (Strawberry, Raspberry), Organic Maize Starch, Natural Flavourings, Lemon Juice Concentrate",8.4,0.05,3,9,https://cdn-icons-png.flaticon.com/512/3050/3050268.png
+Petit Filous Apricot,Petit Filous,12 AED,Dairy,"Fromage Frais (Milk), Sugar, Fruit Puree, Fructose, Modified Maize Starch, Calcium, Natural Flavouring, Citric Acid, Potassium Sorbate",9.8,0.1,2.5,10,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Fage Total 5% Greek,Fage,22 AED,Dairy,"Pasteurised Skimmed Milk, Cream, Live Yoghurt Cultures",3,0.1,5,3,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Yoggie Pots Mango,Yoggie,8 AED,Dairy,"Yoghurt (Milk), Mango Puree, Cane Sugar, Pectin, Lemon Juice",11,0.05,3,12,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Activia Strawberry,Activia,15 AED,Dairy,"Fresh Milk, Sugar, Strawberry Pieces, Modified Starch, Black Carrot Concentrate, Natural Flavor, Carrageenan",14,0.1,3,15,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Chobani Flip Cookie Crumble,Chobani,12 AED,Treats,"Lowfat Yoghurt, Cane Sugar, Wheat Flour, Palm Oil, Cocoa, Milk Powder, Soy Lecithin, Natural Flavors",18,0.2,4,22,https://cdn-icons-png.flaticon.com/512/3050/3050268.png
 Fade Fit Kids Cocoa & Hazelnut,Fade Fit,12 AED,Snacks,"Dates, Hazelnuts, Cocoa Powder",18,0.01,8,45,https://cdn-icons-png.flaticon.com/512/3050/3050268.png
 Ella's Kitchen The Red One,Ella's Kitchen,8 AED,Baby Food,"Organic Strawberries, Organic Raspberries, Organic Apples, Organic Bananas, Lemon Juice Concentrate",12,0.01,0.5,13,https://cdn-icons-png.flaticon.com/512/3081/3081967.png
 Kiddylicious Veggie Straws,Kiddylicious,6 AED,Snacks,"Potato Starch, Rapeseed Oil, Tomato Powder, Kale Powder, Spinach Powder, Salt",2,0.4,22,65,https://cdn-icons-png.flaticon.com/512/2553/2553691.png
 Keto Pint Peanut Butter Cup,Keto Pint,35 AED,Ice Cream,"Cream, Water, Erythritol, Chicory Root Fiber, Peanuts, Egg Yolks, Stevia Extract, Monk Fruit",3,0.2,18,12,https://cdn-icons-png.flaticon.com/512/938/938063.png
 Barilla Basilico Pasta Sauce,Barilla,14 AED,Pantry,"Tomato Pulp, Tomato Concentrate, Onions, Sunflower Oil, Basil, Sugar, Salt, Natural Flavorings",6,0.9,1.5,7,https://cdn-icons-png.flaticon.com/512/2405/2405451.png
 Organix Apple & Raspberry Bars,Organix,18 AED,Snacks,"Apple Juice Concentrate, Raspberry Juice Concentrate, Rice Starch, Sunflower Oil",14,0.05,2.1,62,https://cdn-icons-png.flaticon.com/512/3081/3081967.png
-Nush Low Carb Almond Yogurt,Nush,22 AED,Dairy,"Almond Milk, Tapioca Starch, Carob Gum, Live Vegan Cultures",0.5,0.01,15,1,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
+Nush Low Carb Almond Yoghurt,Nush,22 AED,Dairy,"Almond Milk, Tapioca Starch, Carob Gum, Live Vegan Cultures",0.5,0.01,15,1,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
 Hunter's Gourmet Black Truffle,Hunter's,15 AED,Pantry,"Potatoes, Sunflower Oil, Sugar, Maltodextrin, Salt, Truffle Powder",2,0.8,24,56,https://cdn-icons-png.flaticon.com/512/2553/2553691.png
 Piccolo Squash Spinach & Pea,Piccolo,10 AED,Baby Food,"Organic Peas, Organic Spinach, Organic Apple, Organic Pear",5,0.02,0.5,9,https://cdn-icons-png.flaticon.com/512/3081/3081967.png
 Nick's Swedish Style Ice Cream,Nick's,38 AED,Ice Cream,"Skimmed Milk, Polydextrose, Erythritol, Cocoa Butter, Xylitol, Stevia",4,0.2,9,14,https://cdn-icons-png.flaticon.com/512/938/938063.png
@@ -27,5 +35,4 @@ Heinz Tomato Ketchup,Heinz,12 AED,Pantry,"Tomatoes, Vinegar, High Fructose Corn 
 Oreo Original,Oreo,5 AED,Treats,"Wheat Flour, Sugar, Palm Oil, Cocoa, Glucose-Fructose Syrup, Soy Lecithin",38,0.7,20,68,https://cdn-icons-png.flaticon.com/512/541/541732.png
 Nakd Cocoa Orange Bar,Nakd,8 AED,Snacks,"Dates, Cashews, Raisins, Cocoa, Natural Orange Flavor",16,0.1,12,45,https://cdn-icons-png.flaticon.com/512/3050/3050268.png
 Pringles Original,Pringles,9 AED,Snacks,"Dried Potatoes, Vegetable Oil, Corn Flour, Rice Flour, Maltodextrin, Emulsifier (E471), Salt",0.5,1.3,33,51,https://cdn-icons-png.flaticon.com/512/2553/2553691.png
-Activia Strawberry Yogurt,Activia,15 AED,Dairy,"Fresh Milk, Sugar, Strawberry Pieces, Modified Starch, Black Carrot Concentrate, Natural Flavor",14,0.1,3,15,https://cdn-icons-png.flaticon.com/512/9708/9708548.png
 Capri Sun Orange,Capri Sun,2 AED,Drinks,"Spring Water, Sugar, Orange Juice from Concentrate, Citric Acid, Natural Flavoring",19,0.01,0,20,https://cdn-icons-png.flaticon.com/512/2405/2405451.png
