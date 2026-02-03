@@ -72,6 +72,15 @@ st.markdown("""
         font-size: 12px;
     }
     
+    .warning-tag {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+    
     .disclaimer-box {
         font-size: 12px;
         color: #777;
@@ -79,6 +88,16 @@ st.markdown("""
         padding: 10px;
         border-radius: 5px;
         margin-top: 20px;
+    }
+    
+    .nutrition-row {
+        font-size: 13px;
+        color: #555;
+        background-color: #f8f9fa;
+        padding: 8px;
+        border-radius: 6px;
+        margin-top: 8px;
+        margin-bottom: 8px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -130,25 +149,25 @@ def load_data():
     try:
         # Load the CSV
         df = pd.read_csv("products.csv")
-        # Ensure Total Sugar is a number
+        # Ensure Nutrition columns are numbers
         df['Total Sugar (g)'] = pd.to_numeric(df['Total Sugar (g)'], errors='coerce').fillna(0)
+        df['Salt (g)'] = pd.to_numeric(df['Salt (g)'], errors='coerce').fillna(0)
+        df['Fat (g)'] = pd.to_numeric(df['Fat (g)'], errors='coerce').fillna(0)
+        df['Carbs (g)'] = pd.to_numeric(df['Carbs (g)'], errors='coerce').fillna(0)
         return df
     except FileNotFoundError:
-        return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Category": "Error", "Ingredients": "Please upload products.csv to GitHub", "Total Sugar (g)": 0, "Image": ""}])
+        return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Ingredients": "Please upload products.csv", "Total Sugar (g)": 0, "Salt (g)": 0, "Fat (g)": 0, "Carbs (g)": 0, "Image": ""}])
 
 df = load_data()
-
 
 
 # --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
     
-    # --- STEP 1: MODE SWITCHER ---
     st.markdown("### 1. Start Shopping")
     shopping_mode = st.radio("How do you want to filter?", ["🖐️ Manual Selection", "👤 Use Saved Profile"], label_visibility="collapsed")
     
-    # --- STEP 2: DYNAMIC FILTERING ---
     active_filters = []
     
     if shopping_mode == "🖐️ Manual Selection":
@@ -160,7 +179,6 @@ with st.sidebar:
         profile_names = list(st.session_state['profiles'].keys())
         selected_profile = st.selectbox("Select:", profile_names, index=0)
         
-        # Load the filters from the profile
         current_defaults = st.session_state['profiles'][selected_profile]
         st.markdown(f"**{selected_profile} avoids:**")
         st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True)
@@ -168,7 +186,6 @@ with st.sidebar:
 
     st.divider()
 
-    # --- STEP 3: CREATE PROFILE ---
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
         new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
@@ -195,7 +212,6 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# THE FOUNDER STORY
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -226,7 +242,6 @@ with tab1:
         search_btn = st.button("Search", type="primary", use_container_width=True)
 
     if search_query or search_btn:
-        # Search in the real dataframe
         results = df[df['Product'].str.contains(search_query, case=False, na=False) | df['Brand'].str.contains(search_query, case=False, na=False) | df['Category'].str.contains(search_query, case=False, na=False)]
         
         if results.empty:
@@ -235,19 +250,32 @@ with tab1:
             st.write(f"Found {len(results)} items matching '{search_query}'")
             for index, row in results.iterrows():
                 ing_list = str(row['Ingredients'])
-                total_sugar = row['Total Sugar (g)']
+                sugar_g = row['Total Sugar (g)']
+                salt_g = row['Salt (g)']
+                fat_g = row['Fat (g)']
                 
-                # 1. Text Search for Bad Ingredients
-                found_dangers = [bad for bad in banned_ingredients if bad.lower() in ing_list.lower()]
+                # --- LOGIC CORE ---
+                found_dangers = []
+                warnings = []
                 
-                # 2. Logic Check for Natural Sugars (>15g)
+                # 1. Ingredient Scan
+                for bad in banned_ingredients:
+                    if bad.lower() in ing_list.lower():
+                        # Special Exception for Salt: Check amount
+                        if bad.lower() == "salt":
+                            if salt_g > 1.5:
+                                found_dangers.append(f"High Salt ({salt_g}g)")
+                            else:
+                                warnings.append(f"Contains Salt ({salt_g}g)")
+                        else:
+                            found_dangers.append(bad)
+                
+                # 2. High Natural Sugar Logic
                 if "High Natural Sugars (>15g)" in active_filters:
-                    # Only flag if >15g sugar AND contains natural sugar keywords
                     natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
                     has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
-                    
-                    if has_natural_ingredients and total_sugar > 15:
-                        found_dangers.append(f"High Sugar ({total_sugar}g)")
+                    if has_natural_ingredients and sugar_g > 15:
+                        found_dangers.append(f"High Sugar ({sugar_g}g)")
 
                 is_safe = len(found_dangers) == 0
                 
@@ -259,12 +287,27 @@ with tab1:
                         st.image(img_link, width=80)
                     with col_info:
                         st.markdown(f"**{row['Product']}**")
-                        st.caption(f"{row['Brand']} | {row['Price']} | Sugar: {total_sugar}g")
+                        st.caption(f"{row['Brand']} | {row['Price']}")
+                        
+                        # NUTRITION LABEL
+                        st.markdown(f"""
+                        <div class="nutrition-row">
+                        🍬 <b>Sugar:</b> {sugar_g}g &nbsp;|&nbsp; 
+                        🧂 <b>Salt:</b> {salt_g}g &nbsp;|&nbsp; 
+                        🥓 <b>Fat:</b> {fat_g}g
+                        </div>
+                        """, unsafe_allow_html=True)
+
                         if is_safe:
-                            st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
+                            if warnings:
+                                st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
+                                st.caption(f"Allowed but note: {', '.join(warnings)}")
+                            else:
+                                st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
                         else:
                             st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
-                            st.markdown(f":red[**Contains:** {', '.join(found_dangers)}]")
+                            st.markdown(f":red[**Reason:** {', '.join(found_dangers)}]")
+                        
                         with st.expander("Ingredients"):
                             st.write(ing_list)
                     with col_action:
@@ -272,14 +315,11 @@ with tab1:
                             if st.button("🛒 Add", key=f"add_{index}"):
                                 st.session_state['basket'].append(row)
                                 st.toast("Added!")
-                            if st.button("❤️ Save", key=f"fav_{index}"):
-                                st.session_state['wishlist'].append(row)
-                                st.toast("Saved!")
                         else:
                             st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: NEWS & RESEARCH ---
+# --- TAB 2, 3, 4, 5 ---
 with tab2:
     st.markdown("### 🧠 The Gut-Brain Connection")
     st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
@@ -289,53 +329,42 @@ with tab2:
     with col_n2:
         st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
-# --- TAB 3: HOW IT WORKS & GLOSSARY (UPDATED) ---
 with tab3:
     st.markdown("### 🎯 Aim of the Game")
     st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
-    
     st.info("💡 **Pro Tip:** You can customize your filters each time! Saved profiles are just there to make your life easier.")
-
     c1, c2, c3 = st.columns(3)
     with c1:
         st.caption("#### 1. Set Profile or Edit Filters")
-        st.caption("Choose your filters manually, create a new profile, or pick a saved profile like 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
+        st.caption("Choose your filters manually, create a new profile, or pick a saved profile.")
     with c2:
         st.caption("#### 2. Search")
-        st.caption("Type 'Fade Fit' or 'Barilla'. We scan ingredients against your profile or your active filters.")
+        st.caption("Type 'Fade Fit' or 'Barilla'.")
     with c3:
         st.caption("#### 3. Shop Safe")
-        st.caption("Add safe items to your basket and export the list to your retailer.")
-
+        st.caption("Add safe items to your basket.")
     st.divider()
-    st.subheader("🔍 Filter Glossary: What are we scanning for?")
-    st.markdown("Click below to see exactly which ingredients are hidden inside each filter.")
     
+    st.subheader("🔍 Filter Glossary")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            # Special explanation for High Natural Sugars
+            # Sugar Note
             if "High Natural Sugars" in category:
-                 st.info("⚠️ **Health Note:** Even natural sugars (like date syrup or fruit concentrates) can spike insulin. We flag products with **>15g of sugar per serving** because high natural sugar intake should be monitored for diabetic concerns and weight loss.")
+                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We flag products with **>15g of sugar per serving** as high.")
+            # Salt Note (NEW)
+            if "Sodium" in category:
+                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt (per 100g)** are flagged as High. The WHO recommends adults consume less than 5g per day.")
+            
             st.write(", ".join(ingredients))
+            
+    st.markdown('<div class="disclaimer-box">Disclaimer: We are not nutritionists.</div>', unsafe_allow_html=True)
 
-    st.divider()
-    st.markdown("""
-    <div class="disclaimer-box">
-    <b>⚠️ DISCLAIMER:</b><br>
-    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
-    Product ingredients are subject to change by manufacturers at any time. 
-    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
-    <b>Always read the physical label on the product before consumption.</b>
-    </div>
-    """, unsafe_allow_html=True)
-
-# --- TAB 4 & 5 (Favorites & Basket) ---
 with tab4:
     if not st.session_state['wishlist']:
         st.info("No favorites yet.")
     else:
         for idx, item in enumerate(st.session_state['wishlist']):
-            st.markdown(f"**{item['Product']}** ({item['Brand']})")
+            st.markdown(f"**{item['Product']}**")
             if st.button(f"Move to Basket", key=f"move_{idx}"):
                 st.session_state['basket'].append(item)
                 st.session_state['wishlist'].pop(idx)
@@ -350,5 +379,6 @@ with tab5:
             st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
         st.divider()
         st.markdown("**Option 1: Send to Partner**")
-        export_text = "Hi! Please order these safe items:\n" + "\n".join([f"- {i['Product']} ({i['Brand']})" for i in st.session_state['basket']])
+        export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
+
