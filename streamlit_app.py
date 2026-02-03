@@ -22,20 +22,19 @@ st.markdown("""
         background-color: #Fdfdfd;
     }
 
-    /* Founder Note Styling (WITH TALLER WINDOW FOR FAMILY PHOTO) */
+    /* Founder Note Styling (WITH PERFECTED PHOTO) */
     .founder-box {
         background-color: #F9FBFD; /* Fallback color */
         
-        /* 1. VISIBILITY: Kept at 75% white overlay so text is readable but photo is seen */
-        background-image: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), 
+        /* FIX 1: FADE. Set to 85% (the middle ground between 90% and 75%) */
+        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
                           url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
         
         background-size: cover;
         
-        /* 2. ALIGNMENT: 'center 35%' aims at the Upper-Middle (Best for Parents + Kids) */
-        background-position: center 35%;
+        /* FIX 2: ALIGNMENT. Set to 'top center' to guarantee tallest person is in frame */
+        background-position: top center;
         
-        /* 3. HEIGHT: Increased padding to 60px to show more of the vertical photo */
         padding: 60px;
         border-radius: 12px;
         border-left: 4px solid #A8D0E6;
@@ -169,6 +168,7 @@ def load_data():
         return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Ingredients": "Please upload products.csv", "Total Sugar (g)": 0, "Salt (g)": 0, "Fat (g)": 0, "Carbs (g)": 0, "Image": ""}])
 
 df = load_data()
+
 
 
 
@@ -437,3 +437,4 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
+
