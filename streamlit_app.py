@@ -123,6 +123,7 @@ FILTER_PACKS = {
     "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"]
 }
 
+
 # --- 4. MOCK DATABASE ---
 def get_mock_database():
     return pd.DataFrame([
@@ -234,4 +235,96 @@ with tab1:
                     col_img, col_info, col_action = st.columns([1, 3, 1])
                     with col_img:
                         st.image(row['Image'], width=80)
-                    with col
+                    with col_info:
+                        st.markdown(f"**{row['Product']}**")
+                        st.caption(f"{row['Brand']} | {row['Price']}")
+                        if is_safe:
+                            st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
+                            st.markdown(f":red[**Contains:** {', '.join(found_dangers)}]")
+                        with st.expander("Ingredients"):
+                            st.write(row['Ingredients'])
+                    with col_action:
+                        if is_safe:
+                            if st.button("🛒 Add", key=f"add_{index}"):
+                                st.session_state['basket'].append(row)
+                                st.toast("Added!")
+                            if st.button("❤️ Save", key=f"fav_{index}"):
+                                st.session_state['wishlist'].append(row)
+                                st.toast("Saved!")
+                        else:
+                            st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- TAB 2: NEWS & RESEARCH ---
+with tab2:
+    st.markdown("### 🧠 The Gut-Brain Connection")
+    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
+    col_n1, col_n2 = st.columns(2)
+    with col_n1:
+        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
+    with col_n2:
+        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
+
+# --- TAB 3: HOW IT WORKS & GLOSSARY (UPDATED) ---
+with tab3:
+    st.markdown("### 🎯 Aim of the Game")
+    st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
+    
+    st.info("💡 **Pro Tip:** You can customize your filters each time! Saved profiles are just there to make your life easier.")
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("#### 1. Set Profile or Edit Filters")
+        st.caption("Choose your filters manually, or pick a saved profile like 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
+    with c2:
+        st.markdown("#### 2. Search")
+        st.caption("Type 'Chips' or 'Yoghurt'. We scan ingredients against your profile or your active filters.")
+    with c3:
+        st.markdown("#### 3. Shop Safe")
+        st.caption("Add safe items to your basket and export the list to your retailer.")
+
+    st.divider()
+    st.subheader("🔍 Filter Glossary: What are we scanning for?")
+    st.markdown("Click below to see exactly which ingredients are hidden inside each filter.")
+    
+    for category, ingredients in FILTER_PACKS.items():
+        with st.expander(f"📦 {category}"):
+            st.write(", ".join(ingredients))
+
+    st.divider()
+    st.markdown("""
+    <div class="disclaimer-box">
+    <b>⚠️ DISCLAIMER:</b><br>
+    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
+    Product ingredients are subject to change by manufacturers at any time. 
+    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
+    <b>Always read the physical label on the product before consumption.</b>
+    </div>
+    """, unsafe_allow_html=True)
+
+# --- TAB 4: FAVORITES ---
+with tab4:
+    if not st.session_state['wishlist']:
+        st.info("No favorites yet.")
+    else:
+        for idx, item in enumerate(st.session_state['wishlist']):
+            st.markdown(f"**{item['Product']}** ({item['Brand']})")
+            if st.button(f"Move to Basket", key=f"move_{idx}"):
+                st.session_state['basket'].append(item)
+                st.session_state['wishlist'].pop(idx)
+                st.rerun()
+            st.divider()
+
+# --- TAB 5: BASKET ---
+with tab5:
+    if not st.session_state['basket']:
+        st.info("Basket is empty.")
+    else:
+        for item in st.session_state['basket']:
+            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
+        st.divider()
+        st.markdown("**Option 1: Send to Partner**")
+        export_text = "Hi! Please order these safe items:\n" + "\n".join([f"- {i['Product']} ({i['Brand']})" for i in st.session_state['basket']])
+        st.text_area("Copy Text:", value=export_text, height=150)
