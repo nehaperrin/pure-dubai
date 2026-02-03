@@ -93,7 +93,7 @@ if 'wishlist' not in st.session_state:
 if 'profiles' not in st.session_state:
     st.session_state['profiles'] = {
         "Max (Strict Allergy)": ["Tree Nuts & Peanuts", "Sesame & Seeds", "Added Sugar & Syrups"],
-        "Diane (Toddler Safe)": ["Added Sugar & Syrups", "Artificial Colors", "Inflammatory Oils"],
+        "Diane (Toddler Safe)": ["Added Sugar & Syrups", "High Natural Sugars (>15g)", "Artificial Colors", "Inflammatory Oils"],
         "Grandpa (Heart Health)": ["Sodium & Salt Watch", "Inflammatory Oils", "Added Sugar & Syrups"],
         "Clean Eating (Gut Health)": ["Gut Irritants & Emulsifiers", "Artificial Sweeteners", "Inflammatory Oils"]
     }
@@ -103,42 +103,43 @@ if 'active_profile' not in st.session_state:
 
 # --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
-    # KIDS & SUGAR
-    "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "agave", "honey", "caramel"],
-    "Artificial Sweeteners": ["aspartame", "sucralose", "saccharin", "acesulfame", "neotame"],
-    "Artificial Colors": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
+    # SUGAR & SWEETENERS
+    "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
+    "High Natural Sugars (>15g)": ["dates", "date syrup", "fruit juice concentrate", "apple juice", "grape juice", "pear juice", "agave", "maple syrup", "paste", "puree"],
+    "Artificial Sweeteners": ["aspartame", "sucralose", "saccharin", "acesulfame", "neotame", "xylitol", "erythritol", "stevia"],
     
-    # ALLERGIES
+    # ADDITIVES
+    "Artificial Colors": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
+    "Gut Irritants & Emulsifiers": ["carrageenan", "xanthan gum", "guar gum", "lecithin", "polysorbate", "cellulose gum"],
+    "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"],
+
+    # ALLERGIES & DIET
     "Tree Nuts & Peanuts": ["peanut", "almond", "cashew", "walnut", "pecan", "hazelnut", "pistachio", "macadamia"],
     "Sesame & Seeds": ["sesame", "tahini", "sunflower seed", "poppy seed"],
     "Dairy / Lactose": ["milk", "lactose", "whey", "casein", "butter", "cream", "yogurt", "cheese"],
     "Gluten / Wheat": ["wheat", "barley", "rye", "malt", "brewer's yeast"],
     "Soy": ["soy", "edamame", "tofu", "lecithin"],
     "Shellfish": ["shrimp", "crab", "lobster", "prawn", "shellfish"],
-    
-    # HEALTH & LIFESTYLE
     "Sodium & Salt Watch": ["salt", "sodium", "monosodium", "baking soda", "brine", "msg"],
-    "Inflammatory Oils": ["palm oil", "canola oil", "rapeseed oil", "sunflower oil", "soybean oil", "vegetable oil", "hydrogenated", "margarine"],
-    "Gut Irritants & Emulsifiers": ["carrageenan", "xanthan gum", "guar gum", "lecithin", "polysorbate", "cellulose gum"],
-    "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"]
+    "Inflammatory Oils": ["palm oil", "canola oil", "rapeseed oil", "sunflower oil", "soybean oil", "vegetable oil", "hydrogenated", "margarine"]
 }
 
-# --- 4. MOCK DATABASE ---
-def get_mock_database():
-    return pd.DataFrame([
-        {"Product": "Bear YoYo Strawberry", "Brand": "Kibsons", "Price": "25 AED", "Category": "Snacks", "Ingredients": "Apples, Pears, Strawberries, Black Carrot Extract", "Image": "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"},
-        {"Product": "Fade Fit Kids Cocoa", "Brand": "Carrefour", "Price": "12 AED", "Category": "Snacks", "Ingredients": "Dates, Cocoa Powder, Hazelnut", "Image": "https://cdn-icons-png.flaticon.com/512/3050/3050268.png"},
-        {"Product": "Hunter's Gourmet Chips", "Brand": "Spinneys", "Price": "15 AED", "Category": "Pantry", "Ingredients": "Potatoes, Sunflower Oil, Truffle Flavor, MSG, E621, Salt", "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
-        {"Product": "Almarai Strawberry Milk", "Brand": "Union Coop", "Price": "8 AED", "Category": "Dairy", "Ingredients": "Fresh Cow's Milk, Sugar, Red 40, Artificial Flavor, Carrageenan", "Image": "https://cdn-icons-png.flaticon.com/512/9708/9708548.png"},
-        {"Product": "Kibsons Organic Hummus", "Brand": "Kibsons", "Price": "18 AED", "Category": "Fridge", "Ingredients": "Chickpeas, Tahini (Sesame), Lemon Juice, Sea Salt", "Image": "https://cdn-icons-png.flaticon.com/512/8743/8743994.png"},
-        {"Product": "Oreo Original", "Brand": "Carrefour", "Price": "5 AED", "Category": "Treats", "Ingredients": "Wheat Flour, Sugar, Palm Oil, Cocoa, Glucose-Fructose Syrup", "Image": "https://cdn-icons-png.flaticon.com/512/541/541732.png"},
-        {"Product": "RxBar Chocolate Sea Salt", "Brand": "Spinneys", "Price": "12 AED", "Category": "Snacks", "Ingredients": "Dates, Egg Whites, Cashews, Almonds, Cacao, Sea Salt", "Image": "https://cdn-icons-png.flaticon.com/512/1792/1792947.png"},
-        {"Product": "Campbell's Tomato Soup", "Brand": "Waitrose", "Price": "10 AED", "Category": "Pantry", "Ingredients": "Tomato Puree, High Fructose Corn Syrup, Wheat Flour, Salt, Potassium Chloride", "Image": "https://cdn-icons-png.flaticon.com/512/2405/2405451.png"},
-    ])
+# --- 4. REAL DATABASE LOADING ---
+@st.cache_data
+def load_data():
+    try:
+        # Load the CSV
+        df = pd.read_csv("products.csv")
+        # Ensure Total Sugar is a number (handling any errors)
+        df['Total Sugar (g)'] = pd.to_numeric(df['Total Sugar (g)'], errors='coerce').fillna(0)
+        return df
+    except FileNotFoundError:
+        return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Category": "Error", "Ingredients": "Please upload products.csv to GitHub", "Total Sugar (g)": 0, "Image": ""}])
+
+df = load_data()
 
 
-
-# --- 5. SIDEBAR (NEW LOGIC) ---
+# --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
     
@@ -161,13 +162,12 @@ with st.sidebar:
         # Load the filters from the profile
         current_defaults = st.session_state['profiles'][selected_profile]
         st.markdown(f"**{selected_profile} avoids:**")
-        # We show them but disable editing in this mode to avoid confusion
         st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True)
         active_filters = current_defaults
 
     st.divider()
 
-    # --- STEP 3: CREATE PROFILE (OPTIONAL) ---
+    # --- STEP 3: CREATE PROFILE ---
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
         new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
@@ -218,40 +218,54 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Search Engine", "📚 News & Resea
 with tab1:
     col_s1, col_s2 = st.columns([3, 1])
     with col_s1:
-        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Chips, Soup, Snacks...")
+        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Fade Fit, Pasta, Kids...")
     with col_s2:
         st.write("")
         st.write("")
         search_btn = st.button("Search", type="primary", use_container_width=True)
 
     if search_query or search_btn:
-        df = get_mock_database()
-        results = df[df['Product'].str.contains(search_query, case=False) | df['Category'].str.contains(search_query, case=False)]
+        # Search in the real dataframe
+        results = df[df['Product'].str.contains(search_query, case=False, na=False) | df['Brand'].str.contains(search_query, case=False, na=False) | df['Category'].str.contains(search_query, case=False, na=False)]
         
         if results.empty:
-            st.warning("No matches found. Try 'Soup' or 'Snacks'.")
+            st.warning("No matches found. Try 'Fade Fit' or 'Barilla'.")
         else:
             st.write(f"Found {len(results)} items matching '{search_query}'")
             for index, row in results.iterrows():
-                ing_list = row['Ingredients']
+                ing_list = str(row['Ingredients'])
+                total_sugar = row['Total Sugar (g)']
+                
+                # 1. Text Search for Bad Ingredients
                 found_dangers = [bad for bad in banned_ingredients if bad.lower() in ing_list.lower()]
+                
+                # 2. Logic Check for Natural Sugars (>15g)
+                if "High Natural Sugars (>15g)" in active_filters:
+                    # Only flag if >15g sugar AND contains natural sugar keywords
+                    natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
+                    has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
+                    
+                    if has_natural_ingredients and total_sugar > 15:
+                        found_dangers.append(f"High Sugar ({total_sugar}g)")
+
                 is_safe = len(found_dangers) == 0
                 
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
                     with col_img:
-                        st.image(row['Image'], width=80)
+                        img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
+                        st.image(img_link, width=80)
                     with col_info:
                         st.markdown(f"**{row['Product']}**")
-                        st.caption(f"{row['Brand']} | {row['Price']}")
+                        st.caption(f"{row['Brand']} | {row['Price']} | Sugar: {total_sugar}g")
                         if is_safe:
                             st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
                         else:
                             st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
                             st.markdown(f":red[**Contains:** {', '.join(found_dangers)}]")
                         with st.expander("Ingredients"):
-                            st.write(row['Ingredients'])
+                            st.write(ing_list)
                     with col_action:
                         if is_safe:
                             if st.button("🛒 Add", key=f"add_{index}"):
@@ -274,7 +288,7 @@ with tab2:
     with col_n2:
         st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
-# --- TAB 3: HOW IT WORKS & GLOSSARY (FIXED) ---
+# --- TAB 3: HOW IT WORKS & GLOSSARY ---
 with tab3:
     st.markdown("### 🎯 Aim of the Game")
     st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
@@ -283,13 +297,13 @@ with tab3:
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown("#### 1. Set Profile or Edit Filters")
+        st.caption("#### 1. Set Profile or Edit Filters")
         st.caption("Choose your filters manually, create a new profile, or pick a saved profile like 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
     with c2:
-        st.markdown("#### 2. Search")
-        st.caption("Type 'Chips' or 'Yoghurt'. We scan ingredients against your profile or your active filters.")
+        st.caption("#### 2. Search")
+        st.caption("Type 'Fade Fit' or 'Barilla'. We scan ingredients against your profile or your active filters.")
     with c3:
-        st.markdown("#### 3. Shop Safe")
+        st.caption("#### 3. Shop Safe")
         st.caption("Add safe items to your basket and export the list to your retailer.")
 
     st.divider()
@@ -311,7 +325,7 @@ with tab3:
     </div>
     """, unsafe_allow_html=True)
 
-# --- TAB 4: FAVORITES ---
+# --- TAB 4 & 5 (Favorites & Basket) ---
 with tab4:
     if not st.session_state['wishlist']:
         st.info("No favorites yet.")
@@ -324,7 +338,6 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET ---
 with tab5:
     if not st.session_state['basket']:
         st.info("Basket is empty.")
