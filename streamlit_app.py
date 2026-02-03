@@ -4,121 +4,159 @@ import time
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
-    page_title="Pure Dubai | Search Once, Safe Everywhere",
-    page_icon="🥗",
+    page_title="SIFT | Filter the Noise",
+    page_icon="✨",
     layout="wide"
 )
 
-# Custom CSS
+# Custom CSS - The "Aesop" Aesthetic
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Lora:ital@0;1&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
 
+    /* GLOBAL THEME: Rice Paper & Charcoal */
     html, body, [class*="css"] {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Montserrat', sans-serif;
+        color: #333333;
     }
     
     .stApp {
-        background-color: #Fdfdfd;
+        background-color: #F9F9F7; /* "Rice Paper" Background */
     }
 
-    /* Founder Note Styling (TALL & SIMPLE) */
+    /* TYPOGRAPHY: The "SIFT" Brand Voice */
+    h1, h2, h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        color: #1A1A1A;
+        letter-spacing: -0.5px;
+    }
+    
+    /* THE LOGO: Concept 1 (Pure Typography) */
+    .brand-logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 60px;
+        font-weight: 600;
+        color: #1A1A1A;
+        letter-spacing: 4px; /* The "Aesop" wide spacing */
+        margin-bottom: 0px;
+        line-height: 1.0;
+    }
+    .brand-tagline {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #666;
+        margin-top: 10px;
+        margin-bottom: 40px;
+    }
+
+    /* FOUNDER NOTE: Portrait Mode (Kept exactly as you liked it) */
     .founder-box {
-        background-color: #F9FBFD;
-        
-        /* 1. FADE: 85% White Overlay (Readable Text + Visible Photo) */
-        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
+        background-color: #F0F0EE;
+        background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
                           url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
-        
         background-size: cover;
-        background-position: top center; /* Starts at top (Husband's head) */
-        
-        /* 2. HEIGHT: 800px Tall to fit the whole portrait photo */
+        background-position: top center;
         min-height: 800px;
-        
         padding: 40px;
-        border-radius: 12px;
-        border-left: 4px solid #A8D0E6;
-        margin-bottom: 20px;
-        
-        /* Center text vertically */
+        border: 1px solid #E0E0E0; /* Thinner, sharper border */
+        margin-bottom: 40px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
     
     .founder-text {
-        font-family: 'Lora', serif;
-        font-size: 18px; /* Slightly larger text for the big box */
-        color: #2C3E50;
-        line-height: 2.0;
-        font-weight: 600; 
-        text-align: center; /* Centered text looks better in a tall box */
-        max-width: 800px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 20px;
+        color: #1A1A1A;
+        line-height: 1.8;
+        font-style: italic;
+        text-align: center;
+        max-width: 700px;
         margin: 0 auto;
     }
     .founder-sig {
-        font-family: 'Lora', serif;
-        font-style: italic;
-        margin-top: 20px;
-        color: #444;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 25px;
+        color: #555;
         text-align: center;
     }
 
-    /* Product Card Styling */
+    /* PRODUCT CARD: The "Clinical Lab Report" Look */
     .product-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        border: 1px solid #f0f0f0;
-        margin-bottom: 15px;
+        background-color: #FFFFFF;
+        padding: 25px;
+        border: 1px solid #E6E6E6; /* Precise, thin border */
+        border-radius: 0px; /* Sharp corners for that "medical" feel */
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    .product-card:hover {
+        border-color: #B0B0B0; /* Subtle hover effect */
     }
 
+    /* TAGS: Muted, Earthy Tones */
     .safe-tag {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 12px;
+        background-color: #E8F0E9; /* Pale Sage */
+        color: #2E5C38;
+        padding: 4px 10px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 1px solid #CFE0D1;
     }
 
     .avoid-tag {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 12px;
+        background-color: #F7EAE9; /* Pale Clay */
+        color: #8A3C34;
+        padding: 4px 10px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 1px solid #EBD5D3;
     }
     
     .warning-tag {
-        background-color: #fff3cd;
+        background-color: #FAF5E6; /* Pale Straw */
         color: #856404;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 12px;
-    }
-    
-    .disclaimer-box {
-        font-size: 12px;
-        color: #777;
-        background-color: #f0f0f0;
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 20px;
+        padding: 4px 10px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 1px solid #F0E6C8;
     }
     
     .nutrition-row {
-        font-size: 13px;
-        color: #555;
-        background-color: #f8f9fa;
-        padding: 8px;
-        border-radius: 6px;
-        margin-top: 8px;
-        margin-bottom: 8px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        color: #666;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+        margin: 15px 0;
+    }
+    
+    /* Custom Button Styling */
+    div.stButton > button {
+        background-color: #333;
+        color: white;
+        border-radius: 0px;
+        border: none;
+        padding: 10px 20px;
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+    }
+    div.stButton > button:hover {
+        background-color: #555;
+        color: white;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -196,40 +234,31 @@ SYNONYMS = {
 
 # --- 6. SIDEBAR ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
-    
-    st.markdown("### 1. Start Shopping")
-    shopping_mode = st.radio("How do you want to filter?", ["🖐️ Manual Selection", "👤 Use Saved Profile"], label_visibility="collapsed")
+    st.markdown("### ⚙️ PREFERENCES")
+    shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
     
     active_filters = []
     
-    if shopping_mode == "🖐️ Manual Selection":
-        st.markdown("**Select filters manually:**")
-        active_filters = st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()))
+    if shopping_mode == "🖐️ Manual":
+        st.markdown("**Avoid:**")
+        active_filters = st.multiselect("Select:", options=list(FILTER_PACKS.keys()), label_visibility="collapsed")
         
     else: # Saved Profile Mode
-        st.markdown("**Choose a profile:**")
+        st.markdown("**Profile:**")
         profile_names = list(st.session_state['profiles'].keys())
-        selected_profile = st.selectbox("Select:", profile_names, index=0)
+        selected_profile = st.selectbox("Select:", profile_names, index=0, label_visibility="collapsed")
         
         current_defaults = st.session_state['profiles'][selected_profile]
-        st.markdown(f"**{selected_profile} avoids:**")
-        st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True)
+        st.caption(f"Settings for {selected_profile}:")
+        st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
         active_filters = current_defaults
 
     st.divider()
-
-    with st.expander("➕ Create New Profile"):
-        new_name = st.text_input("Name (e.g. Grandma)")
-        new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
-        if st.button("Save Profile"):
-            if new_name and new_defaults:
-                st.session_state['profiles'][new_name] = new_defaults
-                st.success(f"Saved {new_name}!")
-                time.sleep(1)
-                st.rerun()
-
-    st.success(f"🛒 Basket: {len(st.session_state['basket'])} items")
+    st.markdown("### 🛒 BASKET")
+    if not st.session_state['basket']:
+        st.caption("Your basket is empty.")
+    else:
+        st.caption(f"{len(st.session_state['basket'])} items collected.")
 
 banned_ingredients = []
 for pack in active_filters:
@@ -237,41 +266,35 @@ for pack in active_filters:
 
 # --- 7. MAIN CONTENT ---
 
-col_logo, col_title = st.columns([1, 5])
-with col_logo:
-    st.image("https://cdn-icons-png.flaticon.com/512/9355/9355325.png", width=80)
-with col_title:
-    st.title("Pure Dubai")
-    st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
+# BRAND HEADER (Concept 1: Pure Typography)
+col_spacer, col_brand, col_spacer2 = st.columns([1, 2, 1])
+with col_brand:
+    st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
 
-# UPDATED FOUNDER NOTE (TALL & SIMPLE)
-with st.expander("❤️ From the Founder", expanded=True):
+# FOUNDER NOTE (Portrait Mode - Tall)
+with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
         <div class="founder-text">
-        Hi, I'm Neha. A Dubai 80s kid, a recovering London banker, and a mom of two.<br><br>
-        I created Pure Dubai to solve the 'Dubai Paradox': too many choices, not enough time.
-        In today's world of free-from and healthy options, there are still way too many hidden ingredients.<br><br>
-        <b>The 'Yoghurt Aisle' is one of the most deceptive places in the supermarket. You often see 'Healthy Kids Yoghurt' that has more sugar than a chocolate bar!</b><br><br>
-        Moving back to Dubai with a food allergy child made the weekly shop a nightmare, so I built a solution. 
-        <b>Pure Dubai isn't just an analyzer; it’s a scout.</b> We don't just scan your existing pantry; we help you find exactly what you need—clean, safe, and specific—across Dubai’s retailers in seconds.<br><br>
-        I hope this helps you as much as it helped me.
-        <div class="founder-sig">xo Neha</div>
+        "The 'Yoghurt Aisle' is the most deceptive place in the supermarket. You see 'Healthy Kids Yoghurt' that has more sugar than a chocolate bar."
+        <br><br>
+        I built SIFT to solve the Dubai Paradox: too many choices, not enough time. We are not just an analyzer; we are a scout. We filter the noise so you can find the truth.
         </div>
+        <div class="founder-sig">NEHA &bull; FOUNDER</div>
     </div>
     """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Search Engine", "📚 News & Research", "ℹ️ How it Works", "❤️ Saved", "🛒 Basket"])
+# TABS
+tab1, tab2, tab3 = st.tabs(["SEARCH", "KNOWLEDGE", "BASKET"])
 
 # --- TAB 1: SEARCH ---
 with tab1:
-    col_s1, col_s2 = st.columns([3, 1])
+    col_s1, col_s2 = st.columns([4, 1])
     with col_s1:
-        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Snacks, Soda, Yoghurt...")
+        search_query = st.text_input("Find something safe...", placeholder="e.g. Snacks, Soda, Yoghurt...", label_visibility="collapsed")
     with col_s2:
-        st.write("")
-        st.write("")
-        search_btn = st.button("Search", type="primary", use_container_width=True)
+        search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
     if search_query or search_btn:
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
@@ -288,10 +311,13 @@ with tab1:
                      df['Category'].str.contains(search_pattern, case=False, na=False) |
                      df['Ingredients'].str.contains(search_pattern, case=False, na=False)]
         
+        st.divider()
+        
         if results.empty:
-            st.warning(f"No matches found for '{search_query}'. Try broader terms like 'Snacks' or 'Dairy'.")
+            st.info(f"No matches for '{search_query}'. Try 'Snacks' or 'Dairy'.")
         else:
-            st.write(f"Found {len(results)} items matching '{search_query}' (and synonyms)")
+            st.markdown(f"**Found {len(results)} items**")
+            
             for index, row in results.iterrows():
                 ing_list = str(row['Ingredients'])
                 sugar_g = row['Total Sugar (g)']
@@ -329,123 +355,64 @@ with tab1:
 
                 is_safe = len(found_dangers) == 0
                 
+                # --- PRODUCT CARD RENDER ---
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
                     with col_img:
                         img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
-                        st.image(img_link, width=80)
+                        st.image(img_link, width=100)
                     with col_info:
-                        st.markdown(f"**{row['Product']}**")
-                        st.caption(f"{row['Brand']} | {row['Price']}")
+                        st.markdown(f"### {row['Product']}")
+                        st.caption(f"{row['Brand']} • {row['Price']}")
                         
                         st.markdown(f"""
                         <div class="nutrition-row">
-                        🍬 <b>Sugar:</b> {sugar_g}g &nbsp;|&nbsp; 
-                        🧂 <b>Salt:</b> {salt_g}g &nbsp;|&nbsp; 
-                        🥓 <b>Fat:</b> {fat_g}g
+                        SUGAR {sugar_g}g &nbsp;&nbsp;/&nbsp;&nbsp; 
+                        SALT {salt_g}g &nbsp;&nbsp;/&nbsp;&nbsp; 
+                        FAT {fat_g}g
                         </div>
                         """, unsafe_allow_html=True)
 
                         if is_safe:
                             if warnings:
                                 st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
-                                st.caption(f"Allowed (Low Dose): {', '.join(warnings)}")
+                                st.caption(f"Trace detected: {', '.join(warnings)}")
                             else:
-                                st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
+                                st.markdown('<span class="safe-tag">✓ VERIFIED SAFE</span>', unsafe_allow_html=True)
                         else:
-                            st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
-                            st.markdown(f":red[**Reason:** {', '.join(found_dangers)}]")
+                            st.markdown('<span class="avoid-tag">✕ AVOID</span>', unsafe_allow_html=True)
+                            st.markdown(f":red[{', '.join(found_dangers)}]")
                         
-                        with st.expander("Ingredients"):
-                            st.write(ing_list)
+                        with st.expander("Full Ingredients List"):
+                            st.caption(ing_list)
                     with col_action:
+                        st.write("")
                         if is_safe:
-                            if st.button("🛒 Add", key=f"add_{index}"):
+                            if st.button("ADD", key=f"add_{index}"):
                                 st.session_state['basket'].append(row)
-                                st.toast("Added!")
+                                st.toast("Added to Basket")
                         else:
-                            st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
+                            st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2, 3, 4, 5 (Same as before) ---
+# --- TAB 2: KNOWLEDGE ---
 with tab2:
-    st.markdown("### 🧠 The Gut-Brain Connection")
-    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
-    col_n1, col_n2 = st.columns(2)
-    with col_n1:
-        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
-    with col_n2:
-        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
-
-with tab3:
-    st.markdown("### 🎯 Aim of the Game")
-    st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
-    
-    st.divider()
-    st.markdown("### 🚦 How to Read Results")
-    c1, c2, c3 = st.columns(3)
+    st.markdown("### The Science of Sifting")
+    c1, c2 = st.columns(2)
     with c1:
-        st.success("✅ SAFE FOR YOU")
-        st.caption("Clean. No filters detected.")
+        st.info("**The Gut-Brain Axis**\n95% of your serotonin is produced in your gut. What you eat directly impacts your mood and focus.")
     with c2:
-        st.warning("⚠️ WARNING / CHECK LABEL")
-        st.caption("Contains a filter (e.g. Salt, Sugar) but in **LOW** amounts. Safe for most, but depends on your personal tolerance.")
-    with c3:
-        st.error("❌ AVOID")
-        st.caption("Contains high amounts of filters or dangerous allergens.")
-    st.divider()
-    
-    st.subheader("🔍 Filter Glossary")
-    for category, ingredients in FILTER_PACKS.items():
-        with st.expander(f"📦 {category}"):
-            if "Added Sugar" in category:
-                 st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
-            if "High Natural Sugars" in category:
-                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
-            if "Sodium" in category:
-                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
-            if "Inflammatory Oils" in category:
-                 st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
-            if "Artificial Sweeteners" in category:
-                 st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
-            if "Artificial Colours" in category:
-                 st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
-            if "Gut Irritants" in category:
-                 st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
-            st.write(", ".join(ingredients))
-            
-    st.markdown("""
-    <div class="disclaimer-box">
-    <b>⚠️ DISCLAIMER:</b><br>
-    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
-    Product ingredients are subject to change by manufacturers at any time. 
-    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
-    <b>Always read the physical label on the product before consumption.</b>
-    </div>
-    """, unsafe_allow_html=True)
+        st.info("**The 15g Rule**\nEven natural sugars spike insulin. We filter anything above 15g per serving to keep energy stable.")
 
-with tab4:
-    if not st.session_state['wishlist']:
-        st.info("No favorites yet.")
-    else:
-        for idx, item in enumerate(st.session_state['wishlist']):
-            st.markdown(f"**{item['Product']}**")
-            if st.button(f"Move to Basket", key=f"move_{idx}"):
-                st.session_state['basket'].append(item)
-                st.session_state['wishlist'].pop(idx)
-                st.rerun()
-            st.divider()
-
-with tab5:
+# --- TAB 3: BASKET ---
+with tab3:
     if not st.session_state['basket']:
-        st.info("Basket is empty.")
+        st.info("Your basket is empty.")
     else:
         for item in st.session_state['basket']:
-            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
+            st.markdown(f"**{item['Product']}**")
         st.divider()
-        st.markdown("**Option 1: Send to Partner**")
-        export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
-        st.text_area("Copy Text:", value=export_text, height=150)
-
+        export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
+        st.text_area("Copy List:", value=export_text, height=150)
 
