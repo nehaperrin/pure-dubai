@@ -52,7 +52,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* FOUNDER NOTE: Portrait Mode (Kept exactly as you liked it) */
+    /* FOUNDER NOTE: Portrait Mode (Tall & Elegant) */
     .founder-box {
         background-color: #F0F0EE;
         background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
@@ -266,27 +266,29 @@ for pack in active_filters:
 
 # --- 7. MAIN CONTENT ---
 
-# BRAND HEADER (Concept 1: Pure Typography)
+# BRAND HEADER
 col_spacer, col_brand, col_spacer2 = st.columns([1, 2, 1])
 with col_brand:
     st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (Portrait Mode - Tall)
+# FOUNDER NOTE (UPDATED TEXT)
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
         <div class="founder-text">
-        "The 'Yoghurt Aisle' is the most deceptive place in the supermarket. You see 'Healthy Kids Yoghurt' that has more sugar than a chocolate bar."
+        Food labels are often designed to sell, not to inform. The 'Yoghurt Aisle' is the perfect crime scene—where 'Healthy Kids Yoghurt' often has more sugar than a chocolate bar.
         <br><br>
-        I built SIFT to solve the Dubai Paradox: too many choices, not enough time. We are not just an analyzer; we are a scout. We filter the noise so you can find the truth.
+        I built SIFT because I was tired of needing a chemistry degree just to buy snacks for my kids, not to mention my son who suffers from life-threatening food allergies. We are a food-sifting company dedicated to radical transparency.
+        <br><br>
+        SIFT acts as your digital scout, scanning Dubai’s shelves to separate the nutritious from the deceptive. No hidden nasties. No marketing fluff. Just an engine to find real, safe food.
         </div>
         <div class="founder-sig">NEHA &bull; FOUNDER</div>
     </div>
     """, unsafe_allow_html=True)
 
 # TABS
-tab1, tab2, tab3 = st.tabs(["SEARCH", "KNOWLEDGE", "BASKET"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "SAVED", "BASKET"])
 
 # --- TAB 1: SEARCH ---
 with tab1:
@@ -392,6 +394,9 @@ with tab1:
                             if st.button("ADD", key=f"add_{index}"):
                                 st.session_state['basket'].append(row)
                                 st.toast("Added to Basket")
+                            if st.button("SAVE", key=f"save_{index}"):
+                                st.session_state['wishlist'].append(row)
+                                st.toast("Saved to Wishlist")
                         else:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
@@ -405,8 +410,41 @@ with tab2:
     with c2:
         st.info("**The 15g Rule**\nEven natural sugars spike insulin. We filter anything above 15g per serving to keep energy stable.")
 
-# --- TAB 3: BASKET ---
+# --- TAB 3: HOW IT WORKS ---
 with tab3:
+    st.markdown("### 🚦 How to Read Results")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.success("✓ VERIFIED SAFE")
+        st.caption("Clean. No active filters detected.")
+    with c2:
+        st.warning("⚠️ CHECK LABEL")
+        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
+    with c3:
+        st.error("✕ AVOID")
+        st.caption("Contains active filters or high sugar/salt.")
+        
+    st.divider()
+    st.markdown("### 🔍 Filter Glossary")
+    for category, ingredients in FILTER_PACKS.items():
+        with st.expander(f"📦 {category}"):
+            st.write(", ".join(ingredients))
+
+# --- TAB 4: SAVED (WISHLIST) ---
+with tab4:
+    if not st.session_state['wishlist']:
+        st.info("No saved items yet.")
+    else:
+        for idx, item in enumerate(st.session_state['wishlist']):
+            st.markdown(f"**{item['Product']}**")
+            if st.button(f"Move to Basket", key=f"move_{idx}"):
+                st.session_state['basket'].append(item)
+                st.session_state['wishlist'].pop(idx)
+                st.rerun()
+            st.divider()
+
+# --- TAB 5: BASKET ---
+with tab5:
     if not st.session_state['basket']:
         st.info("Your basket is empty.")
     else:
