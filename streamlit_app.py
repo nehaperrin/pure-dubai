@@ -123,7 +123,6 @@ FILTER_PACKS = {
     "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"]
 }
 
-
 # --- 4. MOCK DATABASE ---
 def get_mock_database():
     return pd.DataFrame([
@@ -137,43 +136,50 @@ def get_mock_database():
         {"Product": "Campbell's Tomato Soup", "Brand": "Waitrose", "Price": "10 AED", "Category": "Pantry", "Ingredients": "Tomato Puree, High Fructose Corn Syrup, Wheat Flour, Salt, Potassium Chloride", "Image": "https://cdn-icons-png.flaticon.com/512/2405/2405451.png"},
     ])
 
-# --- 5. SIDEBAR (UPDATED ORDER) ---
+
+# --- 5. SIDEBAR (NEW LOGIC) ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
     
-    # 1. CREATE NEW PROFILE (Moved to Top)
+    # --- STEP 1: MODE SWITCHER ---
+    st.markdown("### 1. Start Shopping")
+    shopping_mode = st.radio("How do you want to filter?", ["🖐️ Manual Selection", "👤 Use Saved Profile"], label_visibility="collapsed")
+    
+    # --- STEP 2: DYNAMIC FILTERING ---
+    active_filters = []
+    
+    if shopping_mode == "🖐️ Manual Selection":
+        st.markdown("**Select filters manually:**")
+        active_filters = st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()))
+        
+    else: # Saved Profile Mode
+        st.markdown("**Choose a profile:**")
+        profile_names = list(st.session_state['profiles'].keys())
+        selected_profile = st.selectbox("Select:", profile_names, index=0)
+        
+        # Load the filters from the profile
+        current_defaults = st.session_state['profiles'][selected_profile]
+        st.markdown(f"**{selected_profile} avoids:**")
+        # We show them but disable editing in this mode to avoid confusion
+        st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True)
+        active_filters = current_defaults
+
+    st.divider()
+
+    # --- STEP 3: CREATE PROFILE (OPTIONAL) ---
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
-        new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()))
+        new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
         if st.button("Save Profile"):
             if new_name and new_defaults:
                 st.session_state['profiles'][new_name] = new_defaults
                 st.success(f"Saved {new_name}!")
                 time.sleep(1)
                 st.rerun()
-    
-    st.divider()
-
-    # 2. SELECT PROFILE
-    st.markdown("### 👤 Select Profile")
-    profile_names = list(st.session_state['profiles'].keys())
-    
-    # Logic to ensure active profile exists
-    if st.session_state['active_profile'] not in profile_names:
-        st.session_state['active_profile'] = profile_names[0]
-        
-    selected_profile = st.selectbox("Who are we shopping for?", profile_names, index=profile_names.index(st.session_state['active_profile']))
-    st.session_state['active_profile'] = selected_profile
-    
-    # 3. FILTERS
-    st.divider()
-    st.markdown(f"### 🛡️ Filters: {selected_profile.split('(')[0]}")
-    
-    current_defaults = st.session_state['profiles'][selected_profile]
-    active_filters = st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults)
 
     st.success(f"🛒 Basket: {len(st.session_state['basket'])} items")
 
+# Flatten the active filters into a list of banned ingredients
 banned_ingredients = []
 for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
@@ -187,7 +193,7 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# THE FOUNDER STORY (UPDATED)
+# THE FOUNDER STORY
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -277,7 +283,7 @@ with tab3:
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("#### 1. Set Profile or Edit Filters")
-        st.caption("Choose your filters manually, or pick a saved profile like 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
+        st.markdown("Choose your filters manually, create a new profile, or pick a saved profile like 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
     with c2:
         st.markdown("#### 2. Search")
         st.caption("Type 'Chips' or 'Yoghurt'. We scan ingredients against your profile or your active filters.")
