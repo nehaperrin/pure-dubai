@@ -22,22 +22,28 @@ st.markdown("""
         background-color: #Fdfdfd;
     }
 
-    /* Founder Note Styling (WITH PERFECTED PHOTO) */
+    /* Founder Note Styling (THE VERTICAL PORTRAIT FIX) */
     .founder-box {
-        background-color: #F9FBFD; /* Fallback color */
+        background-color: #F9FBFD;
         
-        /* FIX 1: FADE. Set to 85% (the middle ground between 90% and 75%) */
-        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
+        /* 1. THE GRADIENT: Transparent at top (faces) -> White at bottom (text) */
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.95) 80%), 
                           url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
         
         background-size: cover;
+        background-position: center top; /* Anchor to the top (Husband's head) */
         
-        /* FIX 2: ALIGNMENT. Set to 'top center' to guarantee tallest person is in frame */
-        background-position: top center;
+        /* 2. THE HEIGHT: Force it to be tall enough for the whole family */
+        min-height: 600px;
         
-        padding: 60px;
+        /* 3. LAYOUT: Push text to the bottom */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        
+        padding: 40px;
         border-radius: 12px;
-        border-left: 4px solid #A8D0E6;
+        border: 1px solid #eee;
         margin-bottom: 20px;
     }
     
@@ -46,8 +52,15 @@ st.markdown("""
         font-size: 16px;
         color: #2C3E50;
         line-height: 1.8;
-        font-weight: 600; 
+        font-weight: 600;
+        
+        /* Ensure text is readable against the white bottom fade */
+        background: rgba(255, 255, 255, 0.6);
+        padding: 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
     }
+    
     .founder-sig {
         font-family: 'Lora', serif;
         font-style: italic;
@@ -234,7 +247,7 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# UPDATED FOUNDER NOTE (WITH FADED BACKGROUND IMAGE)
+# UPDATED FOUNDER NOTE (VERTICAL PORTRAIT MODE)
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -437,4 +450,5 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
+
 
