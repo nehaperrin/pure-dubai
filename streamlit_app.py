@@ -120,7 +120,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS (UK Spelling Enforced) ---
+# --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -215,7 +215,7 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# UPDATED FOUNDER NOTE (WITH YOGHURT QUOTE)
+# UPDATED FOUNDER NOTE
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -246,7 +246,7 @@ with tab1:
         search_btn = st.button("Search", type="primary", use_container_width=True)
 
     if search_query or search_btn:
-        # SPELLING TRANSLATOR (US -> UK)
+        # SPELLING TRANSLATOR
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
         
         results = df[df['Product'].str.contains(clean_query, case=False, na=False) | df['Brand'].str.contains(clean_query, case=False, na=False) | df['Category'].str.contains(clean_query, case=False, na=False)]
@@ -283,7 +283,11 @@ with tab1:
                             else:
                                 warnings.append(f"Contains {bad} ({sugar_g}g)")
                                 
-                        # LOGIC C: Everything else (Strict Ban)
+                        # LOGIC C: High Natural Sugar Exception (NEW! Skip here, check later)
+                        elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
+                            continue 
+                            
+                        # LOGIC D: Everything else (Strict Ban)
                         else:
                             found_dangers.append(bad)
                 
@@ -420,8 +424,4 @@ with tab5:
         st.info("Basket is empty.")
     else:
         for item in st.session_state['basket']:
-            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
-        st.divider()
-        st.markdown("**Option 1: Send to Partner**")
-        export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
-        st.text_area("Copy Text:", value=export_text, height=150)
+            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price
