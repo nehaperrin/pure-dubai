@@ -17,7 +17,7 @@ st.markdown("""
     html, body, [class*="css"] {
         font-family: 'Poppins', sans-serif;
     }
-
+    
     .stApp {
         background-color: #Fdfdfd;
     }
@@ -71,7 +71,7 @@ st.markdown("""
         font-weight: 600;
         font-size: 12px;
     }
-
+    
     .disclaimer-box {
         font-size: 12px;
         color: #777;
@@ -107,7 +107,7 @@ FILTER_PACKS = {
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "agave", "honey", "caramel"],
     "Artificial Sweeteners": ["aspartame", "sucralose", "saccharin", "acesulfame", "neotame"],
     "Artificial Colors": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
-
+    
     # ALLERGIES
     "Tree Nuts & Peanuts": ["peanut", "almond", "cashew", "walnut", "pecan", "hazelnut", "pistachio", "macadamia"],
     "Sesame & Seeds": ["sesame", "tahini", "sunflower seed", "poppy seed"],
@@ -115,18 +115,13 @@ FILTER_PACKS = {
     "Gluten / Wheat": ["wheat", "barley", "rye", "malt", "brewer's yeast"],
     "Soy": ["soy", "edamame", "tofu", "lecithin"],
     "Shellfish": ["shrimp", "crab", "lobster", "prawn", "shellfish"],
-
+    
     # HEALTH & LIFESTYLE
     "Sodium & Salt Watch": ["salt", "sodium", "monosodium", "baking soda", "brine", "msg"],
     "Inflammatory Oils": ["palm oil", "canola oil", "rapeseed oil", "sunflower oil", "soybean oil", "vegetable oil", "hydrogenated", "margarine"],
     "Gut Irritants & Emulsifiers": ["carrageenan", "xanthan gum", "guar gum", "lecithin", "polysorbate", "cellulose gum"],
     "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"]
 }
-
-
-
-
-
 
 # --- 4. MOCK DATABASE ---
 def get_mock_database():
@@ -141,26 +136,11 @@ def get_mock_database():
         {"Product": "Campbell's Tomato Soup", "Brand": "Waitrose", "Price": "10 AED", "Category": "Pantry", "Ingredients": "Tomato Puree, High Fructose Corn Syrup, Wheat Flour, Salt, Potassium Chloride", "Image": "https://cdn-icons-png.flaticon.com/512/2405/2405451.png"},
     ])
 
-# --- 5. SIDEBAR ---
+# --- 5. SIDEBAR (UPDATED ORDER) ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
-
-    # Profile Selection
-    st.markdown("### 👤 Select Profile")
-    profile_names = list(st.session_state['profiles'].keys())
-    if st.session_state['active_profile'] not in profile_names:
-        st.session_state['active_profile'] = profile_names[0]
-
-    selected_profile = st.selectbox("Who are we shopping for?", profile_names, index=profile_names.index(st.session_state['active_profile']))
-    st.session_state['active_profile'] = selected_profile
-
-    st.divider()
-    st.markdown(f"### 🛡️ Filters: {selected_profile.split('(')[0]}")
-
-    current_defaults = st.session_state['profiles'][selected_profile]
-    active_filters = st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults)
-
-    st.divider()
+    
+    # 1. CREATE NEW PROFILE (Moved to Top)
     with st.expander("➕ Create New Profile"):
         new_name = st.text_input("Name (e.g. Grandma)")
         new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()))
@@ -170,6 +150,26 @@ with st.sidebar:
                 st.success(f"Saved {new_name}!")
                 time.sleep(1)
                 st.rerun()
+    
+    st.divider()
+
+    # 2. SELECT PROFILE
+    st.markdown("### 👤 Select Profile")
+    profile_names = list(st.session_state['profiles'].keys())
+    
+    # Logic to ensure active profile exists
+    if st.session_state['active_profile'] not in profile_names:
+        st.session_state['active_profile'] = profile_names[0]
+        
+    selected_profile = st.selectbox("Who are we shopping for?", profile_names, index=profile_names.index(st.session_state['active_profile']))
+    st.session_state['active_profile'] = selected_profile
+    
+    # 3. FILTERS
+    st.divider()
+    st.markdown(f"### 🛡️ Filters: {selected_profile.split('(')[0]}")
+    
+    current_defaults = st.session_state['profiles'][selected_profile]
+    active_filters = st.multiselect("Avoiding:", options=list(FILTER_PACKS.keys()), default=current_defaults)
 
     st.success(f"🛒 Basket: {len(st.session_state['basket'])} items")
 
@@ -186,14 +186,18 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# THE FOUNDER STORY
+# THE FOUNDER STORY (UPDATED)
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
         <div class="founder-text">
         Hi, I'm Neha. A Dubai 80s kid, a recovering London banker, and a mom of two.<br><br>
-        I created Pure Dubai to solve the 'Dubai Paradox': too many choices, not enough time. In today's world of free-from and healthy groceries, there are still way too many hidden ingredients.<br><br>
-        Moving back to Dubai with a food allergy child made the weekly shop a nightmare, so I built a solution. <b>Pure Dubai isn't just an analyzer; it’s a scout.</b> We don't just scan your existing pantry; we help you find exactly what you need—clean, safe, and specific—across Dubai’s retailers in seconds.
+        I created Pure Dubai to solve the 'Dubai Paradox': too many choices, not enough time.<br>
+        And I created it to make your life of online grocery shopping much easier.<br><br>
+        In today's world of free-from and healthy options, there are still way too many hidden ingredients. 
+        Moving back to Dubai with a food allergy child made the weekly shop a nightmare, so I built a solution. 
+        <b>Pure Dubai isn't just an analyzer; it’s a scout.</b> We don't just scan your existing pantry; we help you find exactly what you need—clean, safe, and specific—across Dubai’s retailers in seconds.<br><br>
+        I hope this helps you as much as it helped me.
         <div class="founder-sig">xo Neha</div>
         </div>
     </div>
@@ -215,7 +219,7 @@ with tab1:
     if search_query or search_btn:
         df = get_mock_database()
         results = df[df['Product'].str.contains(search_query, case=False) | df['Category'].str.contains(search_query, case=False)]
-
+        
         if results.empty:
             st.warning("No matches found. Try 'Soup' or 'Snacks'.")
         else:
@@ -224,100 +228,10 @@ with tab1:
                 ing_list = row['Ingredients']
                 found_dangers = [bad for bad in banned_ingredients if bad.lower() in ing_list.lower()]
                 is_safe = len(found_dangers) == 0
-
+                
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
                     with col_img:
                         st.image(row['Image'], width=80)
-                    with col_info:
-                        st.markdown(f"**{row['Product']}**")
-                        st.caption(f"{row['Brand']} | {row['Price']}")
-                        if is_safe:
-                            st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
-                        else:
-                            st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
-                            st.markdown(f":red[**Contains:** {', '.join(found_dangers)}]")
-                        with st.expander("Ingredients"):
-                            st.write(row['Ingredients'])
-                    with col_action:
-                        if is_safe:
-                            if st.button("🛒 Add", key=f"add_{index}"):
-                                st.session_state['basket'].append(row)
-                                st.toast("Added!")
-                            if st.button("❤️ Save", key=f"fav_{index}"):
-                                st.session_state['wishlist'].append(row)
-                                st.toast("Saved!")
-                        else:
-                            st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-# --- TAB 2: NEWS & RESEARCH ---
-with tab2:
-    st.markdown("### 🧠 The Gut-Brain Connection")
-    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
-    col_n1, col_n2 = st.columns(2)
-    with col_n1:
-        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
-    with col_n2:
-        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
-
-# --- TAB 3: HOW IT WORKS & GLOSSARY (FIXED) ---
-with tab3:
-    st.markdown("### 🎯 Aim of the Game")
-    st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
-
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown("#### 1. Set Profile")
-        st.caption("Choose 'Max (Allergy)' or 'Grandpa (Heart)' from the sidebar.")
-    with c2:
-        st.markdown("#### 2. Search")
-        st.caption("Type 'Chips' or 'Yogurt'. We scan ingredients against your profile.")
-    with c3:
-        st.markdown("#### 3. Shop Safe")
-        st.caption("Add safe items to your basket and export the list to your retailer.")
-
-    st.divider()
-    st.subheader("🔍 Filter Glossary: What are we scanning for?")
-    st.markdown("Click below to see exactly which ingredients are hidden inside each filter.")
-
-    for category, ingredients in FILTER_PACKS.items():
-        with st.expander(f"📦 {category}"):
-            st.write(", ".join(ingredients))
-
-    st.divider()
-    st.markdown("""
-    <div class="disclaimer-box">
-    <b>⚠️ DISCLAIMER:</b><br>
-    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
-    Product ingredients are subject to change by manufacturers at any time. 
-    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
-    <b>Always read the physical label on the product before consumption.</b>
-    </div>
-    """, unsafe_allow_html=True)
-
-# --- TAB 4: FAVORITES ---
-with tab4:
-    if not st.session_state['wishlist']:
-        st.info("No favorites yet.")
-    else:
-        for idx, item in enumerate(st.session_state['wishlist']):
-            st.markdown(f"**{item['Product']}** ({item['Brand']})")
-            if st.button(f"Move to Basket", key=f"move_{idx}"):
-                st.session_state['basket'].append(item)
-                st.session_state['wishlist'].pop(idx)
-                st.rerun()
-            st.divider()
-
-# --- TAB 5: BASKET ---
-with tab5:
-    if not st.session_state['basket']:
-        st.info("Basket is empty.")
-    else:
-        for item in st.session_state['basket']:
-            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
-        st.divider()
-        st.markdown("**Option 1: Send to Partner**")
-        export_text = "Hi! Please order these safe items:\n" + "\n".join([f"- {i['Product']} ({i['Brand']})" for i in st.session_state['basket']])
-        st.text_area("Copy Text:", value=export_text, height=150)
+                    with col
