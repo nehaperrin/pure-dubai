@@ -276,4 +276,164 @@ with tab1:
         results = df[df['Product'].str.contains(search_pattern, case=False, na=False) | 
                      df['Brand'].str.contains(search_pattern, case=False, na=False) | 
                      df['Category'].str.contains(search_pattern, case=False, na=False) |
+                     df['Ingredients'].str.contains(search_pattern, case=False, na=False)]
+        
+        if results.empty:
+            st.warning(f"No matches found for '{search_query}'. Try broader terms like 'Snacks' or 'Dairy'.")
+        else:
+            st.write(f"Found {len(results)} items matching '{search_query}' (and synonyms)")
+            for index, row in results.iterrows():
+                ing_list = str(row['Ingredients'])
+                sugar_g = row['Total Sugar (g)']
+                salt_g = row['Salt (g)']
+                fat_g = row['Fat (g)']
+                
+                # --- LOGIC CORE ---
+                found_dangers = []
+                warnings = []
+                
+                # 1. Ingredient Scan
+                for bad in banned_ingredients:
+                    if bad.lower() in ing_list.lower():
+                        if bad.lower() == "salt":
+                            if salt_g > 1.5:
+                                found_dangers.append(f"High Salt ({salt_g}g)")
+                            else:
+                                warnings.append(f"Contains Salt ({salt_g}g)")
+                        elif bad in FILTER_PACKS["Added Sugar & Syrups"]:
+                            if sugar_g > 5:
+                                found_dangers.append(f"{bad} (High)")
+                            else:
+                                warnings.append(f"Contains {bad} ({sugar_g}g)")
+                        elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
+                            continue 
+                        else:
+                            found_dangers.append(bad)
+                
+                # 2. High Natural Sugar Logic (15g Rule)
+                if "High Natural Sugars (>15g)" in active_filters:
+                    natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
+                    has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
+                    if has_natural_ingredients and sugar_g > 15:
+                        found_dangers.append(f"High Natural Sugar ({sugar_g}g)")
 
+                is_safe = len(found_dangers) == 0
+                
+                with st.container():
+                    st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
+                    col_img, col_info, col_action = st.columns([1, 3, 1])
+                    with col_img:
+                        img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
+                        st.image(img_link, width=80)
+                    with col_info:
+                        st.markdown(f"**{row['Product']}**")
+                        st.caption(f"{row['Brand']} | {row['Price']}")
+                        
+                        st.markdown(f"""
+                        <div class="nutrition-row">
+                        🍬 <b>Sugar:</b> {sugar_g}g &nbsp;|&nbsp; 
+                        🧂 <b>Salt:</b> {salt_g}g &nbsp;|&nbsp; 
+                        🥓 <b>Fat:</b> {fat_g}g
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                        if is_safe:
+                            if warnings:
+                                st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
+                                st.caption(f"Allowed (Low Dose): {', '.join(warnings)}")
+                            else:
+                                st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<span class="avoid-tag">❌ AVOID</span>', unsafe_allow_html=True)
+                            st.markdown(f":red[**Reason:** {', '.join(found_dangers)}]")
+                        
+                        with st.expander("Ingredients"):
+                            st.write(ing_list)
+                    with col_action:
+                        if is_safe:
+                            if st.button("🛒 Add", key=f"add_{index}"):
+                                st.session_state['basket'].append(row)
+                                st.toast("Added!")
+                        else:
+                            st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- TAB 2, 3, 4, 5 (Same as before) ---
+with tab2:
+    st.markdown("### 🧠 The Gut-Brain Connection")
+    st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
+    col_n1, col_n2 = st.columns(2)
+    with col_n1:
+        st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
+    with col_n2:
+        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
+
+with tab3:
+    st.markdown("### 🎯 Aim of the Game")
+    st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
+    
+    st.divider()
+    st.markdown("### 🚦 How to Read Results")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.success("✅ SAFE FOR YOU")
+        st.caption("Clean. No filters detected.")
+    with c2:
+        st.warning("⚠️ WARNING / CHECK LABEL")
+        st.caption("Contains a filter (e.g. Salt, Sugar) but in **LOW** amounts. Safe for most, but depends on your personal tolerance.")
+    with c3:
+        st.error("❌ AVOID")
+        st.caption("Contains high amounts of filters or dangerous allergens.")
+    st.divider()
+    
+    st.subheader("🔍 Filter Glossary")
+    for category, ingredients in FILTER_PACKS.items():
+        with st.expander(f"📦 {category}"):
+            if "Added Sugar" in category:
+                 st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
+            if "High Natural Sugars" in category:
+                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
+            if "Sodium" in category:
+                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
+            if "Inflammatory Oils" in category:
+                 st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
+            if "Artificial Sweeteners" in category:
+                 st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
+            if "Artificial Colours" in category:
+                 st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
+            if "Gut Irritants" in category:
+                 st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
+            st.write(", ".join(ingredients))
+            
+    st.markdown("""
+    <div class="disclaimer-box">
+    <b>⚠️ DISCLAIMER:</b><br>
+    The content on Pure Dubai is for informational purposes only. We are not professional nutritionists or medical doctors. 
+    Product ingredients are subject to change by manufacturers at any time. 
+    While we strive for accuracy, we rely on data provided by suppliers and cannot guarantee that every product is free from traces of allergens. 
+    <b>Always read the physical label on the product before consumption.</b>
+    </div>
+    """, unsafe_allow_html=True)
+
+with tab4:
+    if not st.session_state['wishlist']:
+        st.info("No favorites yet.")
+    else:
+        for idx, item in enumerate(st.session_state['wishlist']):
+            st.markdown(f"**{item['Product']}**")
+            if st.button(f"Move to Basket", key=f"move_{idx}"):
+                st.session_state['basket'].append(item)
+                st.session_state['wishlist'].pop(idx)
+                st.rerun()
+            st.divider()
+
+with tab5:
+    if not st.session_state['basket']:
+        st.info("Basket is empty.")
+    else:
+        for item in st.session_state['basket']:
+            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
+        st.divider()
+        st.markdown("**Option 1: Send to Partner**")
+        export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
+        st.text_area("Copy Text:", value=export_text, height=150)
