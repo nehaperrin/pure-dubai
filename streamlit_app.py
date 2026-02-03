@@ -112,7 +112,7 @@ if 'wishlist' not in st.session_state:
 if 'profiles' not in st.session_state:
     st.session_state['profiles'] = {
         "Max (Strict Allergy)": ["Tree Nuts & Peanuts", "Sesame & Seeds", "Added Sugar & Syrups"],
-        "Diane (Toddler Safe)": ["Added Sugar & Syrups", "High Natural Sugars (>15g)", "Artificial Colors", "Inflammatory Oils"],
+        "Diane (Toddler Safe)": ["Added Sugar & Syrups", "High Natural Sugars (>15g)", "Artificial Colours", "Inflammatory Oils"],
         "Grandpa (Heart Health)": ["Sodium & Salt Watch", "Inflammatory Oils", "Added Sugar & Syrups"],
         "Clean Eating (Gut Health)": ["Gut Irritants & Emulsifiers", "Artificial Sweeteners", "Inflammatory Oils"]
     }
@@ -120,7 +120,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS ---
+# --- 3. FILTER DEFINITIONS (UK Spelling Enforced) ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -128,14 +128,14 @@ FILTER_PACKS = {
     "Artificial Sweeteners": ["aspartame", "sucralose", "saccharin", "acesulfame", "neotame", "xylitol", "erythritol", "stevia"],
     
     # ADDITIVES
-    "Artificial Colors": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
+    "Artificial Colours": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
     "Gut Irritants & Emulsifiers": ["carrageenan", "xanthan gum", "guar gum", "lecithin", "polysorbate", "cellulose gum"],
     "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"],
 
     # ALLERGIES & DIET
     "Tree Nuts & Peanuts": ["peanut", "almond", "cashew", "walnut", "pecan", "hazelnut", "pistachio", "macadamia"],
     "Sesame & Seeds": ["sesame", "tahini", "sunflower seed", "poppy seed"],
-    "Dairy / Lactose": ["milk", "lactose", "whey", "casein", "butter", "cream", "yogurt", "cheese"],
+    "Dairy / Lactose": ["milk", "lactose", "whey", "casein", "butter", "cream", "yoghurt", "yogurt", "cheese"],
     "Gluten / Wheat": ["wheat", "barley", "rye", "malt", "brewer's yeast"],
     "Soy": ["soy", "edamame", "tofu", "lecithin"],
     "Shellfish": ["shrimp", "crab", "lobster", "prawn", "shellfish"],
@@ -159,6 +159,9 @@ def load_data():
         return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Ingredients": "Please upload products.csv", "Total Sugar (g)": 0, "Salt (g)": 0, "Fat (g)": 0, "Carbs (g)": 0, "Image": ""}])
 
 df = load_data()
+
+
+
 
 
 # --- 5. SIDEBAR ---
@@ -212,14 +215,15 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
+# UPDATED FOUNDER NOTE (WITH YOGHURT QUOTE)
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
         <div class="founder-text">
         Hi, I'm Neha. A Dubai 80s kid, a recovering London banker, and a mom of two.<br><br>
-        I created Pure Dubai to solve the 'Dubai Paradox': too many choices, not enough time.<br>
-        And I created it to make your life of online grocery shopping much easier.<br><br>
-        In today's world of free-from and healthy options, there are still way too many hidden ingredients. 
+        I created Pure Dubai to solve the 'Dubai Paradox': too many choices, not enough time.
+        In today's world of free-from and healthy options, there are still way too many hidden ingredients.<br><br>
+        <b>The 'Yoghurt Aisle' is one of the most deceptive places in the supermarket. You often see 'Healthy Kids Yoghurt' that has more sugar than a chocolate bar!</b><br><br>
         Moving back to Dubai with a food allergy child made the weekly shop a nightmare, so I built a solution. 
         <b>Pure Dubai isn't just an analyzer; it’s a scout.</b> We don't just scan your existing pantry; we help you find exactly what you need—clean, safe, and specific—across Dubai’s retailers in seconds.<br><br>
         I hope this helps you as much as it helped me.
@@ -235,17 +239,20 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Search Engine", "📚 News & Resea
 with tab1:
     col_s1, col_s2 = st.columns([3, 1])
     with col_s1:
-        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Fade Fit, Pasta, Kids...")
+        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Fade Fit, Pasta, Yoghurt...")
     with col_s2:
         st.write("")
         st.write("")
         search_btn = st.button("Search", type="primary", use_container_width=True)
 
     if search_query or search_btn:
-        results = df[df['Product'].str.contains(search_query, case=False, na=False) | df['Brand'].str.contains(search_query, case=False, na=False) | df['Category'].str.contains(search_query, case=False, na=False)]
+        # SPELLING TRANSLATOR (US -> UK)
+        clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
+        
+        results = df[df['Product'].str.contains(clean_query, case=False, na=False) | df['Brand'].str.contains(clean_query, case=False, na=False) | df['Category'].str.contains(clean_query, case=False, na=False)]
         
         if results.empty:
-            st.warning("No matches found. Try 'Fade Fit' or 'Barilla'.")
+            st.warning("No matches found. Try 'Fade Fit' or 'Yoghurt'.")
         else:
             st.write(f"Found {len(results)} items matching '{search_query}'")
             for index, row in results.iterrows():
@@ -337,7 +344,7 @@ with tab2:
     with col_n1:
         st.markdown("**Why Gut Health Matters**\nModern research connects our gut microbiome to everything from **ADHD in children** to immunity and mental health in adults.\nThe food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.")
     with col_n2:
-        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colors (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
+        st.markdown("**The ADHD Link**\nStudies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.\n\n**Our Mission**\nWe built this tool because we believe consciousness is the first step to health.")
 
 with tab3:
     st.markdown("### 🎯 Aim of the Game")
@@ -378,7 +385,7 @@ with tab3:
             if "Artificial Sweeteners" in category:
                  st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
 
-            if "Artificial Colors" in category:
+            if "Artificial Colours" in category:
                  st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
                  
             if "Gut Irritants" in category:
@@ -418,4 +425,3 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
-
