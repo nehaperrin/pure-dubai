@@ -144,12 +144,10 @@ FILTER_PACKS = {
 }
 
 # --- 4. REAL DATABASE LOADING ---
-@st.cache_data
+@st.cache_data(ttl=0)
 def load_data():
     try:
-        # Load the CSV
         df = pd.read_csv("products.csv")
-        # Ensure Nutrition columns are numbers
         df['Total Sugar (g)'] = pd.to_numeric(df['Total Sugar (g)'], errors='coerce').fillna(0)
         df['Salt (g)'] = pd.to_numeric(df['Salt (g)'], errors='coerce').fillna(0)
         df['Fat (g)'] = pd.to_numeric(df['Fat (g)'], errors='coerce').fillna(0)
@@ -162,7 +160,19 @@ df = load_data()
 
 
 
-# --- 5. SIDEBAR ---
+# --- 5. SYNONYM ENGINE (THE SMART SEARCH) ---
+SYNONYMS = {
+    "snacks": ["chips", "crisps", "popcorn", "nuts", "bars", "bites", "crackers", "rice cakes"],
+    "chips": ["crisps", "snacks", "popcorn"],
+    "soda": ["drink", "juice", "cola", "beverage", "water"],
+    "drinks": ["soda", "juice", "cola", "beverage", "water"],
+    "yoghurt": ["yogurt", "dairy", "greek", "labneh", "pudding"],
+    "pasta": ["spaghetti", "penne", "fusilli", "macaroni", "noodles"],
+    "baby": ["toddler", "kids", "puree", "pouch", "formula"],
+    "chocolate": ["cocoa", "cacao", "sweet", "treat"]
+}
+
+# --- 6. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
     
@@ -199,12 +209,11 @@ with st.sidebar:
 
     st.success(f"🛒 Basket: {len(st.session_state['basket'])} items")
 
-# Flatten the active filters into a list of banned ingredients
 banned_ingredients = []
 for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
 
-# --- 6. MAIN CONTENT ---
+# --- 7. MAIN CONTENT ---
 
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
@@ -213,7 +222,6 @@ with col_title:
     st.title("Pure Dubai")
     st.caption("SEARCH ONCE. SAFE EVERYWHERE.")
 
-# UPDATED FOUNDER NOTE
 with st.expander("❤️ From the Founder", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -230,33 +238,40 @@ with st.expander("❤️ From the Founder", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Search Engine", "📚 News & Research", "ℹ️ How it Works", "❤️ Saved", "🛒 Basket"])
 
 # --- TAB 1: SEARCH ---
 with tab1:
     col_s1, col_s2 = st.columns([3, 1])
     with col_s1:
-        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Fade Fit, Pasta, Yoghurt...")
+        search_query = st.text_input("Search Ingredients or Products...", placeholder="e.g. Snacks, Soda, Yoghurt...")
     with col_s2:
         st.write("")
         st.write("")
         search_btn = st.button("Search", type="primary", use_container_width=True)
 
     if search_query or search_btn:
-        # SPELLING TRANSLATOR
         clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
         
-        # SEARCH LOGIC: Now checks Ingredients too!
-        results = df[df['Product'].str.contains(clean_query, case=False, na=False) | 
-                     df['Brand'].str.contains(clean_query, case=False, na=False) | 
-                     df['Category'].str.contains(clean_query, case=False, na=False) |
-                     df['Ingredients'].str.contains(clean_query, case=False, na=False)]
+        # --- SYNONYM EXPANSION ---
+        search_terms = [clean_query] # Start with what user typed
+        
+        # If the user typed "snacks", add ["chips", "crisps", etc] to the search list
+        if clean_query in SYNONYMS:
+            search_terms.extend(SYNONYMS[clean_query])
+            
+        # Create a giant search pattern: "snacks|chips|crisps|popcorn..."
+        search_pattern = "|".join(search_terms)
+
+        results = df[df['Product'].str.contains(search_pattern, case=False, na=False) | 
+                     df['Brand'].str.contains(search_pattern, case=False, na=False) | 
+                     df['Category'].str.contains(search_pattern, case=False, na=False) |
+                     df['Ingredients'].str.contains(search_pattern, case=False, na=False)]
         
         if results.empty:
-            st.warning("No matches found. Try 'Fade Fit' or 'Yoghurt'.")
+            st.warning(f"No matches found for '{search_query}'. Try broader terms like 'Snacks' or 'Dairy'.")
         else:
-            st.write(f"Found {len(results)} items matching '{search_query}'")
+            st.write(f"Found {len(results)} items matching '{search_query}' (and synonyms)")
             for index, row in results.iterrows():
                 ing_list = str(row['Ingredients'])
                 sugar_g = row['Total Sugar (g)']
@@ -270,26 +285,18 @@ with tab1:
                 # 1. Ingredient Scan
                 for bad in banned_ingredients:
                     if bad.lower() in ing_list.lower():
-                        
-                        # LOGIC A: Salt Exception
                         if bad.lower() == "salt":
                             if salt_g > 1.5:
                                 found_dangers.append(f"High Salt ({salt_g}g)")
                             else:
                                 warnings.append(f"Contains Salt ({salt_g}g)")
-                                
-                        # LOGIC B: Added Sugar Exception (5g Rule)
                         elif bad in FILTER_PACKS["Added Sugar & Syrups"]:
                             if sugar_g > 5:
                                 found_dangers.append(f"{bad} (High)")
                             else:
                                 warnings.append(f"Contains {bad} ({sugar_g}g)")
-                                
-                        # LOGIC C: High Natural Sugar Exception (Skip here, check later)
                         elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
                             continue 
-                            
-                        # LOGIC D: Everything else (Strict Ban)
                         else:
                             found_dangers.append(bad)
                 
@@ -312,7 +319,6 @@ with tab1:
                         st.markdown(f"**{row['Product']}**")
                         st.caption(f"{row['Brand']} | {row['Price']}")
                         
-                        # NUTRITION LABEL
                         st.markdown(f"""
                         <div class="nutrition-row">
                         🍬 <b>Sugar:</b> {sugar_g}g &nbsp;|&nbsp; 
@@ -342,7 +348,7 @@ with tab1:
                             st.button("🚫 Unsafe", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2, 3, 4, 5 ---
+# --- TAB 2, 3, 4, 5 (Same as before) ---
 with tab2:
     st.markdown("### 🧠 The Gut-Brain Connection")
     st.info("Did you know that 95% of your serotonin (the happiness hormone) is produced in your gut?")
@@ -356,7 +362,6 @@ with tab3:
     st.markdown("### 🎯 Aim of the Game")
     st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
     
-    # --- LEGEND ---
     st.divider()
     st.markdown("### 🚦 How to Read Results")
     c1, c2, c3 = st.columns(3)
@@ -374,29 +379,20 @@ with tab3:
     st.subheader("🔍 Filter Glossary")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            
-            # --- DETAILED EXPLANATIONS ---
             if "Added Sugar" in category:
                  st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
-            
             if "High Natural Sugars" in category:
                  st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
-            
             if "Sodium" in category:
                  st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
-            
             if "Inflammatory Oils" in category:
                  st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
-
             if "Artificial Sweeteners" in category:
                  st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
-
             if "Artificial Colours" in category:
                  st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
-                 
             if "Gut Irritants" in category:
                  st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
-            
             st.write(", ".join(ingredients))
             
     st.markdown("""
