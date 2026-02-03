@@ -137,6 +137,7 @@ def get_mock_database():
     ])
 
 
+
 # --- 5. SIDEBAR (NEW LOGIC) ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
@@ -315,4 +316,22 @@ with tab4:
     if not st.session_state['wishlist']:
         st.info("No favorites yet.")
     else:
-        for idx, item in enumerate(st.session_state['wish
+        for idx, item in enumerate(st.session_state['wishlist']):
+            st.markdown(f"**{item['Product']}** ({item['Brand']})")
+            if st.button(f"Move to Basket", key=f"move_{idx}"):
+                st.session_state['basket'].append(item)
+                st.session_state['wishlist'].pop(idx)
+                st.rerun()
+            st.divider()
+
+# --- TAB 5: BASKET ---
+with tab5:
+    if not st.session_state['basket']:
+        st.info("Basket is empty.")
+    else:
+        for item in st.session_state['basket']:
+            st.markdown(f"✅ **{item['Product']}** - {item['Brand']} ({item['Price']})")
+        st.divider()
+        st.markdown("**Option 1: Send to Partner**")
+        export_text = "Hi! Please order these safe items:\n" + "\n".join([f"- {i['Product']} ({i['Brand']})" for i in st.session_state['basket']])
+        st.text_area("Copy Text:", value=export_text, height=150)
