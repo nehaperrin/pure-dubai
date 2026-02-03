@@ -261,21 +261,31 @@ with tab1:
                 # 1. Ingredient Scan
                 for bad in banned_ingredients:
                     if bad.lower() in ing_list.lower():
-                        # Special Exception for Salt: Check amount
+                        
+                        # LOGIC A: Salt Exception
                         if bad.lower() == "salt":
                             if salt_g > 1.5:
                                 found_dangers.append(f"High Salt ({salt_g}g)")
                             else:
                                 warnings.append(f"Contains Salt ({salt_g}g)")
+                                
+                        # LOGIC B: Added Sugar Exception (5g Rule)
+                        elif bad in FILTER_PACKS["Added Sugar & Syrups"]:
+                            if sugar_g > 5:
+                                found_dangers.append(f"{bad} (High)")
+                            else:
+                                warnings.append(f"Contains {bad} ({sugar_g}g)")
+                                
+                        # LOGIC C: Everything else (Strict Ban)
                         else:
                             found_dangers.append(bad)
                 
-                # 2. High Natural Sugar Logic
+                # 2. High Natural Sugar Logic (15g Rule)
                 if "High Natural Sugars (>15g)" in active_filters:
                     natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
                     has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
                     if has_natural_ingredients and sugar_g > 15:
-                        found_dangers.append(f"High Sugar ({sugar_g}g)")
+                        found_dangers.append(f"High Natural Sugar ({sugar_g}g)")
 
                 is_safe = len(found_dangers) == 0
                 
@@ -301,7 +311,7 @@ with tab1:
                         if is_safe:
                             if warnings:
                                 st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
-                                st.caption(f"Allowed but note: {', '.join(warnings)}")
+                                st.caption(f"Allowed (Low Dose): {', '.join(warnings)}")
                             else:
                                 st.markdown('<span class="safe-tag">✅ SAFE FOR YOU</span>', unsafe_allow_html=True)
                         else:
@@ -332,28 +342,31 @@ with tab2:
 with tab3:
     st.markdown("### 🎯 Aim of the Game")
     st.markdown("We reduce 'Label Fatigue' by scanning for hundreds of hidden ingredients so you don't have to.")
-    st.info("💡 **Pro Tip:** You can customize your filters each time! Saved profiles are just there to make your life easier.")
+    
+    # --- LEGEND ---
+    st.divider()
+    st.markdown("### 🚦 How to Read Results")
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.caption("#### 1. Set Profile or Edit Filters")
-        st.caption("Choose your filters manually, create a new profile, or pick a saved profile.")
+        st.success("✅ SAFE FOR YOU")
+        st.caption("Clean. No filters detected.")
     with c2:
-        st.caption("#### 2. Search")
-        st.caption("Type 'Fade Fit' or 'Barilla'.")
+        st.warning("⚠️ WARNING / CHECK LABEL")
+        st.caption("Contains a filter (e.g. Salt, Sugar) but in **LOW** amounts. Safe for most, but depends on your personal tolerance.")
     with c3:
-        st.caption("#### 3. Shop Safe")
-        st.caption("Add safe items to your basket.")
+        st.error("❌ AVOID")
+        st.caption("Contains high amounts of filters or dangerous allergens.")
     st.divider()
     
     st.subheader("🔍 Filter Glossary")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            # Sugar Note
+            if "Added Sugar" in category:
+                 st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
             if "High Natural Sugars" in category:
-                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We flag products with **>15g of sugar per serving** as high.")
-            # Salt Note (NEW)
+                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
             if "Sodium" in category:
-                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt (per 100g)** are flagged as High. The WHO recommends adults consume less than 5g per day.")
+                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
             
             st.write(", ".join(ingredients))
             
@@ -381,4 +394,3 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
-
