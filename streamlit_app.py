@@ -161,7 +161,6 @@ def load_data():
 df = load_data()
 
 
-
 # --- 5. SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2917/2917995.png", width=60)
@@ -362,16 +361,31 @@ with tab3:
     st.subheader("🔍 Filter Glossary")
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
+            
+            # --- DETAILED EXPLANATIONS ---
             if "Added Sugar" in category:
                  st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
+            
             if "High Natural Sugars" in category:
                  st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
+            
             if "Sodium" in category:
                  st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
             
+            if "Inflammatory Oils" in category:
+                 st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
+
+            if "Artificial Sweeteners" in category:
+                 st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
+
+            if "Artificial Colors" in category:
+                 st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
+                 
+            if "Gut Irritants" in category:
+                 st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
+            
             st.write(", ".join(ingredients))
             
-    # RESTORED FULL DISCLAIMER
     st.markdown("""
     <div class="disclaimer-box">
     <b>⚠️ DISCLAIMER:</b><br>
@@ -404,5 +418,4 @@ with tab5:
         st.markdown("**Option 1: Send to Partner**")
         export_text = "Hi! Order these:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy Text:", value=export_text, height=150)
-
 
