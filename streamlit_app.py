@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic
+# Custom CSS - The "Aesop" Aesthetic (Version 40 - Zen Sidebar Fix)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -24,10 +24,23 @@ st.markdown("""
         background-color: #F9F9F7; /* Main: Rice Paper */
     }
 
-    /* SIDEBAR: Pale Sage */
+    /* SIDEBAR: Pale Sage with Custom Overrides */
     [data-testid="stSidebar"] {
         background-color: #F4F6F4;
         border-right: 1px solid #E0E6E0;
+    }
+    
+    /* ZEN FIX: Override the Bright Red Multiselect Tags */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #D8E2DC !important; /* Muted Sage/Grey */
+        color: #333 !important;
+        border: 1px solid #BCCAC0;
+    }
+    
+    /* ZEN FIX: Clean up Radio Buttons */
+    .stRadio > label {
+        color: #333 !important;
+        font-weight: 500;
     }
     
     /* TABS: Charcoal Styling */
@@ -114,10 +127,10 @@ st.markdown("""
         text-align: center;
     }
 
-    /* KNOWLEDGE BOX (New Sage Visuals) */
+    /* KNOWLEDGE BOX (Sage Visuals) */
     .knowledge-box {
-        background-color: #F4F6F4; /* Pale Sage */
-        border-left: 3px solid #7FA182; /* Muted Green Accent */
+        background-color: #F4F6F4;
+        border-left: 3px solid #7FA182;
         padding: 20px;
         border-radius: 0px;
         margin-bottom: 20px;
@@ -421,7 +434,7 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (NEW SAGE VISUALS) ---
+# --- TAB 2: KNOWLEDGE (Sage Visuals) ---
 with tab2:
     st.markdown("### 🧠 The Gut-Brain Connection")
     
@@ -448,20 +461,34 @@ with tab2:
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 3: HOW IT WORKS (RESTORED FULL INSTRUCTIONS) ---
+# --- TAB 3: HOW IT WORKS (UPDATED SIFT TEXT + TRAFFIC LIGHTS) ---
 with tab3:
     st.markdown("### 🚦 The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("**STEP 1: SELECT**")
-        st.caption("You have two options: 1) Manually select filters in the sidebar (e.g. Sugar, Oils), or 2) Use a pre-saved Profile (e.g. 'Max Allergy') for one-click setup.")
+        st.caption("You have two options: 1) Manually select filters in the sidebar (e.g. Sugar, Oils), or 2) Create/Use a pre-saved Profile (e.g. 'Max Allergy') for one-click setup.")
     with c2:
         st.markdown("**STEP 2: SCAN**")
-        st.caption("Enter a product type (e.g. 'Yoghurt'). Our engine scans the database, reading every label for synonyms and hidden ingredients.")
+        st.caption("Enter a product type (e.g. 'Yoghurt'). Our engine scans the database, reading every label for hidden ingredients and filtering to your requirements.")
     with c3:
         st.markdown("**STEP 3: DECIDE**")
         st.caption("We flag items as Safe, Warning (Check Label), or Avoid. Use the Traffic Light system to make quick, safe decisions.")
     
+    st.divider()
+    
+    st.markdown("### 🚦 Traffic Light System")
+    tl1, tl2, tl3 = st.columns(3)
+    with tl1:
+        st.success("✓ VERIFIED SAFE")
+        st.caption("Clean. No active filters detected.")
+    with tl2:
+        st.warning("⚠️ CHECK LABEL")
+        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
+    with tl3:
+        st.error("✕ AVOID")
+        st.caption("Contains active filters or high sugar/salt.")
+
     st.divider()
     
     st.markdown("### 🔍 Filter Glossary (The Rules)")
@@ -509,6 +536,4 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Copy List:", value=export_text, height=150)
-
-
 
