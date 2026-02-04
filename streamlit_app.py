@@ -16,7 +16,7 @@ def render_svg(svg_string):
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 52)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 53)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -99,13 +99,15 @@ st.markdown("""
     /* PRODUCT CARDS */
     .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
     
-    /* VERIFIED SEAL */
-    .verified-seal { border: 1px solid #8FBC8F; background: #F4F9F4; color: #2F4F2F; font-size: 10px; text-transform: uppercase; padding: 5px 10px; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; }
-
     /* UTILITY CLASSES */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 13px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 13px; }
     .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
+    
+    /* TRAFFIC LIGHT TAGS */
+    .safe-tag { background-color: #E6F2E6; color: #2F4F2F; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #8FBC8F; display: inline-block; margin-bottom: 10px; }
+    .warning-tag { background-color: #FFF8E1; color: #4B3621; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #E4C06F; display: inline-block; margin-bottom: 10px; }
+    .avoid-tag { background-color: #F9EBEB; color: #4A0404; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CD5C5C; display: inline-block; margin-bottom: 10px; }
     
     .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; }
     .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; }
@@ -115,6 +117,7 @@ st.markdown("""
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
+
 
 
 # --- 2. SESSION STATE ---
@@ -226,7 +229,6 @@ for pack in active_filters:
 
 
 
-
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
@@ -236,7 +238,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (Verified Present)
+# FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -321,18 +323,22 @@ with tab1:
                         img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
                         st.image(img_link, width=100)
                     with col_info:
+                        # TRAFFIC LIGHT LOGIC
                         if is_safe:
-                            st.markdown('<div class="verified-seal">★ SIFT VERIFIED</div>', unsafe_allow_html=True)
+                            if warnings:
+                                st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
+                            else:
+                                st.markdown('<span class="safe-tag">✓ VERIFIED SAFE</span>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<span class="avoid-tag">✕ AVOID</span>', unsafe_allow_html=True)
+
                         st.markdown(f"### {row['Product']}")
                         st.caption(f"{row['Brand']} • {row['Category']}")
                         st.markdown(f'<div style="font-family: monospace; color: #666; font-size: 11px;">SUGAR: {sugar_g}g | SALT: {salt_g}g</div>', unsafe_allow_html=True)
 
-                        if is_safe:
-                            if warnings:
-                                st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
-                                st.caption(f"Trace: {', '.join(warnings)}")
-                        else:
-                            st.markdown('<span class="avoid-tag">✕ AVOID</span>', unsafe_allow_html=True)
+                        if is_safe and warnings:
+                            st.caption(f"Trace: {', '.join(warnings)}")
+                        elif not is_safe:
                             st.markdown(f":red[{', '.join(found_dangers)}]")
                         
                         with st.expander("Ingredients"):
@@ -422,9 +428,9 @@ with tab3:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (SVG Heart) ---
+# --- TAB 4: FAVOURITES ---
 with tab4:
-    # Minimalist Heart SVG
+    # Heart SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
@@ -440,9 +446,9 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (NEW Wire Basket SVG) ---
+# --- TAB 5: BASKET ---
 with tab5:
-    # True Wire Basket SVG
+    # Wire Basket SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
     
     if not st.session_state['basket']:
