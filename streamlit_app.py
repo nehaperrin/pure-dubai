@@ -16,7 +16,7 @@ def render_svg(svg_string):
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 51)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 52)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -115,7 +115,6 @@ st.markdown("""
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 # --- 2. SESSION STATE ---
@@ -227,6 +226,7 @@ for pack in active_filters:
 
 
 
+
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
@@ -236,7 +236,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE
+# FOUNDER NOTE (Verified Present)
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -355,7 +355,8 @@ with tab2:
     # Header with Journal SVG
     c_icon, c_text = st.columns([1, 10])
     with c_icon:
-        render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>')
+        # Minimalist Open Journal Icon
+        render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M12 2v20"/><path d="M12 12h8"/><path d="M12 7h8"/><path d="M12 17h8"/></svg>')
     with c_text:
         st.markdown("### Research Journal")
     
@@ -421,9 +422,9 @@ with tab3:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES ---
+# --- TAB 4: FAVOURITES (SVG Heart) ---
 with tab4:
-    # Heart SVG
+    # Minimalist Heart SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
@@ -439,10 +440,10 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET ---
+# --- TAB 5: BASKET (NEW Wire Basket SVG) ---
 with tab5:
-    # Basket SVG
-    render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>')
+    # True Wire Basket SVG
+    render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
     
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
@@ -451,7 +452,7 @@ with tab5:
             st.markdown(f"**{item['Product']}**")
         st.divider()
         
-        # EXPORT FEATURE
+        # RETAILER EXPORT
         st.markdown("### Checkout via Retailer")
         st.caption("Export your safe list directly to your preferred store:")
         c1, c2, c3 = st.columns(3)
