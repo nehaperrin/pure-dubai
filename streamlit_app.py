@@ -9,32 +9,50 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic (Refined for V41)
+# Custom CSS - The "Apothecary" Aesthetic (Version 42)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap');
 
     /* GLOBAL THEME */
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif;
         color: #333333;
     }
-    .stApp { background-color: #F9F9F7; }
+    
+    /* BACKGROUND: Subtle Paper Grain Texture */
+    .stApp {
+        background-color: #F9F9F7;
+        background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+        background-size: auto;
+    }
+
+    /* BURGUNDY ACCENTS (Overriding Streamlit Red) */
+    /* 1. Active Tab Underline & Text */
+    .stTabs [aria-selected="true"] {
+        color: #5D0E1D !important; /* Deep Burgundy */
+        border-bottom-color: #5D0E1D !important;
+    }
+    
+    /* 2. Sidebar Selection & Toggles */
+    .stRadio > div[role="radiogroup"] > label > div:first-child {
+        background-color: #5D0E1D !important; /* Burgundy Radio Button */
+        border-color: #5D0E1D !important;
+    }
+    
+    /* 3. Input Focus Borders (The "Glow") */
+    input:focus, textarea:focus, div[data-baseweb="select"]:focus-within {
+        border-color: #5D0E1D !important;
+        box-shadow: 0 0 0 1px #5D0E1D !important;
+    }
 
     /* SIDEBAR styling */
     [data-testid="stSidebar"] {
         background-color: #F4F6F4;
         border-right: 1px solid #E0E6E0;
     }
-    /* Hide default radio buttons and make them look like text tabs */
-    .stRadio > div { gap: 10px; }
-    .stRadio > label {
-        color: #555 !important;
-        font-weight: 500;
-        font-size: 13px;
-    }
 
-    /* CUSTOM ALERTS (Replacing Blue/Yellow defaults) */
+    /* CUSTOM ALERTS (Sage & Charcoal) */
     .sage-alert {
         background-color: #E8F0E9;
         border: 1px solid #CFE0D1;
@@ -54,7 +72,7 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    /* TAG OVERRIDES (Sage Green instead of Red) */
+    /* TAG OVERRIDES (Sage Green Tags) */
     .stMultiSelect [data-baseweb="tag"] {
         background-color: #D8E2DC !important;
         color: #333 !important;
@@ -138,32 +156,34 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* PRODUCT CARD */
+    /* PRODUCT CARD (The "Muji" Grid) */
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
-        border: 1px solid #E6E6E6;
-        border-radius: 0px;
+        border: 1px solid #D0D0D0; /* Darker, sharper border */
+        border-radius: 0px; /* Zero radius = Clinical feel */
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
-    .product-card:hover { border-color: #B0B0B0; }
+    .product-card:hover { border-color: #5D0E1D; } /* Burgundy Hover */
     
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
     .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
     
+    /* DATA FONT: The "Seed" Look */
     .nutrition-row {
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Roboto Mono', monospace; /* Typewriter font */
         font-size: 11px;
-        color: #666;
+        color: #555;
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
         padding: 10px 0;
         margin: 15px 0;
+        letter-spacing: -0.5px;
     }
     
-    /* BUTTONS */
+    /* BUTTONS: Burgundy Primary */
     div.stButton > button {
         background-color: #333;
         color: white;
@@ -175,10 +195,9 @@ st.markdown("""
         letter-spacing: 1px;
         font-size: 12px;
     }
-    div.stButton > button:hover { background-color: #555; color: white; }
+    div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 
@@ -199,7 +218,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS (UPDATED PALM LOGIC) ---
+# --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -219,7 +238,6 @@ FILTER_PACKS = {
     "Soy": ["soy", "edamame", "tofu", "lecithin"],
     "Shellfish": ["shrimp", "crab", "lobster", "prawn", "shellfish"],
     "Sodium & Salt Watch": ["salt", "sodium", "monosodium", "baking soda", "brine", "msg"],
-    # UPDATED: "palm oil" -> "palm" to catch palmolein
     "Inflammatory Oils": ["palm", "canola", "rapeseed", "sunflower", "soybean", "vegetable oil", "hydrogenated", "margarine"]
 }
 
@@ -249,10 +267,9 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR (Refined Aesthetic + Delete Logic) ---
+# --- 6. SIDEBAR ---
 with st.sidebar:
     st.markdown("### PREFERENCES")
-    # Clean Toggle
     shopping_mode = st.radio("Mode", ["Manual Selection", "Saved Profile"], label_visibility="collapsed")
     
     active_filters = []
@@ -267,10 +284,8 @@ with st.sidebar:
         selected_profile = st.selectbox("Select:", profile_names, index=0, label_visibility="collapsed")
         
         current_defaults = st.session_state['profiles'][selected_profile]
-        # Allow Viewing/Editing in a cleaner way
         active_filters = st.multiselect("Filters Applied:", options=list(FILTER_PACKS.keys()), default=current_defaults)
         
-        # DELETE BUTTON LOGIC
         if st.button("Delete Profile"):
             if len(profile_names) > 1:
                 del st.session_state['profiles'][selected_profile]
@@ -327,26 +342,19 @@ with st.expander("The Founder's Note", expanded=True):
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
-# --- TAB 1: SEARCH (Refined Logic) ---
+# --- TAB 1: SEARCH ---
 with tab1:
     col_s1, col_s2 = st.columns([4, 1])
     with col_s1:
-        # CATEGORY DROPDOWN + SEARCH
         search_options = ["All Categories", "Snacks", "Dairy", "Drinks", "Baby Food", "Pantry"]
         cat_select = st.selectbox("Category", search_options, label_visibility="collapsed")
         
     with col_s2:
         search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
-    # Trigger search if button pressed OR if a specific category is picked
     if search_btn or cat_select != "All Categories":
-        
-        # LOGIC: Smart Filtering
         results = df.copy()
-        
-        # 1. Filter by Category (if not All)
         if cat_select != "All Categories":
-            # Simple singular/plural match (Snacks -> Snack)
             search_term = cat_select.lower().rstrip('s') 
             results = results[results['Category'].str.contains(search_term, case=False, na=False) | 
                               results['Product'].str.contains(search_term, case=False, na=False)]
@@ -363,13 +371,11 @@ with tab1:
                 sugar_g = row['Total Sugar (g)']
                 salt_g = row['Salt (g)']
                 
-                # --- LOGIC CORE ---
                 found_dangers = []
                 warnings = []
                 
-                # 1. Ingredient Scan
+                # Ingredient Scan
                 for bad in banned_ingredients:
-                    # UPDATED: Strict word boundary check would be better, but sticking to contains for simplicity
                     if bad.lower() in ing_list.lower():
                         if bad.lower() == "salt":
                             if salt_g > 1.5: found_dangers.append(f"High Salt ({salt_g}g)")
@@ -382,7 +388,7 @@ with tab1:
                         else:
                             found_dangers.append(bad)
                 
-                # 2. High Natural Sugar Logic (15g Rule)
+                # 15g Rule
                 if "High Natural Sugars (>15g)" in active_filters:
                     natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
                     has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
@@ -391,7 +397,7 @@ with tab1:
 
                 is_safe = len(found_dangers) == 0
                 
-                # --- PRODUCT CARD ---
+                # PRODUCT CARD
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
@@ -404,7 +410,7 @@ with tab1:
                         
                         st.markdown(f"""
                         <div class="nutrition-row">
-                        SUGAR {sugar_g}g &nbsp;|&nbsp; SALT {salt_g}g
+                        SUGAR: {sugar_g}g | SALT: {salt_g}g
                         </div>
                         """, unsafe_allow_html=True)
 
@@ -433,7 +439,7 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (Updated Visuals + Allergy Section) ---
+# --- TAB 2: KNOWLEDGE ---
 with tab2:
     st.markdown("### 🧬 Science & Research")
     
@@ -473,7 +479,7 @@ with tab2:
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 3: HOW IT WORKS (Updated Icon & Text) ---
+# --- TAB 3: HOW IT WORKS ---
 with tab3:
     st.markdown("### 🧬 The SIFT Method")
     c1, c2, c3 = st.columns(3)
@@ -537,4 +543,3 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
-
