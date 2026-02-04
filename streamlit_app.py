@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Muji / Apothecary" Aesthetic (Version 46)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 47)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -21,42 +21,50 @@ st.markdown("""
     }
     .stApp { background-color: #F9F9F7; }
 
-    /* --- THE RED KILLER (Overrides Streamlit Defaults) --- */
+    /* --- THE NUCLEAR RED KILLER 2.0 --- */
     
-    /* 1. TABS: Burgundy Underline & Text */
+    /* 1. INPUT BORDERS (Focus State) - Forces Burgundy on EVERYTHING */
+    input:focus, textarea:focus, select:focus, div[data-baseweb="select"]:focus-within, div[data-baseweb="input"]:focus-within {
+        border-color: #5D0E1D !important;
+        box-shadow: 0 0 0 1px #5D0E1D !important;
+    }
+
+    /* 2. TABS (Hover & Active) */
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
         color: #5D0E1D !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #5D0E1D !important; /* Burgundy Hover */
     }
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #5D0E1D !important;
     }
-    
-    /* 2. INPUT BORDERS (Text, Selectbox, etc.) - Turn Burgundy on Click */
-    div[data-baseweb="input"]:focus-within, 
-    div[data-baseweb="select"]:focus-within, 
-    div[data-baseweb="base-input"]:focus-within {
+
+    /* 3. BUTTONS (Hover State) */
+    button:hover {
         border-color: #5D0E1D !important;
-        box-shadow: none !important;
+        color: #5D0E1D !important;
     }
-    
-    /* 3. RADIO BUTTONS (Sidebar) */
-    /* This targets the inner circle of the radio button */
-    div[role="radiogroup"] > label > div:first-child {
-        border-color: #555 !important;
-        background-color: transparent !important;
-    }
-    div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
-        background-color: #5D0E1D !important; /* Burgundy Filled */
+    div[role="button"]:hover {
         border-color: #5D0E1D !important;
-    }
-    /* The Text Label */
-    .stRadio > div[role="radiogroup"] > label {
-        color: #333 !important;
+        color: #5D0E1D !important;
     }
 
-    /* 4. CHECKBOXES & MULTISELECTS */
-    span[data-baseweb="tag"] {
-        background-color: #D8E2DC !important; /* Sage Green Tags */
+    /* 4. SIDEBAR TOGGLE (The "Wooden Peg" Look) */
+    /* When UNSELECTED */
+    div[role="radiogroup"] > label > div:first-child {
+        border: 2px solid #555 !important;
+        background-color: transparent !important;
+    }
+    /* When SELECTED -> Turns "Science Beige" (#F3E5AB) with Dark Border */
+    div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
+        background-color: #F3E5AB !important; 
+        border: 2px solid #333 !important;
+    }
+    /* Toggle Text */
+    .stRadio > div[role="radiogroup"] > label {
+        color: #333 !important;
+        font-weight: 600 !important;
     }
 
     /* --- END RED KILLER --- */
@@ -74,7 +82,7 @@ st.markdown("""
 
     /* KNOWLEDGE BOX (Bone/Lighter Beige) */
     .knowledge-box {
-        background-color: #F0EFE9; /* Bone/Linen */
+        background-color: #F0EFE9;
         border: 1px solid #DCDACF;
         padding: 20px;
         border-radius: 0px;
@@ -149,7 +157,7 @@ st.markdown("""
         text-align: center;
     }
 
-    /* PRODUCT CARD (The Muji Edit) */
+    /* PRODUCT CARD (Muji Style) */
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
@@ -163,6 +171,7 @@ st.markdown("""
     /* TAGS & ALERTS */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 14px; margin-bottom: 15px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 14px; margin-bottom: 15px; }
+    .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
     
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
@@ -185,7 +194,6 @@ st.markdown("""
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 # --- 2. SESSION STATE ---
@@ -499,8 +507,8 @@ with tab3:
 
 # --- TAB 4: FAVOURITES (Heart Icon) ---
 with tab4:
-    # Heart Icon (Simple line art)
-    st.image("https://cdn-icons-png.flaticon.com/512/1077/1077035.png", width=50)
+    # Stable Heart Icon (Wikipedia Commons)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/1200px-Heart_coraz%C3%B3n.svg.png", width=50)
     st.caption("Your Shortlist")
     
     if not st.session_state['wishlist']:
@@ -515,10 +523,10 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (New Image) ---
+# --- TAB 5: BASKET (New Image - Stable Wikimedia) ---
 with tab5:
-    # Muji Style Woven Basket (New URL)
-    st.image("https://cdn.pixabay.com/photo/2016/09/16/16/08/basket-1674390_1280.png", width=150)
+    # Stable Woven Basket Icon (Wikimedia Commons)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Woven_Basket.png/640px-Woven_Basket.png", width=150)
     
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
