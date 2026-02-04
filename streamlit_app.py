@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Muji / Apothecary" Aesthetic (Version 45)
+# Custom CSS - The "Muji / Apothecary" Aesthetic (Version 46)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -21,18 +21,45 @@ st.markdown("""
     }
     .stApp { background-color: #F9F9F7; }
 
-    /* BURGUNDY HOVER FIX */
-    button:hover, div[role="button"]:hover {
+    /* --- THE RED KILLER (Overrides Streamlit Defaults) --- */
+    
+    /* 1. TABS: Burgundy Underline & Text */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
         color: #5D0E1D !important;
+    }
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #5D0E1D !important;
+    }
+    
+    /* 2. INPUT BORDERS (Text, Selectbox, etc.) - Turn Burgundy on Click */
+    div[data-baseweb="input"]:focus-within, 
+    div[data-baseweb="select"]:focus-within, 
+    div[data-baseweb="base-input"]:focus-within {
+        border-color: #5D0E1D !important;
+        box-shadow: none !important;
+    }
+    
+    /* 3. RADIO BUTTONS (Sidebar) */
+    /* This targets the inner circle of the radio button */
+    div[role="radiogroup"] > label > div:first-child {
+        border-color: #555 !important;
+        background-color: transparent !important;
+    }
+    div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
+        background-color: #5D0E1D !important; /* Burgundy Filled */
         border-color: #5D0E1D !important;
     }
-    .stTabs [data-baseweb="tab"]:hover {
-        color: #5D0E1D !important;
+    /* The Text Label */
+    .stRadio > div[role="radiogroup"] > label {
+        color: #333 !important;
     }
-    .stTabs [aria-selected="true"] {
-        color: #5D0E1D !important;
-        border-bottom-color: #5D0E1D !important;
+
+    /* 4. CHECKBOXES & MULTISELECTS */
+    span[data-baseweb="tag"] {
+        background-color: #D8E2DC !important; /* Sage Green Tags */
     }
+
+    /* --- END RED KILLER --- */
 
     /* SIDEBAR styling */
     [data-testid="stSidebar"] {
@@ -41,39 +68,18 @@ st.markdown("""
     }
     
     /* EARTHY TRAFFIC LIGHTS */
-    .earthy-green {
-        background-color: #E6F2E6; /* Pale Olive */
-        border: 1px solid #8FBC8F;
-        color: #2F4F2F;
-        padding: 15px;
-        text-align: center;
-        border-radius: 0px;
-    }
-    .earthy-yellow {
-        background-color: #FFF8E1; /* Pale Cream */
-        border: 1px solid #E4C06F; /* Mustard */
-        color: #4B3621;
-        padding: 15px;
-        text-align: center;
-        border-radius: 0px;
-    }
-    .earthy-red {
-        background-color: #F9EBEB; /* Pale Rose */
-        border: 1px solid #CD5C5C; /* Rust */
-        color: #4A0404;
-        padding: 15px;
-        text-align: center;
-        border-radius: 0px;
-    }
+    .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; border-radius: 0px; }
+    .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; border-radius: 0px; }
+    .earthy-red { background-color: #F9EBEB; border: 1px solid #CD5C5C; color: #4A0404; padding: 15px; text-align: center; border-radius: 0px; }
 
-    /* KNOWLEDGE BOX (Sand/Almond) */
+    /* KNOWLEDGE BOX (Bone/Lighter Beige) */
     .knowledge-box {
-        background-color: #F3E5AB; /* Sand/Almond */
-        border: 1px solid #D2C295;
+        background-color: #F0EFE9; /* Bone/Linen */
+        border: 1px solid #DCDACF;
         padding: 20px;
         border-radius: 0px;
         margin-bottom: 20px;
-        color: #4B3621; /* Dark Brown Text */
+        color: #333;
     }
     .knowledge-link {
         font-size: 11px;
@@ -147,8 +153,8 @@ st.markdown("""
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
-        border: 1px solid #999999; /* Darker, sharper grey */
-        border-radius: 0px; /* Razor sharp corners */
+        border: 1px solid #999999;
+        border-radius: 0px;
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
@@ -157,7 +163,6 @@ st.markdown("""
     /* TAGS & ALERTS */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 14px; margin-bottom: 15px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 14px; margin-bottom: 15px; }
-    .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
     
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
@@ -413,9 +418,9 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE ---
+# --- TAB 2: KNOWLEDGE (Lighter Beige) ---
 with tab2:
-    st.markdown("### 🧬 Science & Research")
+    st.markdown("### Science & Research")
     
     st.markdown("""
     <div class="knowledge-box">
@@ -454,7 +459,7 @@ with tab2:
 
 # --- TAB 3: HOW IT WORKS ---
 with tab3:
-    st.markdown("### ✨ The SIFT Method")
+    st.markdown("### The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("**STEP 1: SELECT**")
@@ -492,8 +497,12 @@ with tab3:
             if "Gut Irritants" in category: st.markdown('<div class="sage-alert">⚠️ <b>Gut Lining:</b> Flags Emulsifiers (Carrageenan, Gums).</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES ---
+# --- TAB 4: FAVOURITES (Heart Icon) ---
 with tab4:
+    # Heart Icon (Simple line art)
+    st.image("https://cdn-icons-png.flaticon.com/512/1077/1077035.png", width=50)
+    st.caption("Your Shortlist")
+    
     if not st.session_state['wishlist']:
         st.markdown('<div class="charcoal-alert">No favourites yet.</div>', unsafe_allow_html=True)
     else:
@@ -506,10 +515,10 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (Muji Basket) ---
+# --- TAB 5: BASKET (New Image) ---
 with tab5:
-    # Muji Style Basket Image
-    st.image("https://cdn.pixabay.com/photo/2021/11/17/16/09/basket-6804153_1280.jpg", width=250)
+    # Muji Style Woven Basket (New URL)
+    st.image("https://cdn.pixabay.com/photo/2016/09/16/16/08/basket-1674390_1280.png", width=150)
     
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
