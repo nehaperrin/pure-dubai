@@ -9,58 +9,56 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic (Version 40 - Zen Sidebar Fix)
+# Custom CSS - The "Aesop" Aesthetic (Refined for V41)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
 
-    /* GLOBAL THEME: Rice Paper & Charcoal */
+    /* GLOBAL THEME */
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif;
         color: #333333;
     }
-    
-    .stApp {
-        background-color: #F9F9F7; /* Main: Rice Paper */
-    }
+    .stApp { background-color: #F9F9F7; }
 
-    /* SIDEBAR: Pale Sage with Custom Overrides */
+    /* SIDEBAR styling */
     [data-testid="stSidebar"] {
         background-color: #F4F6F4;
         border-right: 1px solid #E0E6E0;
     }
-    
-    /* ZEN FIX: Override the Bright Red Multiselect Tags */
+    /* Hide default radio buttons and make them look like text tabs */
+    .stRadio > div { gap: 10px; }
+    .stRadio > label {
+        color: #555 !important;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    /* CUSTOM ALERTS (Replacing Blue/Yellow defaults) */
+    .sage-alert {
+        background-color: #E8F0E9;
+        border: 1px solid #CFE0D1;
+        color: #2E5C38;
+        padding: 15px;
+        border-radius: 0px;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    .charcoal-alert {
+        background-color: #F0F0F0;
+        border: 1px solid #E0E0E0;
+        color: #444;
+        padding: 15px;
+        border-radius: 0px;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    /* TAG OVERRIDES (Sage Green instead of Red) */
     .stMultiSelect [data-baseweb="tag"] {
-        background-color: #D8E2DC !important; /* Muted Sage/Grey */
+        background-color: #D8E2DC !important;
         color: #333 !important;
         border: 1px solid #BCCAC0;
-    }
-    
-    /* ZEN FIX: Clean up Radio Buttons */
-    .stRadio > label {
-        color: #333 !important;
-        font-weight: 500;
-    }
-    
-    /* TABS: Charcoal Styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 20px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 50px;
-        white-space: pre-wrap;
-        background-color: transparent;
-        border-radius: 0px;
-        color: #888;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .stTabs [aria-selected="true"] {
-        color: #333 !important;
-        border-bottom: 2px solid #333 !important;
     }
 
     /* TYPOGRAPHY */
@@ -70,23 +68,20 @@ st.markdown("""
         color: #1A1A1A;
         letter-spacing: -0.5px;
     }
-    
-    /* THE LOGO */
     .brand-logo {
         font-family: 'Cormorant Garamond', serif;
         font-size: 60px;
         font-weight: 600;
         color: #1A1A1A;
         letter-spacing: 4px;
-        margin-bottom: 0px;
         line-height: 1.0;
     }
     .brand-tagline {
         font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 2px;
-        color: #666;
+        color: #888;
         margin-top: 10px;
         margin-bottom: 40px;
     }
@@ -106,7 +101,6 @@ st.markdown("""
         flex-direction: column;
         justify-content: center;
     }
-    
     .founder-text {
         font-family: 'Cormorant Garamond', serif;
         font-size: 20px;
@@ -127,14 +121,21 @@ st.markdown("""
         text-align: center;
     }
 
-    /* KNOWLEDGE BOX (Sage Visuals) */
+    /* KNOWLEDGE BOX */
     .knowledge-box {
-        background-color: #F4F6F4;
-        border-left: 3px solid #7FA182;
+        background-color: #FFFFFF;
+        border: 1px solid #E0E0E0;
         padding: 20px;
         border-radius: 0px;
         margin-bottom: 20px;
         color: #333;
+    }
+    .knowledge-link {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #7FA182;
+        text-decoration: none;
+        font-weight: 600;
     }
 
     /* PRODUCT CARD */
@@ -146,11 +147,8 @@ st.markdown("""
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
-    .product-card:hover {
-        border-color: #B0B0B0;
-    }
-
-    /* TAGS */
+    .product-card:hover { border-color: #B0B0B0; }
+    
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
     .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
@@ -177,12 +175,12 @@ st.markdown("""
         letter-spacing: 1px;
         font-size: 12px;
     }
-    div.stButton > button:hover {
-        background-color: #555;
-        color: white;
-    }
+    div.stButton > button:hover { background-color: #555; color: white; }
     </style>
     """, unsafe_allow_html=True)
+
+
+
 
 # --- 2. SESSION STATE ---
 if 'basket' not in st.session_state:
@@ -195,14 +193,13 @@ if 'profiles' not in st.session_state:
     st.session_state['profiles'] = {
         "Max (Strict Allergy)": ["Tree Nuts & Peanuts", "Sesame & Seeds", "Added Sugar & Syrups"],
         "Diane (Toddler Safe)": ["Added Sugar & Syrups", "High Natural Sugars (>15g)", "Artificial Colours", "Inflammatory Oils"],
-        "Grandpa (Heart Health)": ["Sodium & Salt Watch", "Inflammatory Oils", "Added Sugar & Syrups"],
         "Clean Eating (Gut Health)": ["Gut Irritants & Emulsifiers", "Artificial Sweeteners", "Inflammatory Oils"]
     }
 
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS ---
+# --- 3. FILTER DEFINITIONS (UPDATED PALM LOGIC) ---
 FILTER_PACKS = {
     # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
@@ -222,7 +219,8 @@ FILTER_PACKS = {
     "Soy": ["soy", "edamame", "tofu", "lecithin"],
     "Shellfish": ["shrimp", "crab", "lobster", "prawn", "shellfish"],
     "Sodium & Salt Watch": ["salt", "sodium", "monosodium", "baking soda", "brine", "msg"],
-    "Inflammatory Oils": ["palm oil", "canola oil", "rapeseed oil", "sunflower oil", "soybean oil", "vegetable oil", "hydrogenated", "margarine"]
+    # UPDATED: "palm oil" -> "palm" to catch palmolein
+    "Inflammatory Oils": ["palm", "canola", "rapeseed", "sunflower", "soybean", "vegetable oil", "hydrogenated", "margarine"]
 }
 
 # --- 4. REAL DATABASE LOADING ---
@@ -230,18 +228,14 @@ FILTER_PACKS = {
 def load_data():
     try:
         df = pd.read_csv("products.csv")
-        df['Total Sugar (g)'] = pd.to_numeric(df['Total Sugar (g)'], errors='coerce').fillna(0)
-        df['Salt (g)'] = pd.to_numeric(df['Salt (g)'], errors='coerce').fillna(0)
-        df['Fat (g)'] = pd.to_numeric(df['Fat (g)'], errors='coerce').fillna(0)
-        df['Carbs (g)'] = pd.to_numeric(df['Carbs (g)'], errors='coerce').fillna(0)
+        cols = ['Total Sugar (g)', 'Salt (g)', 'Fat (g)', 'Carbs (g)']
+        for c in cols:
+            df[c] = pd.to_numeric(df[c], errors='coerce').fillna(0)
         return df
     except FileNotFoundError:
-        return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Ingredients": "Please upload products.csv", "Total Sugar (g)": 0, "Salt (g)": 0, "Fat (g)": 0, "Carbs (g)": 0, "Image": ""}])
+        return pd.DataFrame([{"Product": "Error", "Brand": "System", "Price": "0", "Ingredients": "Please upload products.csv", "Category": "None", "Total Sugar (g)": 0, "Salt (g)": 0, "Fat (g)": 0, "Carbs (g)": 0, "Image": ""}])
 
 df = load_data()
-
-
-
 
 # --- 5. SYNONYM ENGINE ---
 SYNONYMS = {
@@ -255,48 +249,57 @@ SYNONYMS = {
     "chocolate": ["cocoa", "cacao", "sweet", "treat"]
 }
 
-# --- 6. SIDEBAR ---
+# --- 6. SIDEBAR (Refined Aesthetic + Delete Logic) ---
 with st.sidebar:
-    st.markdown("### ⚙️ PREFERENCES")
-    shopping_mode = st.radio("Mode", ["🖐️ Manual", "👤 Profile"], label_visibility="collapsed")
+    st.markdown("### PREFERENCES")
+    # Clean Toggle
+    shopping_mode = st.radio("Mode", ["Manual Selection", "Saved Profile"], label_visibility="collapsed")
     
     active_filters = []
     
-    if shopping_mode == "🖐️ Manual":
-        st.markdown("**Avoid:**")
+    if shopping_mode == "Manual Selection":
+        st.caption("Active Filters:")
         active_filters = st.multiselect("Select:", options=list(FILTER_PACKS.keys()), label_visibility="collapsed")
         
-    else: # Saved Profile Mode
-        st.markdown("**Profile:**")
+    else: # Profile Mode
+        st.caption("Active Profile:")
         profile_names = list(st.session_state['profiles'].keys())
         selected_profile = st.selectbox("Select:", profile_names, index=0, label_visibility="collapsed")
         
         current_defaults = st.session_state['profiles'][selected_profile]
-        st.caption(f"Settings for {selected_profile}:")
-        st.multiselect("Avoids:", options=list(FILTER_PACKS.keys()), default=current_defaults, disabled=True, label_visibility="collapsed")
-        active_filters = current_defaults
+        # Allow Viewing/Editing in a cleaner way
+        active_filters = st.multiselect("Filters Applied:", options=list(FILTER_PACKS.keys()), default=current_defaults)
+        
+        # DELETE BUTTON LOGIC
+        if st.button("Delete Profile"):
+            if len(profile_names) > 1:
+                del st.session_state['profiles'][selected_profile]
+                st.rerun()
+            else:
+                st.toast("Cannot delete the last profile!")
 
     st.divider()
-    with st.expander("➕ Create New Profile"):
-        new_name = st.text_input("Name (e.g. Grandma)")
-        new_defaults = st.multiselect("Select Filters", options=list(FILTER_PACKS.keys()), key="new_prof_filters")
-        if st.button("Save Profile"):
+    with st.expander("Create Profile"):
+        new_name = st.text_input("Name")
+        new_defaults = st.multiselect("Filters", options=list(FILTER_PACKS.keys()), key="new_prof")
+        if st.button("Save"):
             if new_name and new_defaults:
                 st.session_state['profiles'][new_name] = new_defaults
-                st.success(f"Saved {new_name}!")
-                time.sleep(1)
                 st.rerun()
 
     st.divider()
-    st.markdown("### 🛒 BASKET")
+    st.markdown("### BASKET")
     if not st.session_state['basket']:
-        st.caption("Your basket is empty.")
+        st.caption("0 items.")
     else:
-        st.caption(f"{len(st.session_state['basket'])} items collected.")
+        st.caption(f"{len(st.session_state['basket'])} items.")
 
 banned_ingredients = []
 for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
+
+
+
 
 # --- 7. MAIN CONTENT ---
 
@@ -324,32 +327,34 @@ with st.expander("The Founder's Note", expanded=True):
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
-# --- TAB 1: SEARCH ---
+# --- TAB 1: SEARCH (Refined Logic) ---
 with tab1:
     col_s1, col_s2 = st.columns([4, 1])
     with col_s1:
-        search_query = st.text_input("Find something safe...", placeholder="e.g. Snacks, Soda, Yoghurt...", label_visibility="collapsed")
+        # CATEGORY DROPDOWN + SEARCH
+        search_options = ["All Categories", "Snacks", "Dairy", "Drinks", "Baby Food", "Pantry"]
+        cat_select = st.selectbox("Category", search_options, label_visibility="collapsed")
+        
     with col_s2:
         search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
-    if search_query or search_btn:
-        clean_query = search_query.lower().replace("yogurt", "yoghurt").replace("flavor", "flavour").replace("color", "colour")
+    # Trigger search if button pressed OR if a specific category is picked
+    if search_btn or cat_select != "All Categories":
         
-        search_terms = [clean_query] 
-        if clean_query in SYNONYMS:
-            search_terms.extend(SYNONYMS[clean_query])
-            
-        search_pattern = "|".join(search_terms)
-
-        results = df[df['Product'].str.contains(search_pattern, case=False, na=False) | 
-                     df['Brand'].str.contains(search_pattern, case=False, na=False) | 
-                     df['Category'].str.contains(search_pattern, case=False, na=False) |
-                     df['Ingredients'].str.contains(search_pattern, case=False, na=False)]
+        # LOGIC: Smart Filtering
+        results = df.copy()
+        
+        # 1. Filter by Category (if not All)
+        if cat_select != "All Categories":
+            # Simple singular/plural match (Snacks -> Snack)
+            search_term = cat_select.lower().rstrip('s') 
+            results = results[results['Category'].str.contains(search_term, case=False, na=False) | 
+                              results['Product'].str.contains(search_term, case=False, na=False)]
         
         st.divider()
         
         if results.empty:
-            st.info(f"No matches for '{search_query}'. Try 'Snacks' or 'Dairy'.")
+            st.markdown(f'<div class="charcoal-alert">No matches found for <b>{cat_select}</b> in the demo database.</div>', unsafe_allow_html=True)
         else:
             st.markdown(f"**Found {len(results)} items**")
             
@@ -357,7 +362,6 @@ with tab1:
                 ing_list = str(row['Ingredients'])
                 sugar_g = row['Total Sugar (g)']
                 salt_g = row['Salt (g)']
-                fat_g = row['Fat (g)']
                 
                 # --- LOGIC CORE ---
                 found_dangers = []
@@ -365,17 +369,14 @@ with tab1:
                 
                 # 1. Ingredient Scan
                 for bad in banned_ingredients:
+                    # UPDATED: Strict word boundary check would be better, but sticking to contains for simplicity
                     if bad.lower() in ing_list.lower():
                         if bad.lower() == "salt":
-                            if salt_g > 1.5:
-                                found_dangers.append(f"High Salt ({salt_g}g)")
-                            else:
-                                warnings.append(f"Contains Salt ({salt_g}g)")
+                            if salt_g > 1.5: found_dangers.append(f"High Salt ({salt_g}g)")
+                            else: warnings.append(f"Contains Salt ({salt_g}g)")
                         elif bad in FILTER_PACKS["Added Sugar & Syrups"]:
-                            if sugar_g > 5:
-                                found_dangers.append(f"{bad} (High)")
-                            else:
-                                warnings.append(f"Contains {bad} ({sugar_g}g)")
+                            if sugar_g > 5: found_dangers.append(f"{bad} (High)")
+                            else: warnings.append(f"Contains {bad} ({sugar_g}g)")
                         elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
                             continue 
                         else:
@@ -390,7 +391,7 @@ with tab1:
 
                 is_safe = len(found_dangers) == 0
                 
-                # --- PRODUCT CARD RENDER ---
+                # --- PRODUCT CARD ---
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
@@ -399,44 +400,42 @@ with tab1:
                         st.image(img_link, width=100)
                     with col_info:
                         st.markdown(f"### {row['Product']}")
-                        st.caption(f"{row['Brand']} • {row['Price']}")
+                        st.caption(f"{row['Brand']} • {row['Category']}")
                         
                         st.markdown(f"""
                         <div class="nutrition-row">
-                        SUGAR {sugar_g}g &nbsp;&nbsp;/&nbsp;&nbsp; 
-                        SALT {salt_g}g &nbsp;&nbsp;/&nbsp;&nbsp; 
-                        FAT {fat_g}g
+                        SUGAR {sugar_g}g &nbsp;|&nbsp; SALT {salt_g}g
                         </div>
                         """, unsafe_allow_html=True)
 
                         if is_safe:
                             if warnings:
                                 st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
-                                st.caption(f"Trace detected: {', '.join(warnings)}")
+                                st.caption(f"Trace: {', '.join(warnings)}")
                             else:
                                 st.markdown('<span class="safe-tag">✓ VERIFIED SAFE</span>', unsafe_allow_html=True)
                         else:
                             st.markdown('<span class="avoid-tag">✕ AVOID</span>', unsafe_allow_html=True)
                             st.markdown(f":red[{', '.join(found_dangers)}]")
                         
-                        with st.expander("Full Ingredients List"):
+                        with st.expander("Ingredients"):
                             st.caption(ing_list)
                     with col_action:
                         st.write("")
                         if is_safe:
                             if st.button("ADD", key=f"add_{index}"):
                                 st.session_state['basket'].append(row)
-                                st.toast("Added to Basket")
-                            if st.button("SAVE", key=f"save_{index}"):
+                                st.toast("Added")
+                            if st.button("FAVE", key=f"save_{index}"):
                                 st.session_state['wishlist'].append(row)
-                                st.toast("Saved to Favourites")
+                                st.toast("Saved")
                         else:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (Sage Visuals) ---
+# --- TAB 2: KNOWLEDGE (Updated Visuals + Allergy Section) ---
 with tab2:
-    st.markdown("### 🧠 The Gut-Brain Connection")
+    st.markdown("### 🧬 Science & Research")
     
     st.markdown("""
     <div class="knowledge-box">
@@ -450,20 +449,33 @@ with tab2:
         <div class="knowledge-box">
         <b>Why Gut Health Matters</b><br>
         Modern research connects our gut microbiome to everything from ADHD in children to immunity and mental health in adults.
-        The food chain has changed. Emulsifiers, preservatives, and artificial dyes disrupt the gut lining, leading to inflammation.
+        <br><br>
+        <a href="#" class="knowledge-link">READ STUDY ↗</a>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="knowledge-box">
+        <b>The Allergy Explosion</b><br>
+        Food allergies in children have risen by 50% in the last decade. Why? Theories point to the "Hygiene Hypothesis" and the ultra-processing of our food supply.
+        <br><br>
+        <a href="#" class="knowledge-link">READ REPORT ↗</a>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col_n2:
         st.markdown("""
         <div class="knowledge-box">
         <b>The ADHD Link</b><br>
         Studies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.
+        <br><br>
+        <a href="#" class="knowledge-link">VIEW DATA ↗</a>
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 3: HOW IT WORKS (UPDATED SIFT TEXT + TRAFFIC LIGHTS) ---
+# --- TAB 3: HOW IT WORKS (Updated Icon & Text) ---
 with tab3:
-    st.markdown("### 🚦 The SIFT Method")
+    st.markdown("### 🧬 The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("**STEP 1: SELECT**")
@@ -490,32 +502,21 @@ with tab3:
         st.caption("Contains active filters or high sugar/salt.")
 
     st.divider()
-    
     st.markdown("### 🔍 Filter Glossary (The Rules)")
     st.caption("The thresholds we use to protect you:")
     
     for category, ingredients in FILTER_PACKS.items():
         with st.expander(f"📦 {category}"):
-            if "Added Sugar" in category:
-                 st.info("⚠️ **Smart Scan:** If a product contains added sugar but the total is **< 5g (Low)**, we will warn you but not ban it. Above 5g, we flag it as Avoid.")
-            if "High Natural Sugars" in category:
-                 st.info("⚠️ **Health Note:** Even natural sugars (date syrup, fruit concentrates) spike insulin. We allow up to **15g** (natural). Above that, we flag as Avoid.")
-            if "Sodium" in category:
-                 st.info("⚠️ **Medical Standard:** We follow the NHS 'Traffic Light' system. Products with **>1.5g of Salt** are flagged as High. Lower amounts show a Warning.")
-            if "Inflammatory Oils" in category:
-                 st.info("⚠️ **Strict Policy:** Food labels don't list exact oil amounts. Since cheap oils (Palm, Sunflower) are often used as the main cooking medium (e.g. in chips), even a 'small' mention usually means a high dose. We flag ANY presence.")
-            if "Artificial Sweeteners" in category:
-                 st.info("⚠️ **Metabolic Health:** We have a Zero Tolerance policy. Sweeteners like Aspartame and Sucralose can disrupt the gut microbiome and trigger insulin responses, even if they are '0 Calories'.")
-            if "Artificial Colours" in category:
-                 st.info("⚠️ **Hyperactivity:** We specifically target dyes like Red 40, Yellow 5, and Blue 1 (The 'Southampton Six'), which are linked to hyperactivity in children.")
-            if "Gut Irritants" in category:
-                 st.info("⚠️ **Gut Lining:** Emulsifiers (like Carrageenan and Gums) thicken food but can strip the protective mucus layer of the gut. We flag these for digestive sensitivity.")
+            if "Added Sugar" in category: st.markdown('<div class="sage-alert">⚠️ <b>Smart Scan:</b> Total sugar < 5g is allowed (Warning). > 5g is Avoid.</div>', unsafe_allow_html=True)
+            if "High Natural Sugars" in category: st.markdown('<div class="sage-alert">⚠️ <b>Health Note:</b> Natural sugars (dates, fruit) capped at 15g.</div>', unsafe_allow_html=True)
+            if "Sodium" in category: st.markdown('<div class="sage-alert">⚠️ <b>Medical Standard:</b> >1.5g Salt is High.</div>', unsafe_allow_html=True)
+            if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
 # --- TAB 4: FAVOURITES ---
 with tab4:
     if not st.session_state['wishlist']:
-        st.info("No favourites yet.")
+        st.markdown('<div class="charcoal-alert">No favourites yet.</div>', unsafe_allow_html=True)
     else:
         for idx, item in enumerate(st.session_state['wishlist']):
             st.markdown(f"**{item['Product']}**")
@@ -529,11 +530,11 @@ with tab4:
 # --- TAB 5: BASKET ---
 with tab5:
     if not st.session_state['basket']:
-        st.info("Your basket is empty.")
+        st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
     else:
         for item in st.session_state['basket']:
             st.markdown(f"**{item['Product']}**")
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
-        st.text_area("Copy List:", value=export_text, height=150)
+        st.text_area("Export List for Retailer:", value=export_text, height=150)
 
