@@ -9,50 +9,53 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Apothecary" Aesthetic (Version 42)
+# Custom CSS - The "Aesop" Aesthetic (Restored Main Page + Burgundy Tabs)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
 
     /* GLOBAL THEME */
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif;
         color: #333333;
     }
+    .stApp { background-color: #F9F9F7; } /* Restored Flat Rice Paper */
+
+    /* SIDEBAR styling (Kept Zen) */
+    [data-testid="stSidebar"] {
+        background-color: #F4F6F4;
+        border-right: 1px solid #E0E6E0;
+    }
     
-    /* BACKGROUND: Subtle Paper Grain Texture */
-    .stApp {
-        background-color: #F9F9F7;
-        background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
-        background-size: auto;
+    /* BURGUNDY TABS (The Red Killer) */
+    /* Forces the active tab text and underline to be Burgundy */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #5D0E1D !important; 
+    }
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #5D0E1D !important;
     }
 
-    /* BURGUNDY ACCENTS (Overriding Streamlit Red) */
-    /* 1. Active Tab Underline & Text */
-    .stTabs [aria-selected="true"] {
-        color: #5D0E1D !important; /* Deep Burgundy */
-        border-bottom-color: #5D0E1D !important;
-    }
-    
-    /* 2. Sidebar Selection & Toggles */
-    .stRadio > div[role="radiogroup"] > label > div:first-child {
-        background-color: #5D0E1D !important; /* Burgundy Radio Button */
-        border-color: #5D0E1D !important;
-    }
-    
-    /* 3. Input Focus Borders (The "Glow") */
+    /* BURGUNDY FOCUS RINGS (For Text Inputs) */
     input:focus, textarea:focus, div[data-baseweb="select"]:focus-within {
         border-color: #5D0E1D !important;
         box-shadow: 0 0 0 1px #5D0E1D !important;
     }
 
-    /* SIDEBAR styling */
-    [data-testid="stSidebar"] {
-        background-color: #F4F6F4;
-        border-right: 1px solid #E0E6E0;
+    /* RADIO BUTTONS (Sidebar Toggles) */
+    .stRadio > div { gap: 10px; }
+    .stRadio > label {
+        color: #555 !important;
+        font-weight: 500;
+        font-size: 13px;
+    }
+    /* Make the selected radio button Burgundy */
+    .stRadio > div[role="radiogroup"] > label > div:first-child {
+        background-color: #5D0E1D !important;
+        border-color: #5D0E1D !important;
     }
 
-    /* CUSTOM ALERTS (Sage & Charcoal) */
+    /* CUSTOM ALERTS */
     .sage-alert {
         background-color: #E8F0E9;
         border: 1px solid #CFE0D1;
@@ -72,7 +75,7 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    /* TAG OVERRIDES (Sage Green Tags) */
+    /* TAG OVERRIDES (Sage Green instead of Red) */
     .stMultiSelect [data-baseweb="tag"] {
         background-color: #D8E2DC !important;
         color: #333 !important;
@@ -156,34 +159,32 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* PRODUCT CARD (The "Muji" Grid) */
+    /* PRODUCT CARD (Restored V41 Style) */
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
-        border: 1px solid #D0D0D0; /* Darker, sharper border */
-        border-radius: 0px; /* Zero radius = Clinical feel */
+        border: 1px solid #E6E6E6; /* Back to lighter border */
+        border-radius: 0px;
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
-    .product-card:hover { border-color: #5D0E1D; } /* Burgundy Hover */
+    .product-card:hover { border-color: #B0B0B0; }
     
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
     .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
     
-    /* DATA FONT: The "Seed" Look */
     .nutrition-row {
-        font-family: 'Roboto Mono', monospace; /* Typewriter font */
+        font-family: 'Montserrat', sans-serif;
         font-size: 11px;
-        color: #555;
+        color: #666;
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
         padding: 10px 0;
         margin: 15px 0;
-        letter-spacing: -0.5px;
     }
     
-    /* BUTTONS: Burgundy Primary */
+    /* BUTTONS */
     div.stButton > button {
         background-color: #333;
         color: white;
@@ -195,7 +196,7 @@ st.markdown("""
         letter-spacing: 1px;
         font-size: 12px;
     }
-    div.stButton > button:hover { background-color: #5D0E1D; color: white; }
+    div.stButton > button:hover { background-color: #555; color: white; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -312,7 +313,6 @@ with st.sidebar:
 banned_ingredients = []
 for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
-
 
 
 
@@ -517,6 +517,9 @@ with tab3:
             if "High Natural Sugars" in category: st.markdown('<div class="sage-alert">⚠️ <b>Health Note:</b> Natural sugars (dates, fruit) capped at 15g.</div>', unsafe_allow_html=True)
             if "Sodium" in category: st.markdown('<div class="sage-alert">⚠️ <b>Medical Standard:</b> >1.5g Salt is High.</div>', unsafe_allow_html=True)
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
+            if "Artificial Sweeteners" in category: st.markdown('<div class="sage-alert">⚠️ <b>Metabolic Health:</b> Zero Tolerance for Aspartame/Sucralose.</div>', unsafe_allow_html=True)
+            if "Artificial Colours" in category: st.markdown('<div class="sage-alert">⚠️ <b>Hyperactivity:</b> Target Red 40, Yellow 5, Blue 1.</div>', unsafe_allow_html=True)
+            if "Gut Irritants" in category: st.markdown('<div class="sage-alert">⚠️ <b>Gut Lining:</b> Flags Emulsifiers (Carrageenan, Gums).</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
 # --- TAB 4: FAVOURITES ---
@@ -543,3 +546,4 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
+
