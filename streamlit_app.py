@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 47)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 48 - Icon Fix)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -196,6 +196,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
+
 # --- 2. SESSION STATE ---
 if 'basket' not in st.session_state:
     st.session_state['basket'] = []
@@ -302,6 +303,7 @@ with st.sidebar:
 banned_ingredients = []
 for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
+
 
 
 
@@ -505,10 +507,10 @@ with tab3:
             if "Gut Irritants" in category: st.markdown('<div class="sage-alert">⚠️ <b>Gut Lining:</b> Flags Emulsifiers (Carrageenan, Gums).</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (Heart Icon) ---
+# --- TAB 4: FAVOURITES (Neutral Line-Art Heart) ---
 with tab4:
-    # Stable Heart Icon (Wikipedia Commons)
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/1200px-Heart_coraz%C3%B3n.svg.png", width=50)
+    # Minimalist Black Outline Heart (Reliable Source)
+    st.image("https://static.thenounproject.com/png/638755-200.png", width=40)
     st.caption("Your Shortlist")
     
     if not st.session_state['wishlist']:
@@ -523,10 +525,10 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (New Image - Stable Wikimedia) ---
+# --- TAB 5: BASKET (Neutral Line-Art Basket) ---
 with tab5:
-    # Stable Woven Basket Icon (Wikimedia Commons)
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Woven_Basket.png/640px-Woven_Basket.png", width=150)
+    # Minimalist Black Outline Basket (Reliable Source)
+    st.image("https://static.thenounproject.com/png/3077167-200.png", width=50)
     
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
@@ -536,3 +538,7 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
+
+
+
+
