@@ -9,14 +9,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- SVG HELPER FUNCTION (Reliable Icons) ---
+# --- SVG HELPER FUNCTION ---
 def render_svg(svg_string):
     """Renders an SVG string as an image"""
     b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 50)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 51)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -55,7 +55,7 @@ st.markdown("""
     .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
     .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
 
-    /* FOUNDER NOTE (Restored) */
+    /* FOUNDER NOTE */
     .founder-box {
         background-color: #F0F0EE;
         background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
@@ -227,7 +227,6 @@ for pack in active_filters:
 
 
 
-
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
@@ -237,7 +236,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (RESTORED!)
+# FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -255,35 +254,24 @@ with st.expander("The Founder's Note", expanded=True):
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
-# --- TAB 1: SEARCH (DUAL SYSTEM) ---
+# --- TAB 1: SEARCH ---
 with tab1:
     col_s1, col_s2, col_s3 = st.columns([2, 2, 1])
-    
     with col_s1:
-        # Dropdown
         search_options = ["All Categories", "Snacks", "Dairy", "Drinks", "Baby Food", "Pantry"]
         cat_select = st.selectbox("Category", search_options, label_visibility="collapsed")
-    
     with col_s2:
-        # Text Input
         text_search = st.text_input("Search Product...", placeholder="e.g. Oreo, Cola...", label_visibility="collapsed")
-        
     with col_s3:
         search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
-    # Search Logic
     if search_btn or cat_select != "All Categories" or text_search:
         results = df.copy()
-        
-        # 1. Filter by Category
         if cat_select != "All Categories":
             search_term = cat_select.lower().rstrip('s') 
             results = results[results['Category'].str.contains(search_term, case=False, na=False)]
-            
-        # 2. Filter by Text (if entered)
         if text_search:
             clean_text = text_search.lower()
-            # Synonym Check
             if clean_text in SYNONYMS:
                 terms = SYNONYMS[clean_text] + [clean_text]
                 pattern = "|".join(terms)
@@ -294,7 +282,7 @@ with tab1:
         
         st.divider()
         if results.empty:
-            st.markdown(f'<div class="charcoal-alert">No matches found in the demo database.</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="charcoal-alert">No matches found.</div>', unsafe_allow_html=True)
         else:
             st.markdown(f"**Found {len(results)} items**")
             for index, row in results.iterrows():
@@ -362,9 +350,14 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (Editorial Style) ---
+# --- TAB 2: KNOWLEDGE ---
 with tab2:
-    st.markdown("### Research Journal")
+    # Header with Journal SVG
+    c_icon, c_text = st.columns([1, 10])
+    with c_icon:
+        render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>')
+    with c_text:
+        st.markdown("### Research Journal")
     
     col_n1, col_n2 = st.columns(2)
     with col_n1:
@@ -428,9 +421,9 @@ with tab3:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (SVG Heart) ---
+# --- TAB 4: FAVOURITES ---
 with tab4:
-    # Minimalist Heart SVG (Charcoal Stroke)
+    # Heart SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
@@ -446,9 +439,9 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (SVG Basket) ---
+# --- TAB 5: BASKET ---
 with tab5:
-    # Minimalist Basket SVG (Charcoal Stroke)
+    # Basket SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>')
     
     if not st.session_state['basket']:
@@ -457,6 +450,14 @@ with tab5:
         for item in st.session_state['basket']:
             st.markdown(f"**{item['Product']}**")
         st.divider()
-        export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
-        st.text_area("Export List for Retailer:", value=export_text, height=150)
+        
+        # EXPORT FEATURE
+        st.markdown("### Checkout via Retailer")
+        st.caption("Export your safe list directly to your preferred store:")
+        c1, c2, c3 = st.columns(3)
+        with c1: st.button("KIBSONS ↗", use_container_width=True)
+        with c2: st.button("CARREFOUR ↗", use_container_width=True)
+        with c3: st.button("SPINNEYS ↗", use_container_width=True)
+        
+        st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
 
