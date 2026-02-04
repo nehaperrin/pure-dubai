@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Aesop" Aesthetic (Restored Main Page + Burgundy Tabs)
+# Custom CSS - The "Muji / Apothecary" Aesthetic (Version 45)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -19,67 +19,68 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
         color: #333333;
     }
-    .stApp { background-color: #F9F9F7; } /* Restored Flat Rice Paper */
+    .stApp { background-color: #F9F9F7; }
 
-    /* SIDEBAR styling (Kept Zen) */
+    /* BURGUNDY HOVER FIX */
+    button:hover, div[role="button"]:hover {
+        color: #5D0E1D !important;
+        border-color: #5D0E1D !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #5D0E1D !important;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #5D0E1D !important;
+        border-bottom-color: #5D0E1D !important;
+    }
+
+    /* SIDEBAR styling */
     [data-testid="stSidebar"] {
         background-color: #F4F6F4;
         border-right: 1px solid #E0E6E0;
     }
     
-    /* BURGUNDY TABS (The Red Killer) */
-    /* Forces the active tab text and underline to be Burgundy */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #5D0E1D !important; 
-    }
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #5D0E1D !important;
-    }
-
-    /* BURGUNDY FOCUS RINGS (For Text Inputs) */
-    input:focus, textarea:focus, div[data-baseweb="select"]:focus-within {
-        border-color: #5D0E1D !important;
-        box-shadow: 0 0 0 1px #5D0E1D !important;
-    }
-
-    /* RADIO BUTTONS (Sidebar Toggles) */
-    .stRadio > div { gap: 10px; }
-    .stRadio > label {
-        color: #555 !important;
-        font-weight: 500;
-        font-size: 13px;
-    }
-    /* Make the selected radio button Burgundy */
-    .stRadio > div[role="radiogroup"] > label > div:first-child {
-        background-color: #5D0E1D !important;
-        border-color: #5D0E1D !important;
-    }
-
-    /* CUSTOM ALERTS */
-    .sage-alert {
-        background-color: #E8F0E9;
-        border: 1px solid #CFE0D1;
-        color: #2E5C38;
+    /* EARTHY TRAFFIC LIGHTS */
+    .earthy-green {
+        background-color: #E6F2E6; /* Pale Olive */
+        border: 1px solid #8FBC8F;
+        color: #2F4F2F;
         padding: 15px;
+        text-align: center;
         border-radius: 0px;
-        font-size: 14px;
-        margin-bottom: 15px;
     }
-    .charcoal-alert {
-        background-color: #F0F0F0;
-        border: 1px solid #E0E0E0;
-        color: #444;
+    .earthy-yellow {
+        background-color: #FFF8E1; /* Pale Cream */
+        border: 1px solid #E4C06F; /* Mustard */
+        color: #4B3621;
         padding: 15px;
+        text-align: center;
         border-radius: 0px;
-        font-size: 14px;
-        margin-bottom: 15px;
+    }
+    .earthy-red {
+        background-color: #F9EBEB; /* Pale Rose */
+        border: 1px solid #CD5C5C; /* Rust */
+        color: #4A0404;
+        padding: 15px;
+        text-align: center;
+        border-radius: 0px;
     }
 
-    /* TAG OVERRIDES (Sage Green instead of Red) */
-    .stMultiSelect [data-baseweb="tag"] {
-        background-color: #D8E2DC !important;
-        color: #333 !important;
-        border: 1px solid #BCCAC0;
+    /* KNOWLEDGE BOX (Sand/Almond) */
+    .knowledge-box {
+        background-color: #F3E5AB; /* Sand/Almond */
+        border: 1px solid #D2C295;
+        padding: 20px;
+        border-radius: 0px;
+        margin-bottom: 20px;
+        color: #4B3621; /* Dark Brown Text */
+    }
+    .knowledge-link {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #5D0E1D; /* Burgundy Link */
+        text-decoration: none;
+        font-weight: 600;
     }
 
     /* TYPOGRAPHY */
@@ -142,47 +143,27 @@ st.markdown("""
         text-align: center;
     }
 
-    /* KNOWLEDGE BOX */
-    .knowledge-box {
-        background-color: #FFFFFF;
-        border: 1px solid #E0E0E0;
-        padding: 20px;
-        border-radius: 0px;
-        margin-bottom: 20px;
-        color: #333;
-    }
-    .knowledge-link {
-        font-size: 11px;
-        text-transform: uppercase;
-        color: #7FA182;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    /* PRODUCT CARD (Restored V41 Style) */
+    /* PRODUCT CARD (The Muji Edit) */
     .product-card {
         background-color: #FFFFFF;
         padding: 25px;
-        border: 1px solid #E6E6E6; /* Back to lighter border */
-        border-radius: 0px;
+        border: 1px solid #999999; /* Darker, sharper grey */
+        border-radius: 0px; /* Razor sharp corners */
         margin-bottom: 20px;
         transition: all 0.3s ease;
     }
-    .product-card:hover { border-color: #B0B0B0; }
+    .product-card:hover { border-color: #5D0E1D; }
+    
+    /* TAGS & ALERTS */
+    .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 14px; margin-bottom: 15px; }
+    .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 14px; margin-bottom: 15px; }
+    .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
     
     .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
     .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
     .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
     
-    .nutrition-row {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 11px;
-        color: #666;
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-        padding: 10px 0;
-        margin: 15px 0;
-    }
+    .nutrition-row { font-family: 'Montserrat', sans-serif; font-size: 11px; color: #666; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 10px 0; margin: 15px 0; }
     
     /* BUTTONS */
     div.stButton > button {
@@ -196,7 +177,7 @@ st.markdown("""
         letter-spacing: 1px;
         font-size: 12px;
     }
-    div.stButton > button:hover { background-color: #555; color: white; }
+    div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -221,17 +202,12 @@ if 'active_profile' not in st.session_state:
 
 # --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
-    # SUGAR & SWEETENERS
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel"],
     "High Natural Sugars (>15g)": ["dates", "date syrup", "fruit juice concentrate", "apple juice", "grape juice", "pear juice", "agave", "maple syrup", "paste", "puree"],
     "Artificial Sweeteners": ["aspartame", "sucralose", "saccharin", "acesulfame", "neotame", "xylitol", "erythritol", "stevia"],
-    
-    # ADDITIVES
     "Artificial Colours": ["red 40", "yellow 5", "blue 1", "e102", "e110", "e129", "e133", "tartrazine"],
     "Gut Irritants & Emulsifiers": ["carrageenan", "xanthan gum", "guar gum", "lecithin", "polysorbate", "cellulose gum"],
     "Preservatives": ["benzoate", "sorbate", "nitrate", "nitrite", "sulfite", "bha", "bht"],
-
-    # ALLERGIES & DIET
     "Tree Nuts & Peanuts": ["peanut", "almond", "cashew", "walnut", "pecan", "hazelnut", "pistachio", "macadamia"],
     "Sesame & Seeds": ["sesame", "tahini", "sunflower seed", "poppy seed"],
     "Dairy / Lactose": ["milk", "lactose", "whey", "casein", "butter", "cream", "yoghurt", "yogurt", "cheese"],
@@ -374,7 +350,6 @@ with tab1:
                 found_dangers = []
                 warnings = []
                 
-                # Ingredient Scan
                 for bad in banned_ingredients:
                     if bad.lower() in ing_list.lower():
                         if bad.lower() == "salt":
@@ -388,7 +363,6 @@ with tab1:
                         else:
                             found_dangers.append(bad)
                 
-                # 15g Rule
                 if "High Natural Sugars (>15g)" in active_filters:
                     natural_keywords = FILTER_PACKS["High Natural Sugars (>15g)"]
                     has_natural_ingredients = any(k in ing_list.lower() for k in natural_keywords)
@@ -459,7 +433,6 @@ with tab2:
         <a href="#" class="knowledge-link">READ STUDY ↗</a>
         </div>
         """, unsafe_allow_html=True)
-        
         st.markdown("""
         <div class="knowledge-box">
         <b>The Allergy Explosion</b><br>
@@ -481,7 +454,7 @@ with tab2:
 
 # --- TAB 3: HOW IT WORKS ---
 with tab3:
-    st.markdown("### 🧬 The SIFT Method")
+    st.markdown("### ✨ The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("**STEP 1: SELECT**")
@@ -498,14 +471,11 @@ with tab3:
     st.markdown("### 🚦 Traffic Light System")
     tl1, tl2, tl3 = st.columns(3)
     with tl1:
-        st.success("✓ VERIFIED SAFE")
-        st.caption("Clean. No active filters detected.")
+        st.markdown('<div class="earthy-green"><b>✓ VERIFIED SAFE</b><br><small>Clean. No active filters detected.</small></div>', unsafe_allow_html=True)
     with tl2:
-        st.warning("⚠️ CHECK LABEL")
-        st.caption("Contains a filter (e.g. Salt) but in LOW safe amounts.")
+        st.markdown('<div class="earthy-yellow"><b>⚠️ CHECK LABEL</b><br><small>Contains a filter (e.g. Salt) but in LOW safe amounts.</small></div>', unsafe_allow_html=True)
     with tl3:
-        st.error("✕ AVOID")
-        st.caption("Contains active filters or high sugar/salt.")
+        st.markdown('<div class="earthy-red"><b>✕ AVOID</b><br><small>Contains active filters or high sugar/salt.</small></div>', unsafe_allow_html=True)
 
     st.divider()
     st.markdown("### 🔍 Filter Glossary (The Rules)")
@@ -536,8 +506,11 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET ---
+# --- TAB 5: BASKET (Muji Basket) ---
 with tab5:
+    # Muji Style Basket Image
+    st.image("https://cdn.pixabay.com/photo/2021/11/17/16/09/basket-6804153_1280.jpg", width=250)
+    
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
     else:
@@ -546,4 +519,3 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
-
