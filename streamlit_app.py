@@ -9,14 +9,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- SVG HELPER FUNCTION (The Icon Fix) ---
+# --- SVG HELPER FUNCTION (Reliable Icons) ---
 def render_svg(svg_string):
     """Renders an SVG string as an image"""
     b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# Custom CSS - The "Editorial" Aesthetic (Version 49)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 50)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -55,6 +55,41 @@ st.markdown("""
     .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
     .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
 
+    /* FOUNDER NOTE (Restored) */
+    .founder-box {
+        background-color: #F0F0EE;
+        background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
+                          url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
+        background-size: cover;
+        background-position: top center;
+        min-height: 800px;
+        padding: 40px;
+        border: 1px solid #E0E0E0;
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .founder-text {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 20px;
+        color: #1A1A1A;
+        line-height: 1.8;
+        font-style: italic;
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .founder-sig {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 25px;
+        color: #555;
+        text-align: center;
+    }
+
     /* KNOWLEDGE SECTION (Editorial Style) */
     .knowledge-card { background-color: #FFFFFF; border: 1px solid #E6E6E6; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
     .knowledge-card:hover { border-color: #5D0E1D; }
@@ -64,7 +99,7 @@ st.markdown("""
     /* PRODUCT CARDS */
     .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
     
-    /* VERIFIED SEAL (The Snazzy Touch) */
+    /* VERIFIED SEAL */
     .verified-seal { border: 1px solid #8FBC8F; background: #F4F9F4; color: #2F4F2F; font-size: 10px; text-transform: uppercase; padding: 5px 10px; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; }
 
     /* UTILITY CLASSES */
@@ -191,6 +226,8 @@ for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
 
 
+
+
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
@@ -200,27 +237,64 @@ with col_center:
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
+# FOUNDER NOTE (RESTORED!)
+with st.expander("The Founder's Note", expanded=True):
+    st.markdown("""
+    <div class="founder-box">
+        <div class="founder-text">
+        Food labels are often designed to sell, not to inform. The 'Yoghurt Aisle' is the perfect crime scene—where 'Healthy Kids Yoghurt' often has more sugar than a chocolate bar.
+        <br><br>
+        I built SIFT because I was tired of needing a chemistry degree just to buy snacks for my kids, not to mention my son who suffers from life-threatening food allergies. We are a food-sifting company dedicated to radical transparency.
+        <br><br>
+        SIFT acts as your digital scout, scanning Dubai’s shelves to separate the nutritious from the deceptive. No hidden nasties. No marketing fluff. Just an engine to find real, safe food.
+        </div>
+        <div class="founder-sig">NEHA &bull; FOUNDER</div>
+    </div>
+    """, unsafe_allow_html=True)
+
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
 
-# --- TAB 1: SEARCH ---
+# --- TAB 1: SEARCH (DUAL SYSTEM) ---
 with tab1:
-    col_s1, col_s2 = st.columns([4, 1])
+    col_s1, col_s2, col_s3 = st.columns([2, 2, 1])
+    
     with col_s1:
+        # Dropdown
         search_options = ["All Categories", "Snacks", "Dairy", "Drinks", "Baby Food", "Pantry"]
         cat_select = st.selectbox("Category", search_options, label_visibility="collapsed")
+    
     with col_s2:
+        # Text Input
+        text_search = st.text_input("Search Product...", placeholder="e.g. Oreo, Cola...", label_visibility="collapsed")
+        
+    with col_s3:
         search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
-    if search_btn or cat_select != "All Categories":
+    # Search Logic
+    if search_btn or cat_select != "All Categories" or text_search:
         results = df.copy()
+        
+        # 1. Filter by Category
         if cat_select != "All Categories":
             search_term = cat_select.lower().rstrip('s') 
-            results = results[results['Category'].str.contains(search_term, case=False, na=False) | 
-                              results['Product'].str.contains(search_term, case=False, na=False)]
+            results = results[results['Category'].str.contains(search_term, case=False, na=False)]
+            
+        # 2. Filter by Text (if entered)
+        if text_search:
+            clean_text = text_search.lower()
+            # Synonym Check
+            if clean_text in SYNONYMS:
+                terms = SYNONYMS[clean_text] + [clean_text]
+                pattern = "|".join(terms)
+                results = results[results['Product'].str.contains(pattern, case=False, na=False) |
+                                  results['Category'].str.contains(pattern, case=False, na=False)]
+            else:
+                results = results[results['Product'].str.contains(clean_text, case=False, na=False)]
+        
         st.divider()
         if results.empty:
-            st.markdown(f'<div class="charcoal-alert">No matches found for <b>{cat_select}</b>.</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="charcoal-alert">No matches found in the demo database.</div>', unsafe_allow_html=True)
         else:
             st.markdown(f"**Found {len(results)} items**")
             for index, row in results.iterrows():
@@ -356,7 +430,7 @@ with tab3:
 
 # --- TAB 4: FAVOURITES (SVG Heart) ---
 with tab4:
-    # Minimalist Heart SVG
+    # Minimalist Heart SVG (Charcoal Stroke)
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
@@ -374,7 +448,7 @@ with tab4:
 
 # --- TAB 5: BASKET (SVG Basket) ---
 with tab5:
-    # Minimalist Basket SVG
+    # Minimalist Basket SVG (Charcoal Stroke)
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>')
     
     if not st.session_state['basket']:
@@ -385,5 +459,4 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
-
 
