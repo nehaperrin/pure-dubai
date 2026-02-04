@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import time
+import base64
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
@@ -9,7 +9,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 48 - Icon Fix)
+# --- SVG HELPER FUNCTION (The Icon Fix) ---
+def render_svg(svg_string):
+    """Renders an SVG string as an image"""
+    b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
+    html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
+    st.write(html, unsafe_allow_html=True)
+
+# Custom CSS - The "Editorial" Aesthetic (Version 49)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -21,176 +28,55 @@ st.markdown("""
     }
     .stApp { background-color: #F9F9F7; }
 
-    /* --- THE NUCLEAR RED KILLER 2.0 --- */
-    
-    /* 1. INPUT BORDERS (Focus State) - Forces Burgundy on EVERYTHING */
+    /* --- NUCLEAR RED KILLER (Focus & Hover Overrides) --- */
     input:focus, textarea:focus, select:focus, div[data-baseweb="select"]:focus-within, div[data-baseweb="input"]:focus-within {
         border-color: #5D0E1D !important;
         box-shadow: 0 0 0 1px #5D0E1D !important;
     }
-
-    /* 2. TABS (Hover & Active) */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #5D0E1D !important;
-    }
-    .stTabs [data-baseweb="tab"]:hover {
-        color: #5D0E1D !important; /* Burgundy Hover */
-    }
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #5D0E1D !important;
-    }
-
-    /* 3. BUTTONS (Hover State) */
-    button:hover {
-        border-color: #5D0E1D !important;
-        color: #5D0E1D !important;
-    }
-    div[role="button"]:hover {
-        border-color: #5D0E1D !important;
-        color: #5D0E1D !important;
-    }
-
-    /* 4. SIDEBAR TOGGLE (The "Wooden Peg" Look) */
-    /* When UNSELECTED */
-    div[role="radiogroup"] > label > div:first-child {
-        border: 2px solid #555 !important;
-        background-color: transparent !important;
-    }
-    /* When SELECTED -> Turns "Science Beige" (#F3E5AB) with Dark Border */
-    div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
-        background-color: #F3E5AB !important; 
-        border: 2px solid #333 !important;
-    }
-    /* Toggle Text */
-    .stRadio > div[role="radiogroup"] > label {
-        color: #333 !important;
-        font-weight: 600 !important;
-    }
-
-    /* --- END RED KILLER --- */
-
-    /* SIDEBAR styling */
-    [data-testid="stSidebar"] {
-        background-color: #F4F6F4;
-        border-right: 1px solid #E0E6E0;
-    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] { color: #5D0E1D !important; }
+    .stTabs [data-baseweb="tab"]:hover { color: #5D0E1D !important; }
+    .stTabs [data-baseweb="tab-highlight"] { background-color: #5D0E1D !important; }
+    button:hover, div[role="button"]:hover { border-color: #5D0E1D !important; color: #5D0E1D !important; }
     
-    /* EARTHY TRAFFIC LIGHTS */
-    .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; border-radius: 0px; }
-    .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; border-radius: 0px; }
-    .earthy-red { background-color: #F9EBEB; border: 1px solid #CD5C5C; color: #4A0404; padding: 15px; text-align: center; border-radius: 0px; }
+    /* Sidebar Toggle (Wooden Peg Style) */
+    div[role="radiogroup"] > label > div:first-child { border: 2px solid #555 !important; background-color: transparent !important; }
+    div[role="radiogroup"] > label[data-checked="true"] > div:first-child { background-color: #F3E5AB !important; border: 2px solid #333 !important; }
+    .stRadio > div[role="radiogroup"] > label { color: #333 !important; font-weight: 600 !important; }
 
-    /* KNOWLEDGE BOX (Bone/Lighter Beige) */
-    .knowledge-box {
-        background-color: #F0EFE9;
-        border: 1px solid #DCDACF;
-        padding: 20px;
-        border-radius: 0px;
-        margin-bottom: 20px;
-        color: #333;
-    }
-    .knowledge-link {
-        font-size: 11px;
-        text-transform: uppercase;
-        color: #5D0E1D; /* Burgundy Link */
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    /* TYPOGRAPHY */
-    h1, h2, h3 {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 600;
-        color: #1A1A1A;
-        letter-spacing: -0.5px;
-    }
-    .brand-logo {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 60px;
-        font-weight: 600;
-        color: #1A1A1A;
-        letter-spacing: 4px;
-        line-height: 1.0;
-    }
-    .brand-tagline {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #888;
-        margin-top: 10px;
-        margin-bottom: 40px;
-    }
-
-    /* FOUNDER NOTE */
-    .founder-box {
-        background-color: #F0F0EE;
-        background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), 
-                          url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg');
-        background-size: cover;
-        background-position: top center;
-        min-height: 800px;
-        padding: 40px;
-        border: 1px solid #E0E0E0;
-        margin-bottom: 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .founder-text {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 20px;
-        color: #1A1A1A;
-        line-height: 1.8;
-        font-style: italic;
-        text-align: center;
-        max-width: 700px;
-        margin: 0 auto;
-    }
-    .founder-sig {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-top: 25px;
-        color: #555;
-        text-align: center;
-    }
-
-    /* PRODUCT CARD (Muji Style) */
-    .product-card {
-        background-color: #FFFFFF;
-        padding: 25px;
-        border: 1px solid #999999;
-        border-radius: 0px;
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-    }
-    .product-card:hover { border-color: #5D0E1D; }
+    /* --- LAYOUT & TYPOGRAPHY --- */
+    [data-testid="stSidebar"] { background-color: #F4F6F4; border-right: 1px solid #E0E6E0; }
     
-    /* TAGS & ALERTS */
-    .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 14px; margin-bottom: 15px; }
-    .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 14px; margin-bottom: 15px; }
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; }
+    
+    .brand-logo { font-family: 'Cormorant Garamond', serif; font-size: 70px; font-weight: 600; color: #1A1A1A; letter-spacing: 6px; line-height: 1.0; text-align: center; }
+    .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 30px; }
+    
+    /* THE "MAGAZINE" DIVIDER */
+    .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
+    .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
+
+    /* KNOWLEDGE SECTION (Editorial Style) */
+    .knowledge-card { background-color: #FFFFFF; border: 1px solid #E6E6E6; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
+    .knowledge-card:hover { border-color: #5D0E1D; }
+    .knowledge-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #5D0E1D; margin-bottom: 10px; }
+    .knowledge-body { font-size: 13px; line-height: 1.6; color: #555; }
+
+    /* PRODUCT CARDS */
+    .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
+    
+    /* VERIFIED SEAL (The Snazzy Touch) */
+    .verified-seal { border: 1px solid #8FBC8F; background: #F4F9F4; color: #2F4F2F; font-size: 10px; text-transform: uppercase; padding: 5px 10px; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; }
+
+    /* UTILITY CLASSES */
+    .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 13px; }
+    .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 13px; }
     .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
     
-    .safe-tag { background-color: #E8F0E9; color: #2E5C38; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CFE0D1; }
-    .avoid-tag { background-color: #F7EAE9; color: #8A3C34; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #EBD5D3; }
-    .warning-tag { background-color: #FAF5E6; color: #856404; padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #F0E6C8; }
+    .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; }
+    .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; }
+    .earthy-red { background-color: #F9EBEB; border: 1px solid #CD5C5C; color: #4A0404; padding: 15px; text-align: center; }
     
-    .nutrition-row { font-family: 'Montserrat', sans-serif; font-size: 11px; color: #666; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 10px 0; margin: 15px 0; }
-    
-    /* BUTTONS */
-    div.stButton > button {
-        background-color: #333;
-        color: white;
-        border-radius: 0px;
-        border: none;
-        padding: 10px 20px;
-        font-family: 'Montserrat', sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 12px;
-    }
+    div.stButton > button { background-color: #333; color: white; border-radius: 0px; border: none; padding: 10px 20px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
@@ -305,30 +191,14 @@ for pack in active_filters:
     banned_ingredients.extend(FILTER_PACKS[pack])
 
 
-
-
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
-col_spacer, col_brand, col_spacer2 = st.columns([1, 2, 1])
-with col_brand:
+col_center = st.columns([1])[0]
+with col_center:
     st.markdown('<div class="brand-logo">SIFT.</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">Search Once. Safe Everywhere.</div>', unsafe_allow_html=True)
-
-# FOUNDER NOTE
-with st.expander("The Founder's Note", expanded=True):
-    st.markdown("""
-    <div class="founder-box">
-        <div class="founder-text">
-        Food labels are often designed to sell, not to inform. The 'Yoghurt Aisle' is the perfect crime scene—where 'Healthy Kids Yoghurt' often has more sugar than a chocolate bar.
-        <br><br>
-        I built SIFT because I was tired of needing a chemistry degree just to buy snacks for my kids, not to mention my son who suffers from life-threatening food allergies. We are a food-sifting company dedicated to radical transparency.
-        <br><br>
-        SIFT acts as your digital scout, scanning Dubai’s shelves to separate the nutritious from the deceptive. No hidden nasties. No marketing fluff. Just an engine to find real, safe food.
-        </div>
-        <div class="founder-sig">NEHA &bull; FOUNDER</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET"])
@@ -339,7 +209,6 @@ with tab1:
     with col_s1:
         search_options = ["All Categories", "Snacks", "Dairy", "Drinks", "Baby Food", "Pantry"]
         cat_select = st.selectbox("Category", search_options, label_visibility="collapsed")
-        
     with col_s2:
         search_btn = st.button("SIFT", type="primary", use_container_width=True)
 
@@ -349,14 +218,11 @@ with tab1:
             search_term = cat_select.lower().rstrip('s') 
             results = results[results['Category'].str.contains(search_term, case=False, na=False) | 
                               results['Product'].str.contains(search_term, case=False, na=False)]
-        
         st.divider()
-        
         if results.empty:
-            st.markdown(f'<div class="charcoal-alert">No matches found for <b>{cat_select}</b> in the demo database.</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="charcoal-alert">No matches found for <b>{cat_select}</b>.</div>', unsafe_allow_html=True)
         else:
             st.markdown(f"**Found {len(results)} items**")
-            
             for index, row in results.iterrows():
                 ing_list = str(row['Ingredients'])
                 sugar_g = row['Total Sugar (g)']
@@ -386,7 +252,6 @@ with tab1:
 
                 is_safe = len(found_dangers) == 0
                 
-                # PRODUCT CARD
                 with st.container():
                     st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
                     col_img, col_info, col_action = st.columns([1, 3, 1])
@@ -394,21 +259,16 @@ with tab1:
                         img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
                         st.image(img_link, width=100)
                     with col_info:
+                        if is_safe:
+                            st.markdown('<div class="verified-seal">★ SIFT VERIFIED</div>', unsafe_allow_html=True)
                         st.markdown(f"### {row['Product']}")
                         st.caption(f"{row['Brand']} • {row['Category']}")
-                        
-                        st.markdown(f"""
-                        <div class="nutrition-row">
-                        SUGAR: {sugar_g}g | SALT: {salt_g}g
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(f'<div style="font-family: monospace; color: #666; font-size: 11px;">SUGAR: {sugar_g}g | SALT: {salt_g}g</div>', unsafe_allow_html=True)
 
                         if is_safe:
                             if warnings:
                                 st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
                                 st.caption(f"Trace: {', '.join(warnings)}")
-                            else:
-                                st.markdown('<span class="safe-tag">✓ VERIFIED SAFE</span>', unsafe_allow_html=True)
                         else:
                             st.markdown('<span class="avoid-tag">✕ AVOID</span>', unsafe_allow_html=True)
                             st.markdown(f":red[{', '.join(found_dangers)}]")
@@ -428,42 +288,32 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (Lighter Beige) ---
+# --- TAB 2: KNOWLEDGE (Editorial Style) ---
 with tab2:
-    st.markdown("### Science & Research")
+    st.markdown("### Research Journal")
     
-    st.markdown("""
-    <div class="knowledge-box">
-    <b>Did you know?</b> 95% of your serotonin (the happiness hormone) is produced in your gut.
-    </div>
-    """, unsafe_allow_html=True)
-
     col_n1, col_n2 = st.columns(2)
     with col_n1:
         st.markdown("""
-        <div class="knowledge-box">
-        <b>Why Gut Health Matters</b><br>
-        Modern research connects our gut microbiome to everything from ADHD in children to immunity and mental health in adults.
-        <br><br>
-        <a href="#" class="knowledge-link">READ STUDY ↗</a>
+        <div class="knowledge-card">
+            <div class="knowledge-title">The Gut-Brain Axis</div>
+            <div class="knowledge-body">
+            Did you know 95% of serotonin is produced in the gut? Modern research connects our microbiome to everything from ADHD in children to immunity in adults.
+            <br><br>
+            <a href="#" class="knowledge-link">READ THE STUDY ↗</a>
+            </div>
         </div>
         """, unsafe_allow_html=True)
-        st.markdown("""
-        <div class="knowledge-box">
-        <b>The Allergy Explosion</b><br>
-        Food allergies in children have risen by 50% in the last decade. Why? Theories point to the "Hygiene Hypothesis" and the ultra-processing of our food supply.
-        <br><br>
-        <a href="#" class="knowledge-link">READ REPORT ↗</a>
-        </div>
-        """, unsafe_allow_html=True)
-
+        
     with col_n2:
         st.markdown("""
-        <div class="knowledge-box">
-        <b>The ADHD Link</b><br>
-        Studies suggest that certain artificial colours (like Red 40 and Yellow 5) and preservatives (like Sodium Benzoate) can exacerbate hyperactivity in children.
-        <br><br>
-        <a href="#" class="knowledge-link">VIEW DATA ↗</a>
+        <div class="knowledge-card">
+            <div class="knowledge-title">The Allergy Explosion</div>
+            <div class="knowledge-body">
+            Food allergies have risen by 50% in a decade. The leading theories? The Hygiene Hypothesis and the ultra-processing of our global food supply.
+            <br><br>
+            <a href="#" class="knowledge-link">VIEW DATA ↗</a>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -502,15 +352,12 @@ with tab3:
             if "High Natural Sugars" in category: st.markdown('<div class="sage-alert">⚠️ <b>Health Note:</b> Natural sugars (dates, fruit) capped at 15g.</div>', unsafe_allow_html=True)
             if "Sodium" in category: st.markdown('<div class="sage-alert">⚠️ <b>Medical Standard:</b> >1.5g Salt is High.</div>', unsafe_allow_html=True)
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
-            if "Artificial Sweeteners" in category: st.markdown('<div class="sage-alert">⚠️ <b>Metabolic Health:</b> Zero Tolerance for Aspartame/Sucralose.</div>', unsafe_allow_html=True)
-            if "Artificial Colours" in category: st.markdown('<div class="sage-alert">⚠️ <b>Hyperactivity:</b> Target Red 40, Yellow 5, Blue 1.</div>', unsafe_allow_html=True)
-            if "Gut Irritants" in category: st.markdown('<div class="sage-alert">⚠️ <b>Gut Lining:</b> Flags Emulsifiers (Carrageenan, Gums).</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (Neutral Line-Art Heart) ---
+# --- TAB 4: FAVOURITES (SVG Heart) ---
 with tab4:
-    # Minimalist Black Outline Heart (Reliable Source)
-    st.image("https://static.thenounproject.com/png/638755-200.png", width=40)
+    # Minimalist Heart SVG
+    render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
     if not st.session_state['wishlist']:
@@ -525,10 +372,10 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (Neutral Line-Art Basket) ---
+# --- TAB 5: BASKET (SVG Basket) ---
 with tab5:
-    # Minimalist Black Outline Basket (Reliable Source)
-    st.image("https://static.thenounproject.com/png/3077167-200.png", width=50)
+    # Minimalist Basket SVG
+    render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>')
     
     if not st.session_state['basket']:
         st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
@@ -538,7 +385,5 @@ with tab5:
         st.divider()
         export_text = "SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']])
         st.text_area("Export List for Retailer:", value=export_text, height=150)
-
-
 
 
