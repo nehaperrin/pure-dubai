@@ -11,105 +11,96 @@ st.set_page_config(
 
 # --- SVG HELPER FUNCTION ---
 def render_svg(svg_string):
+    """Renders an SVG string as an image"""
     b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# --- SMART SEARCH ENGINE (The Rosetta Stone) ---
+# --- SMART SEARCH ENGINE (The "Brain") ---
 def get_search_terms(query):
     """
-    Converts a user query (e.g. 'yaourt') into a list of 
-    database-friendly search terms (e.g. 'yog', 'petit filous').
+    Converts user input (e.g. 'yaourt') into database-friendly terms.
     """
     q = query.lower().strip()
     
-    # THE MAPPING DICTIONARY (US/UK/French/German -> Brand Targets)
+    # The Rosetta Stone Dictionary
     mappings = {
-        # YOGHURT (Strict - No Milk)
+        # YOGHURT (Includes all spellings + brands)
         "yogurt": ["yog", "petit filous", "yeo", "nabta", "frubes", "actimel"],
         "yoghurt": ["yog", "petit filous", "yeo", "nabta", "frubes", "actimel"],
         "yog": ["yog", "petit filous", "yeo", "nabta", "frubes", "actimel"],
-        "yaourt": ["yog", "petit filous", "yeo", "nabta", "frubes", "actimel"], # French
+        "yaourt": ["yog", "petit filous", "yeo", "nabta", "frubes", "actimel"],
         
-        # CHIPS/SNACKS
-        "chips": ["crisps", "chips", "puffs", "popcorn"],
-        "crisps": ["crisps", "chips", "puffs", "popcorn"],
+        # SNACKS (Bars, Chips, Wafers)
+        "snack": ["chip", "crisp", "puff", "bar", "wafer", "biscuit", "cookie"],
+        "snacks": ["chip", "crisp", "puff", "bar", "wafer", "biscuit", "cookie"],
+        "chips": ["crisp", "chip", "puff", "popcorn"],
+        "crisps": ["crisp", "chip", "puff", "popcorn"],
         
         # MILK (Strict - No Yoghurt)
-        "milk": ["milk", "soya", "oat", "koita", "alpro"],
-        "lait": ["milk", "soya", "oat", "koita", "alpro"], # French
+        "milk": ["milk", "soya", "oat", "koita", "alpro", "drink"],
         
         # CHEESE
-        "cheese": ["cheese", "cheestrings", "kiri", "babybel"],
-        "fromage": ["cheese", "cheestrings", "kiri", "babybel"], # French
+        "cheese": ["cheese", "cheestrings", "kiri", "babybel", "spread"],
         
-        # FRUIT SNACKS
-        "fruit": ["fruit", "raisins", "mango", "apple", "bear", "yo yos", "paws"],
+        # FRUIT
+        "fruit": ["fruit", "raisin", "mango", "apple", "bear", "yo yos", "paws", "strawberry"],
         "bear": ["bear", "yo yos", "paws"]
     }
     
-    # 1. Direct Hit?
+    # 1. Exact Match?
     if q in mappings:
         return mappings[q]
     
-    # 2. Partial Hit? (e.g. "strawberry yoghurt")
+    # 2. Partial Match? (e.g. "strawberry yoghurt")
     for key in mappings:
         if key in q:
-            return mappings[key] + [q] # Search for specific flavor + category keywords
+            return mappings[key] + [q] # Search for category + specific word
             
-    # 3. No Match? Just search what they typed.
+    # 3. No match? Search exactly what they typed.
     return [q]
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 56)
+# --- CUSTOM CSS (The "Nuclear" Red Killer) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
 
-    /* GLOBAL THEME */
-    html, body, [class*="css"] {
-        font-family: 'Montserrat', sans-serif;
-        color: #333333;
-    }
+    html, body, [class*="css"] { font-family: 'Montserrat', sans-serif; color: #333333; }
     .stApp { background-color: #F9F9F7; }
 
-    /* --- NUCLEAR RED KILLER --- */
-    input:focus, textarea:focus, select:focus, div[data-baseweb="select"]:focus-within, div[data-baseweb="input"]:focus-within {
-        border-color: #5D0E1D !important;
-        box-shadow: 0 0 0 1px #5D0E1D !important;
-    }
+    /* RED KILLER: Override Streamlit Defaults */
+    input:focus, textarea:focus, select:focus, div[data-baseweb="select"]:focus-within, div[data-baseweb="input"]:focus-within { border-color: #5D0E1D !important; box-shadow: 0 0 0 1px #5D0E1D !important; }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] { color: #5D0E1D !important; }
     .stTabs [data-baseweb="tab"]:hover { color: #5D0E1D !important; }
     .stTabs [data-baseweb="tab-highlight"] { background-color: #5D0E1D !important; }
     button:hover, div[role="button"]:hover { border-color: #5D0E1D !important; color: #5D0E1D !important; }
     
-    /* Sidebar Toggle */
+    /* SIDEBAR TOGGLE (Wooden Peg Style) */
     div[role="radiogroup"] > label > div:first-child { border: 2px solid #555 !important; background-color: transparent !important; }
     div[role="radiogroup"] > label[data-checked="true"] > div:first-child { background-color: #F3E5AB !important; border: 2px solid #333 !important; }
     .stRadio > div[role="radiogroup"] > label { color: #333 !important; font-weight: 600 !important; }
 
-    /* LAYOUT */
+    /* LAYOUT & TYPOGRAPHY */
     [data-testid="stSidebar"] { background-color: #F4F6F4; border-right: 1px solid #E0E6E0; }
-    
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; }
     .brand-logo { font-family: 'Cormorant Garamond', serif; font-size: 70px; font-weight: 600; color: #1A1A1A; letter-spacing: 6px; line-height: 1.0; text-align: center; }
     .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 30px; }
     .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
     .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
 
-    /* COMPONENTS */
+    /* FOUNDER NOTE */
     .founder-box { background-color: #F0F0EE; background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg'); background-size: cover; background-position: top center; min-height: 800px; padding: 40px; border: 1px solid #E0E0E0; margin-bottom: 40px; display: flex; flex-direction: column; justify-content: center; }
     .founder-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #1A1A1A; line-height: 1.8; font-style: italic; text-align: center; max-width: 700px; margin: 0 auto; }
     .founder-sig { font-family: 'Montserrat', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 25px; color: #555; text-align: center; }
 
+    /* KNOWLEDGE & CARDS */
     .knowledge-card { background-color: #FFFFFF; border: 1px solid #E6E6E6; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
     .knowledge-card:hover { border-color: #5D0E1D; }
     .knowledge-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #5D0E1D; margin-bottom: 10px; }
     .knowledge-body { font-size: 13px; line-height: 1.6; color: #555; }
-
     .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
     
-    .verified-seal { border: 1px solid #8FBC8F; background: #F4F9F4; color: #2F4F2F; font-size: 10px; text-transform: uppercase; padding: 5px 10px; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; }
-
+    /* UTILITY */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 13px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 13px; }
     .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
@@ -117,6 +108,10 @@ st.markdown("""
     .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; }
     .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; }
     .earthy-red { background-color: #F9EBEB; border: 1px solid #CD5C5C; color: #4A0404; padding: 15px; text-align: center; }
+    
+    .safe-tag { background-color: #E6F2E6; color: #2F4F2F; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #8FBC8F; display: inline-block; margin-bottom: 10px; }
+    .warning-tag { background-color: #FFF8E1; color: #4B3621; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #E4C06F; display: inline-block; margin-bottom: 10px; }
+    .avoid-tag { background-color: #F9EBEB; color: #4A0404; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CD5C5C; display: inline-block; margin-bottom: 10px; }
     
     div.stButton > button { background-color: #333; color: white; border-radius: 0px; border: none; padding: 10px 20px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
@@ -126,22 +121,16 @@ st.markdown("""
 
 
 
-# --- 2. SESSION STATE ---
-if 'basket' not in st.session_state:
-    st.session_state['basket'] = []
-if 'wishlist' not in st.session_state:
-    st.session_state['wishlist'] = []
-
-# Default Profiles
+# --- 2. SESSION & PROFILES ---
+if 'basket' not in st.session_state: st.session_state['basket'] = []
+if 'wishlist' not in st.session_state: st.session_state['wishlist'] = []
 if 'profiles' not in st.session_state:
     st.session_state['profiles'] = {
         "Max (Strict Allergy)": ["Tree Nuts & Peanuts", "Sesame & Seeds", "Added Sugar & Syrups"],
         "Toddler Safe (No Nasties)": ["The Nasties (Nitrates/Preservatives)", "Artificial Colours", "Added Sugar & Syrups"],
         "Clean Weaning": ["Added Sugar & Syrups", "Salt Watch", "Thickeners & Gums"]
     }
-
-if 'active_profile' not in st.session_state:
-    st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
+if 'active_profile' not in st.session_state: st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
 # --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
@@ -161,6 +150,7 @@ FILTER_PACKS = {
 }
 
 # --- 4. REAL DATABASE (THE KID LIST) ---
+# NOTE: Typo fixed 'Youghurt' -> 'Yoghurt' in Bright Bites
 kids_db = [
     {"Product": "Kiddylicious Wafers (Blueberry)", "Brand": "Kiddylicious", "Category": "Baby Snacking", "Ingredients": "Jasmine rice flour, tapioca starch, apple juice concentrate, blueberry powder, natural flavour", "Total Sugar (g)": 4.0, "Salt (g)": 0.05, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "Kiddylicious Fruity Bakes", "Brand": "Kiddylicious", "Category": "Baby Snacking", "Ingredients": "Wholemeal wheat flour, fruit filling (apple, strawberry), palm oil (sustainable), baking powder", "Total Sugar (g)": 12.0, "Salt (g)": 0.1, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
@@ -202,8 +192,53 @@ df = load_data()
 
 
 
+# --- 5. SIDEBAR (Restored Position) ---
+with st.sidebar:
+    st.markdown("### PREFERENCES")
+    shopping_mode = st.radio("Mode", ["Manual Selection", "Saved Profile"], label_visibility="collapsed")
+    
+    active_filters = []
+    
+    if shopping_mode == "Manual Selection":
+        st.caption("Active Filters:")
+        active_filters = st.multiselect("Select:", options=list(FILTER_PACKS.keys()), label_visibility="collapsed")
+        
+    else: # Profile Mode
+        st.caption("Active Profile:")
+        profile_names = list(st.session_state['profiles'].keys())
+        selected_profile = st.selectbox("Select:", profile_names, index=0, label_visibility="collapsed")
+        
+        current_defaults = st.session_state['profiles'][selected_profile]
+        active_filters = st.multiselect("Filters Applied:", options=list(FILTER_PACKS.keys()), default=current_defaults)
+        
+        if st.button("Delete Profile"):
+            if len(profile_names) > 1:
+                del st.session_state['profiles'][selected_profile]
+                st.rerun()
+            else:
+                st.toast("Cannot delete the last profile!")
 
-# --- 7. MAIN CONTENT ---
+    st.divider()
+    with st.expander("Create Profile"):
+        new_name = st.text_input("Name")
+        new_defaults = st.multiselect("Filters", options=list(FILTER_PACKS.keys()), key="new_prof")
+        if st.button("Save"):
+            if new_name and new_defaults:
+                st.session_state['profiles'][new_name] = new_defaults
+                st.rerun()
+
+    st.divider()
+    st.markdown("### BASKET")
+    if not st.session_state['basket']:
+        st.caption("0 items.")
+    else:
+        st.caption(f"{len(st.session_state['basket'])} items.")
+
+banned_ingredients = []
+for pack in active_filters:
+    banned_ingredients.extend(FILTER_PACKS[pack])
+
+# --- 6. MAIN CONTENT ---
 
 # BRAND HEADER
 col_center = st.columns([1])[0]
@@ -248,7 +283,7 @@ with tab1:
         if cat_select != "All Categories":
             results = results[results['Category'] == cat_select]
             
-        # 2. Smart Text Search
+        # 2. Smart Search Logic
         if text_search:
             search_terms = get_search_terms(text_search)
             # Create regex pattern from all smart terms
@@ -280,6 +315,9 @@ with tab1:
                             else: warnings.append(f"Contains {bad} ({sugar_g}g)")
                         elif bad in FILTER_PACKS["High Natural Sugars (>15g)"]:
                             continue 
+                        elif bad in FILTER_PACKS["Salt Watch"]: # Salt Logic Handle
+                             if salt_g > 1.5: found_dangers.append(f"High Salt ({salt_g}g)")
+                             else: warnings.append(f"Contains Salt ({salt_g}g)")
                         else:
                             found_dangers.append(bad)
                 
@@ -447,3 +485,5 @@ with tab5:
         with c3: st.button("SPINNEYS ↗", use_container_width=True)
         
         st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
+
+
