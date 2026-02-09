@@ -16,7 +16,7 @@ def render_svg(svg_string):
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 54 - Kids Edition)
+# Custom CSS - The "Earthy Apothecary" Aesthetic (Version 55)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -124,7 +124,7 @@ if 'basket' not in st.session_state:
 if 'wishlist' not in st.session_state:
     st.session_state['wishlist'] = []
 
-# Default Profiles (Updated for Kids)
+# Default Profiles
 if 'profiles' not in st.session_state:
     st.session_state['profiles'] = {
         "Max (Strict Allergy)": ["Tree Nuts & Peanuts", "Sesame & Seeds", "Added Sugar & Syrups"],
@@ -135,7 +135,7 @@ if 'profiles' not in st.session_state:
 if 'active_profile' not in st.session_state:
     st.session_state['active_profile'] = list(st.session_state['profiles'].keys())[0]
 
-# --- 3. FILTER DEFINITIONS (Updated for Kids) ---
+# --- 3. FILTER DEFINITIONS ---
 FILTER_PACKS = {
     "Added Sugar & Syrups": ["sugar", "sucrose", "glucose", "fructose", "corn syrup", "dextrose", "maltodextrin", "honey", "caramel", "cane juice"],
     "High Natural Sugars (>15g)": ["dates", "date syrup", "fruit juice concentrate", "apple juice", "grape juice", "pear juice", "agave", "maple syrup", "paste", "puree"],
@@ -152,8 +152,7 @@ FILTER_PACKS = {
     "Inflammatory Oils": ["palm", "canola", "rapeseed", "sunflower", "soybean", "vegetable oil", "hydrogenated", "margarine", "palmolein"]
 }
 
-# --- 4. REAL DATABASE (THE KID LIST) ---
-# Hardcoded dataset based on user provided products
+# --- 4. REAL DATABASE (THE KID LIST - Typos Fixed) ---
 kids_db = [
     {"Product": "Kiddylicious Wafers (Blueberry)", "Brand": "Kiddylicious", "Category": "Baby Snacking", "Ingredients": "Jasmine rice flour, tapioca starch, apple juice concentrate, blueberry powder, natural flavour", "Total Sugar (g)": 4.0, "Salt (g)": 0.05, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "Kiddylicious Fruity Bakes", "Brand": "Kiddylicious", "Category": "Baby Snacking", "Ingredients": "Wholemeal wheat flour, fruit filling (apple, strawberry), palm oil (sustainable), baking powder", "Total Sugar (g)": 12.0, "Salt (g)": 0.1, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
@@ -170,7 +169,7 @@ kids_db = [
     {"Product": "Oat Bars (Fig)", "Brand": "Bobo's", "Category": "Lunchbox", "Ingredients": "Oats, brown rice syrup, fig paste, coconut oil, cane sugar", "Total Sugar (g)": 19.0, "Salt (g)": 0.1, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "Animal Crackers", "Brand": "Happy Snacks", "Category": "Lunchbox", "Ingredients": "Wheat flour, sugar, palm oil, cocoa powder, high fructose corn syrup", "Total Sugar (g)": 24.0, "Salt (g)": 0.3, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "10 Calorie Raspberry Jelly", "Brand": "Hartley's", "Category": "Pantry", "Ingredients": "Water, gelling agents, citric acid, aspartame, acesulfame K, sodium citrate, potassium sorbate", "Total Sugar (g)": 0.5, "Salt (g)": 0.1, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
-    {"Product": "Super Creamy Youghurt (Avo & Granola)", "Brand": "Bright Bites", "Category": "Dairy & Alt", "Ingredients": "Yoghurt, avocado puree, oats, honey, sunflower seeds", "Total Sugar (g)": 8.0, "Salt (g)": 0.05, "Image": "https://cdn-icons-png.flaticon.com/512/3050/3050158.png"},
+    {"Product": "Super Creamy Yoghurt (Avo & Granola)", "Brand": "Bright Bites", "Category": "Dairy & Alt", "Ingredients": "Yoghurt, avocado puree, oats, honey, sunflower seeds", "Total Sugar (g)": 8.0, "Salt (g)": 0.05, "Image": "https://cdn-icons-png.flaticon.com/512/3050/3050158.png"},
     {"Product": "Bear Paws (Apple & Blackcurrant)", "Brand": "Bear", "Category": "Lunchbox", "Ingredients": "Apples, pears, blackcurrant", "Total Sugar (g)": 38.0, "Salt (g)": 0.0, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "Organic Crispy Sticks (Cocoa)", "Brand": "Piccolo", "Category": "Baby Snacking", "Ingredients": "Chickpea flour, cocoa butter, date syrup, hazelnut paste", "Total Sugar (g)": 11.0, "Salt (g)": 0.01, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
     {"Product": "Freeze Dried Crunchy Jackfruit", "Brand": "Kooky", "Category": "Lunchbox", "Ingredients": "100% Jackfruit", "Total Sugar (g)": 60.0, "Salt (g)": 0.0, "Image": "https://cdn-icons-png.flaticon.com/512/2553/2553691.png"},
@@ -193,15 +192,16 @@ def load_data():
 
 df = load_data()
 
-# --- 5. SYNONYM ENGINE ---
+# --- 5. SYNONYM ENGINE (Updated for British Spelling) ---
 SYNONYMS = {
-    "snacks": ["chips", "crisps", "bars", "bites", "wafers", "puffs", "wriggles"],
-    "chips": ["crisps", "snacks", "puffs"],
-    "yogurt": ["yoghurt", "dairy", "petit filous", "yeo"],
-    "milk": ["soya", "oat", "dairy", "drink"],
-    "cheese": ["cheestrings", "kiri", "spread"],
-    "fruit": ["raisins", "mango", "apple", "strawberry", "bear", "yo yos", "paws"],
-    "bars": ["oat bars", "muffin bar", "biscotti", "sticks"]
+    "snacks": ["chips", "crisps", "popcorn", "nuts", "bars", "bites", "crackers", "rice cakes", "wafers", "puffs", "wriggles"],
+    "chips": ["crisps", "snacks", "popcorn", "puffs"],
+    "yogurt": ["yogurt", "yoghurt", "dairy", "greek", "labneh", "pudding", "petit filous", "yeo", "nabta"],
+    "yoghurt": ["yogurt", "yoghurt", "dairy", "greek", "labneh", "pudding", "petit filous", "yeo", "nabta"],
+    "milk": ["soya", "oat", "dairy", "drink", "alpro", "koita"],
+    "cheese": ["cheestrings", "kiri", "spread", "strings"],
+    "fruit": ["raisins", "mango", "apple", "strawberry", "bear", "yo yos", "paws", "jackfruit"],
+    "bars": ["oat bars", "muffin bar", "biscotti", "sticks", "fruit bars"]
 }
 
 # --- 6. SIDEBAR ---
@@ -253,6 +253,7 @@ for pack in active_filters:
 
 
 
+
 # --- 7. MAIN CONTENT ---
 
 # BRAND HEADER
@@ -262,7 +263,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">The Digital Food Guard for Modern Mums.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
-# FOUNDER NOTE (Verified Present)
+# FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -348,7 +349,6 @@ with tab1:
                         img_link = row['Image'] if pd.notna(row['Image']) and row['Image'].startswith('http') else "https://cdn-icons-png.flaticon.com/512/3081/3081967.png"
                         st.image(img_link, width=100)
                     with col_info:
-                        # TRAFFIC LIGHT LOGIC
                         if is_safe:
                             if warnings:
                                 st.markdown('<span class="warning-tag">⚠️ CHECK LABEL</span>', unsafe_allow_html=True)
@@ -386,7 +386,6 @@ with tab2:
     # Header with Journal SVG
     c_icon, c_text = st.columns([1, 10])
     with c_icon:
-        # Minimalist Open Journal Icon
         render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M12 2v20"/><path d="M12 12h8"/><path d="M12 7h8"/><path d="M12 17h8"/></svg>')
     with c_text:
         st.markdown("### Research Journal")
@@ -397,7 +396,7 @@ with tab2:
         <div class="knowledge-card">
             <div class="knowledge-title">The Nitrate Problem</div>
             <div class="knowledge-body">
-            Commonly found in processed meats (like kids' ham or salami), Nitrates/Nitrites are used for colour preservation but are linked to cell damage.
+            Commonly found in processed meats, Nitrates are linked to cell damage. We scan for Sodium Nitrite and Potassium Nitrate automatically.
             <br><br>
             <a href="#" class="knowledge-link">READ THE STUDY ↗</a>
             </div>
@@ -407,7 +406,7 @@ with tab2:
         <div class="knowledge-card">
             <div class="knowledge-title">Red 40 & Hyperactivity</div>
             <div class="knowledge-body">
-            The "Southampton Six" colours (including Red 40 and Yellow 5) have been shown to increase hyperactivity in children. The EU requires a warning label for them.
+            The "Southampton Six" colours (including Red 40) increase hyperactivity in children. The EU requires a warning label; we just ban them.
             <br><br>
             <a href="#" class="knowledge-link">VIEW DATA ↗</a>
             </div>
@@ -419,7 +418,7 @@ with tab2:
         <div class="knowledge-card">
             <div class="knowledge-title">The Allergy Explosion</div>
             <div class="knowledge-body">
-            Food allergies have risen by 50% in a decade. The leading theories? The Hygiene Hypothesis and the ultra-processing of our global food supply.
+            Food allergies have risen by 50% in a decade. Why? Theories point to the "Hygiene Hypothesis" and the ultra-processing of our food supply.
             <br><br>
             <a href="#" class="knowledge-link">READ REPORT ↗</a>
             </div>
@@ -463,7 +462,7 @@ with tab3:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (SVG Heart) ---
+# --- TAB 4: FAVOURITES ---
 with tab4:
     # Heart SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
@@ -481,9 +480,9 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (NEW Wire Basket SVG) ---
+# --- TAB 5: BASKET ---
 with tab5:
-    # True Wire Basket SVG
+    # Wire Basket SVG
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
     
     if not st.session_state['basket']:
@@ -502,3 +501,5 @@ with tab5:
         with c3: st.button("SPINNEYS ↗", use_container_width=True)
         
         st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
+
+
