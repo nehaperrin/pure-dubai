@@ -125,6 +125,7 @@ st.markdown("""
 
 
 
+
 # --- 2. SESSION STATE ---
 if 'basket' not in st.session_state:
     st.session_state['basket'] = []
@@ -198,7 +199,6 @@ def load_data():
     return pd.DataFrame(kids_db)
 
 df = load_data()
-
 
 
 
@@ -447,4 +447,3 @@ with tab5:
         with c3: st.button("SPINNEYS ↗", use_container_width=True)
         
         st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
-
