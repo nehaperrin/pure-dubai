@@ -38,7 +38,7 @@ def get_search_terms(query):
         if key in q: return mappings[key] + [q]
     return [q]
 
-# --- CSS (Updated Logo & Styling) ---
+# --- CSS (Logo, Red Killer & Footer) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -67,7 +67,7 @@ st.markdown("""
         font-size: 80px; 
         font-weight: 600; 
         color: #1A1A1A; 
-        letter-spacing: 15px; /* Spaced out S I F T */
+        letter-spacing: 15px; 
         line-height: 1.0; 
         text-align: center; 
     }
@@ -76,7 +76,7 @@ st.markdown("""
         font-size: 24px;
         font-weight: 300;
         letter-spacing: 4px;
-        color: #5D0E1D; /* Deep red accent */
+        color: #5D0E1D; 
         text-transform: lowercase;
         position: relative;
         top: -10px;
@@ -98,6 +98,9 @@ st.markdown("""
     .knowledge-body { font-size: 13px; line-height: 1.6; color: #555; }
     .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
     
+    /* LEGAL FOOTER */
+    .legal-footer { margin-top: 50px; padding: 20px; background-color: #F4F4F4; border-top: 1px solid #DDD; font-size: 10px; color: #777; text-align: center; line-height: 1.5; }
+    
     /* UTILITY */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 13px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 13px; }
@@ -115,7 +118,6 @@ st.markdown("""
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 # --- 2. SESSION & PROFILES ---
@@ -231,7 +233,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">The Digital Food Guard for Modern Mums.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
-# RESTORED FOUNDER NOTE (Full Size)
+# RESTORED FOUNDER NOTE
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -246,7 +248,7 @@ with st.expander("The Founder's Note", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS (Added SCANNER as Tab 2)
+# TABS
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["SEARCH", "SCANNER", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET", "📊 ADMIN"])
 
 # --- TAB 1: SEARCH ---
@@ -338,7 +340,7 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: SCANNER (NEW) ---
+# --- TAB 2: SCANNER ---
 with tab2:
     st.markdown("### 📷 Product Scanner")
     st.caption("Post-Purchase Check: Scan a barcode or label to instantly verify safety.")
@@ -351,8 +353,6 @@ with tab2:
         if img_file:
             st.success("✅ Barcode Detected: 50100290001")
             st.markdown("Searching Database...")
-            
-            # SIMULATION OF SCAN RESULT
             row = kids_db[0] # Use first item (Kiddylicious Wafers) as demo
             st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
             st.image(row['Image'], width=80)
@@ -364,7 +364,7 @@ with tab2:
             st.info("Waiting for camera input...")
             st.markdown("*Demo Note: Point your camera at anything to simulate a barcode scan.*")
 
-# --- TAB 3: KNOWLEDGE (Restored Full) ---
+# --- TAB 3: KNOWLEDGE ---
 with tab3:
     c_icon, c_text = st.columns([1, 10])
     with c_icon: render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M12 2v20"/><path d="M12 12h8"/><path d="M12 7h8"/><path d="M12 17h8"/></svg>')
@@ -405,7 +405,7 @@ with tab3:
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 4: HOW IT WORKS (Restored Full) ---
+# --- TAB 4: HOW IT WORKS (UPDATED TEXT) ---
 with tab4:
     st.markdown("### The SIFT Method")
     c1, c2, c3 = st.columns(3)
@@ -417,7 +417,7 @@ with tab4:
         st.caption("Enter a product type (e.g. 'Yoghurt'). Our engine scans the database, reading every label for hidden ingredients and filtering to your requirements.")
     with c3:
         st.markdown("**STEP 3: DECIDE**")
-        st.caption("We flag items as Safe, Warning (Check Label), or Avoid. Use the Traffic Light system to make quick, safe decisions.")
+        st.caption("We flag items as Safe, Warning (Check Label), or Avoid. Use the Traffic Light system to make quick, safe decisions. Add items to your favourites or basket and check-out directly via the retailer.")
     
     st.divider()
     
@@ -439,7 +439,7 @@ with tab4:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 5: FAVOURITES (Restored Full) ---
+# --- TAB 5: FAVOURITES ---
 with tab5:
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
@@ -456,8 +456,15 @@ with tab5:
                 st.rerun()
             st.divider()
 
-# --- TAB 6: BASKET (Restored Full) ---
+# --- TAB 6: BASKET (MOVED BUTTONS TO TOP) ---
 with tab6:
+    st.markdown("### Checkout via Retailer")
+    c1, c2, c3 = st.columns(3)
+    with c1: st.button("KIBSONS ↗", use_container_width=True)
+    with c2: st.button("CARREFOUR ↗", use_container_width=True)
+    with c3: st.button("SPINNEYS ↗", use_container_width=True)
+    
+    st.divider()
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
     
     if not st.session_state['basket']:
@@ -465,16 +472,9 @@ with tab6:
     else:
         for item in st.session_state['basket']:
             st.markdown(f"**{item['Product']}**")
-        st.divider()
-        st.markdown("### Checkout via Retailer")
-        st.caption("Export your safe list directly to your preferred store:")
-        c1, c2, c3 = st.columns(3)
-        with c1: st.button("KIBSONS ↗", use_container_width=True)
-        with c2: st.button("CARREFOUR ↗", use_container_width=True)
-        with c3: st.button("SPINNEYS ↗", use_container_width=True)
-        st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
+        st.text_area("Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
 
-# --- TAB 7: ADMIN (THE INVESTOR PITCH) ---
+# --- TAB 7: ADMIN ---
 with tab7:
     st.markdown("### 📊 Brand Partner Dashboard (DEMO)")
     st.markdown('<div class="sage-alert">This view shows the <b>High-Intent Data</b> we collect on missed sales opportunities.</div>', unsafe_allow_html=True)
@@ -493,4 +493,15 @@ with tab7:
     st.divider()
     st.markdown("**Live Basket Intent (Potential GMV)**")
     st.metric(label="Total Basket Value (Unchecked Out)", value="AED 45,230", delta="+12% vs last week")
+
+# --- PERMANENT LEGAL FOOTER (ADDED) ---
+st.markdown("""
+<div class="legal-footer">
+    <b>DISCLAIMER:</b> SIFT KIDS is a data aggregation tool, not a medical service. 
+    Product formulations can change at any time without notice. 
+    While we strive for accuracy, we cannot guarantee the absence of allergens. 
+    <b>Always verify the physical label on the product before consumption.</b>
+</div>
+""", unsafe_allow_html=True)
+
 
