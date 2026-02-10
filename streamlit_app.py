@@ -5,7 +5,7 @@ import altair as alt
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
-    page_title="SIFT kids | Safe Snacking",
+    page_title="SIFT kids edition | Safe Snacking",
     page_icon="👶",
     layout="wide"
 )
