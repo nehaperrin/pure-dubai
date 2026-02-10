@@ -5,7 +5,7 @@ import altair as alt
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
-    page_title="SIFT kids edition | Safe Snacking",
+    page_title="SIFT kids | Safe Snacking",
     page_icon="👶",
     layout="wide"
 )
@@ -62,25 +62,28 @@ st.markdown("""
     [data-testid="stSidebar"] { background-color: #F4F6F4; border-right: 1px solid #E0E6E0; }
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; }
     
+    .logo-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .logo-icon { width: 80px; margin-right: 15px; }
+    .logo-text-col { display: flex; flex-direction: column; justify-content: center; }
+    
     .brand-logo { 
         font-family: 'Cormorant Garamond', serif; 
         font-size: 80px; 
         font-weight: 600; 
         color: #1A1A1A; 
         letter-spacing: 15px; 
-        line-height: 1.0; 
-        text-align: center; 
+        line-height: 0.9; 
+        text-align: left; 
     }
     .brand-sub {
         font-family: 'Montserrat', sans-serif;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 300;
         letter-spacing: 4px;
         color: #5D0E1D; 
         text-transform: lowercase;
-        position: relative;
-        top: -10px;
         text-align: center;
+        margin-top: -5px;
     }
     
     .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 5px; margin-bottom: 30px; }
@@ -118,6 +121,7 @@ st.markdown("""
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
+
 
 
 # --- 2. SESSION & PROFILES ---
@@ -223,13 +227,35 @@ for pack in active_filters: banned_ingredients.extend(FILTER_PACKS[pack])
 
 
 
-
 # --- 6. MAIN CONTENT ---
 col_center = st.columns([1])[0]
 with col_center:
-    # UPDATED LOGO STRUCTURE
-    st.markdown('<div class="brand-logo">S I F T</div>', unsafe_allow_html=True)
-    st.markdown('<div class="brand-sub">kids</div>', unsafe_allow_html=True)
+    # --- NEW LOGO WITH SVG ICON ---
+    # The SVG defines a cute sieve with falling dots
+    sieve_svg = """
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" width="100" height="80">
+      <path d="M20 30 Q50 80 80 30" fill="none" stroke="#333" stroke-width="3"/>
+      <line x1="20" y1="30" x2="80" y2="30" stroke="#333" stroke-width="3"/>
+      <line x1="10" y1="30" x2="90" y2="30" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+      <line x1="90" y1="30" x2="100" y2="30" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="40" cy="45" r="1.5" fill="#555"/><circle cx="50" cy="50" r="1.5" fill="#555"/><circle cx="60" cy="45" r="1.5" fill="#555"/>
+      <circle cx="45" cy="55" r="1.5" fill="#555"/><circle cx="55" cy="55" r="1.5" fill="#555"/><circle cx="50" cy="60" r="1.5" fill="#555"/>
+      <circle cx="50" cy="15" r="2" fill="#D4A373"/><circle cx="45" cy="10" r="2" fill="#D4A373"/><circle cx="55" cy="10" r="2" fill="#D4A373"/>
+      <circle cx="50" cy="70" r="2" fill="#D4A373" opacity="0.6"/><circle cx="50" cy="78" r="2" fill="#D4A373" opacity="0.4"/>
+    </svg>
+    """
+    b64_sieve = base64.b64encode(sieve_svg.encode('utf-8')).decode("utf-8")
+    
+    st.markdown(f"""
+    <div class="logo-container">
+        <img class="logo-icon" src="data:image/svg+xml;base64,{b64_sieve}"/>
+        <div class="logo-text-col">
+            <div class="brand-logo">S I F T</div>
+            <div class="brand-sub">the kids edition</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.markdown('<div class="brand-tagline">The Digital Food Guard for Modern Mums.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
@@ -405,7 +431,7 @@ with tab3:
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 4: HOW IT WORKS (UPDATED TEXT) ---
+# --- TAB 4: HOW IT WORKS ---
 with tab4:
     st.markdown("### The SIFT Method")
     c1, c2, c3 = st.columns(3)
@@ -456,7 +482,7 @@ with tab5:
                 st.rerun()
             st.divider()
 
-# --- TAB 6: BASKET (MOVED BUTTONS TO TOP) ---
+# --- TAB 6: BASKET ---
 with tab6:
     st.markdown("### Checkout via Retailer")
     c1, c2, c3 = st.columns(3)
@@ -494,7 +520,7 @@ with tab7:
     st.markdown("**Live Basket Intent (Potential GMV)**")
     st.metric(label="Total Basket Value (Unchecked Out)", value="AED 45,230", delta="+12% vs last week")
 
-# --- PERMANENT LEGAL FOOTER (ADDED) ---
+# --- PERMANENT LEGAL FOOTER ---
 st.markdown("""
 <div class="legal-footer">
     <b>DISCLAIMER:</b> SIFT KIDS is a data aggregation tool, not a medical service. 
