@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import base64
-import altair as alt # For the Charts
+import altair as alt # Needed for the new charts
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
@@ -10,8 +10,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- SVG HELPER ---
+# --- SVG HELPER FUNCTION ---
 def render_svg(svg_string):
+    """Renders an SVG string as an image"""
     b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
@@ -38,39 +39,63 @@ def get_search_terms(query):
         if key in q: return mappings[key] + [q]
     return [q]
 
-# --- CSS (Nuclear Burgundy) ---
+# --- CUSTOM CSS (The "Nuclear" Red Killer) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
+
     html, body, [class*="css"] { font-family: 'Montserrat', sans-serif; color: #333333; }
     .stApp { background-color: #F9F9F7; }
+
+    /* RED KILLER */
     input:focus, textarea:focus, select:focus, div[data-baseweb="select"]:focus-within, div[data-baseweb="input"]:focus-within { border-color: #5D0E1D !important; box-shadow: 0 0 0 1px #5D0E1D !important; }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] { color: #5D0E1D !important; }
     .stTabs [data-baseweb="tab"]:hover { color: #5D0E1D !important; }
     .stTabs [data-baseweb="tab-highlight"] { background-color: #5D0E1D !important; }
     button:hover, div[role="button"]:hover { border-color: #5D0E1D !important; color: #5D0E1D !important; }
+    
+    /* SIDEBAR TOGGLE */
     div[role="radiogroup"] > label > div:first-child { border: 2px solid #555 !important; background-color: transparent !important; }
     div[role="radiogroup"] > label[data-checked="true"] > div:first-child { background-color: #F3E5AB !important; border: 2px solid #333 !important; }
     .stRadio > div[role="radiogroup"] > label { color: #333 !important; font-weight: 600 !important; }
+
+    /* LAYOUT */
     [data-testid="stSidebar"] { background-color: #F4F6F4; border-right: 1px solid #E0E6E0; }
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; }
     .brand-logo { font-family: 'Cormorant Garamond', serif; font-size: 70px; font-weight: 600; color: #1A1A1A; letter-spacing: 6px; line-height: 1.0; text-align: center; }
     .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 30px; }
     .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
     .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
+
+    /* FOUNDER NOTE */
+    .founder-box { background-color: #F0F0EE; background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg'); background-size: cover; background-position: top center; min-height: 800px; padding: 40px; border: 1px solid #E0E0E0; margin-bottom: 40px; display: flex; flex-direction: column; justify-content: center; }
+    .founder-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #1A1A1A; line-height: 1.8; font-style: italic; text-align: center; max-width: 700px; margin: 0 auto; }
+    .founder-sig { font-family: 'Montserrat', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 25px; color: #555; text-align: center; }
+
+    /* CARDS */
+    .knowledge-card { background-color: #FFFFFF; border: 1px solid #E6E6E6; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
+    .knowledge-card:hover { border-color: #5D0E1D; }
+    .knowledge-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #5D0E1D; margin-bottom: 10px; }
+    .knowledge-body { font-size: 13px; line-height: 1.6; color: #555; }
     .product-card { background-color: #FFFFFF; padding: 25px; border: 1px solid #999999; border-radius: 0px; margin-bottom: 20px; }
-    .verified-seal { border: 1px solid #8FBC8F; background: #F4F9F4; color: #2F4F2F; font-size: 10px; text-transform: uppercase; padding: 5px 10px; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; }
+    
+    /* UTILITY */
     .sage-alert { background-color: #E8F0E9; border: 1px solid #CFE0D1; color: #2E5C38; padding: 15px; font-size: 13px; }
     .charcoal-alert { background-color: #F0F0F0; border: 1px solid #E0E0E0; color: #444; padding: 15px; font-size: 13px; }
     .stMultiSelect [data-baseweb="tag"] { background-color: #D8E2DC !important; color: #333 !important; border: 1px solid #BCCAC0; }
+    
+    .earthy-green { background-color: #E6F2E6; border: 1px solid #8FBC8F; color: #2F4F2F; padding: 15px; text-align: center; }
+    .earthy-yellow { background-color: #FFF8E1; border: 1px solid #E4C06F; color: #4B3621; padding: 15px; text-align: center; }
+    .earthy-red { background-color: #F9EBEB; border: 1px solid #CD5C5C; color: #4A0404; padding: 15px; text-align: center; }
+    
     .safe-tag { background-color: #E6F2E6; color: #2F4F2F; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #8FBC8F; display: inline-block; margin-bottom: 10px; }
     .warning-tag { background-color: #FFF8E1; color: #4B3621; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #E4C06F; display: inline-block; margin-bottom: 10px; }
     .avoid-tag { background-color: #F9EBEB; color: #4A0404; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid #CD5C5C; display: inline-block; margin-bottom: 10px; }
+    
     div.stButton > button { background-color: #333; color: white; border-radius: 0px; border: none; padding: 10px 20px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
     div.stButton > button:hover { background-color: #5D0E1D; color: white; }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 
@@ -178,7 +203,6 @@ for pack in active_filters: banned_ingredients.extend(FILTER_PACKS[pack])
 
 
 
-
 # --- 6. MAIN CONTENT ---
 col_center = st.columns([1])[0]
 with col_center:
@@ -186,6 +210,7 @@ with col_center:
     st.markdown('<div class="brand-tagline">The Digital Food Guard for Modern Mums.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
+# RESTORED FOUNDER NOTE (Full Size)
 with st.expander("The Founder's Note", expanded=True):
     st.markdown("""
     <div class="founder-box">
@@ -200,7 +225,7 @@ with st.expander("The Founder's Note", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS (Added Analytics)
+# TABS (Admin added as Tab 6)
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET", "📊 ADMIN"])
 
 # --- TAB 1: SEARCH ---
@@ -292,41 +317,121 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2, 3, 4, 5 (Condensed) ---
+# --- TAB 2: KNOWLEDGE (Restored Full) ---
 with tab2:
-    st.markdown("### Research Journal")
-    st.markdown('<div class="knowledge-card"><div class="knowledge-title">The Nitrate Problem</div><div class="knowledge-body">Commonly found in processed meats, Nitrates are linked to cell damage. We scan for Sodium Nitrite and Potassium Nitrate automatically.</div></div>', unsafe_allow_html=True)
-    st.markdown('<div class="knowledge-card"><div class="knowledge-title">Red 40 & Hyperactivity</div><div class="knowledge-body">The "Southampton Six" colours (including Red 40) increase hyperactivity in children. The EU requires a warning label; we just ban them.</div></div>', unsafe_allow_html=True)
+    c_icon, c_text = st.columns([1, 10])
+    with c_icon: render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M12 2v20"/><path d="M12 12h8"/><path d="M12 7h8"/><path d="M12 17h8"/></svg>')
+    with c_text: st.markdown("### Research Journal")
+    
+    col_n1, col_n2 = st.columns(2)
+    with col_n1:
+        st.markdown("""
+        <div class="knowledge-card">
+            <div class="knowledge-title">The Nitrate Problem</div>
+            <div class="knowledge-body">
+            Commonly found in processed meats, Nitrates are linked to cell damage. We scan for Sodium Nitrite and Potassium Nitrate automatically.
+            <br><br>
+            <a href="#" class="knowledge-link">READ THE STUDY ↗</a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div class="knowledge-card">
+            <div class="knowledge-title">Red 40 & Hyperactivity</div>
+            <div class="knowledge-body">
+            The "Southampton Six" colours (including Red 40) increase hyperactivity in children. The EU requires a warning label; we just ban them.
+            <br><br>
+            <a href="#" class="knowledge-link">VIEW DATA ↗</a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col_n2:
+        st.markdown("""
+        <div class="knowledge-card">
+            <div class="knowledge-title">The Allergy Explosion</div>
+            <div class="knowledge-body">
+            Food allergies have risen by 50% in a decade. The leading theories? The Hygiene Hypothesis and the ultra-processing of our global food supply.
+            <br><br>
+            <a href="#" class="knowledge-link">READ REPORT ↗</a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
+# --- TAB 3: HOW IT WORKS (Restored Full) ---
 with tab3:
     st.markdown("### The SIFT Method")
-    st.caption("1. SELECT PROFILE | 2. SCAN PRODUCT | 3. DECIDE")
-    st.markdown('<div class="earthy-green"><b>✓ VERIFIED SAFE</b></div><br><div class="earthy-yellow"><b>⚠️ CHECK LABEL</b></div><br><div class="earthy-red"><b>✕ AVOID</b></div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**STEP 1: SELECT**")
+        st.caption("You have two options: 1) Manually select filters in the sidebar (e.g. Sugar, Oils), or 2) Create/Use a pre-saved Profile (e.g. 'Max Allergy') for one-click setup.")
+    with c2:
+        st.markdown("**STEP 2: SCAN**")
+        st.caption("Enter a product type (e.g. 'Yoghurt'). Our engine scans the database, reading every label for hidden ingredients and filtering to your requirements.")
+    with c3:
+        st.markdown("**STEP 3: DECIDE**")
+        st.caption("We flag items as Safe, Warning (Check Label), or Avoid. Use the Traffic Light system to make quick, safe decisions.")
+    
+    st.divider()
+    
+    st.markdown("### 🚦 Traffic Light System")
+    tl1, tl2, tl3 = st.columns(3)
+    with tl1: st.markdown('<div class="earthy-green"><b>✓ VERIFIED SAFE</b><br><small>Clean. No active filters detected.</small></div>', unsafe_allow_html=True)
+    with tl2: st.markdown('<div class="earthy-yellow"><b>⚠️ CHECK LABEL</b><br><small>Contains a filter (e.g. Salt) but in LOW safe amounts.</small></div>', unsafe_allow_html=True)
+    with tl3: st.markdown('<div class="earthy-red"><b>✕ AVOID</b><br><small>Contains active filters or high sugar/salt.</small></div>', unsafe_allow_html=True)
 
+    st.divider()
+    st.markdown("### 🔍 Filter Glossary (The Rules)")
+    st.caption("The thresholds we use to protect you:")
+    
+    for category, ingredients in FILTER_PACKS.items():
+        with st.expander(f"📦 {category}"):
+            if "Added Sugar" in category: st.markdown('<div class="sage-alert">⚠️ <b>Smart Scan:</b> Total sugar < 5g is allowed (Warning). > 5g is Avoid.</div>', unsafe_allow_html=True)
+            if "High Natural Sugars" in category: st.markdown('<div class="sage-alert">⚠️ <b>Health Note:</b> Natural sugars (dates, fruit) capped at 15g.</div>', unsafe_allow_html=True)
+            if "Sodium" in category: st.markdown('<div class="sage-alert">⚠️ <b>Medical Standard:</b> >1.5g Salt is High.</div>', unsafe_allow_html=True)
+            if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
+            st.write(", ".join(ingredients))
+
+# --- TAB 4: FAVOURITES (Restored Full) ---
 with tab4:
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
-    if not st.session_state['wishlist']: st.markdown('<div class="charcoal-alert">No favourites yet.</div>', unsafe_allow_html=True)
+    st.caption("Your Shortlist")
+    
+    if not st.session_state['wishlist']:
+        st.markdown('<div class="charcoal-alert">No favourites yet.</div>', unsafe_allow_html=True)
     else:
-        for item in st.session_state['wishlist']: st.markdown(f"**{item['Product']}**"); st.divider()
+        for idx, item in enumerate(st.session_state['wishlist']):
+            st.markdown(f"**{item['Product']}**")
+            st.caption(f"{item['Brand']}")
+            if st.button(f"Add to Basket", key=f"move_{idx}"):
+                st.session_state['basket'].append(item)
+                st.session_state['wishlist'].pop(idx)
+                st.rerun()
+            st.divider()
 
+# --- TAB 5: BASKET (Restored Full) ---
 with tab5:
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
-    if not st.session_state['basket']: st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
+    
+    if not st.session_state['basket']:
+        st.markdown('<div class="charcoal-alert">Your basket is empty.</div>', unsafe_allow_html=True)
     else:
-        for item in st.session_state['basket']: st.markdown(f"**{item['Product']}**")
+        for item in st.session_state['basket']:
+            st.markdown(f"**{item['Product']}**")
         st.divider()
         st.markdown("### Checkout via Retailer")
+        st.caption("Export your safe list directly to your preferred store:")
         c1, c2, c3 = st.columns(3)
         with c1: st.button("KIBSONS ↗", use_container_width=True)
         with c2: st.button("CARREFOUR ↗", use_container_width=True)
         with c3: st.button("SPINNEYS ↗", use_container_width=True)
+        st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
 
 # --- TAB 6: ADMIN (THE INVESTOR PITCH) ---
 with tab6:
     st.markdown("### 📊 Brand Partner Dashboard (DEMO)")
     st.markdown('<div class="sage-alert">This view shows the <b>High-Intent Data</b> we collect on missed sales opportunities.</div>', unsafe_allow_html=True)
     
-    # Fake Data for visualization
     col_d1, col_d2 = st.columns(2)
     with col_d1:
         st.markdown("**Top Searched (Last 7 Days)**")
