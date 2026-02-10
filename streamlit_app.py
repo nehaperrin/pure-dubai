@@ -1,18 +1,17 @@
 import streamlit as st
 import pandas as pd
 import base64
-import altair as alt # Needed for the new charts
+import altair as alt 
 
 # --- 1. VISUAL CONFIGURATION ---
 st.set_page_config(
-    page_title="SIFT KIDS | Safe Snacking",
+    page_title="SIFT kids | Safe Snacking",
     page_icon="👶",
     layout="wide"
 )
 
-# --- SVG HELPER FUNCTION ---
+# --- SVG HELPER ---
 def render_svg(svg_string):
-    """Renders an SVG string as an image"""
     b64 = base64.b64encode(svg_string.encode('utf-8')).decode("utf-8")
     html = r'<img src="data:image/svg+xml;base64,%s" width="40"/>' % b64
     st.write(html, unsafe_allow_html=True)
@@ -39,7 +38,7 @@ def get_search_terms(query):
         if key in q: return mappings[key] + [q]
     return [q]
 
-# --- CUSTOM CSS (The "Nuclear" Red Killer) ---
+# --- CSS (Updated Logo & Styling) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -59,20 +58,40 @@ st.markdown("""
     div[role="radiogroup"] > label[data-checked="true"] > div:first-child { background-color: #F3E5AB !important; border: 2px solid #333 !important; }
     .stRadio > div[role="radiogroup"] > label { color: #333 !important; font-weight: 600 !important; }
 
-    /* LAYOUT */
+    /* LAYOUT & LOGO */
     [data-testid="stSidebar"] { background-color: #F4F6F4; border-right: 1px solid #E0E6E0; }
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; }
-    .brand-logo { font-family: 'Cormorant Garamond', serif; font-size: 70px; font-weight: 600; color: #1A1A1A; letter-spacing: 6px; line-height: 1.0; text-align: center; }
-    .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 30px; }
+    
+    .brand-logo { 
+        font-family: 'Cormorant Garamond', serif; 
+        font-size: 80px; 
+        font-weight: 600; 
+        color: #1A1A1A; 
+        letter-spacing: 15px; /* Spaced out S I F T */
+        line-height: 1.0; 
+        text-align: center; 
+    }
+    .brand-sub {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 24px;
+        font-weight: 300;
+        letter-spacing: 4px;
+        color: #5D0E1D; /* Deep red accent */
+        text-transform: lowercase;
+        position: relative;
+        top: -10px;
+        text-align: center;
+    }
+    
+    .brand-tagline { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; text-align: center; margin-top: 5px; margin-bottom: 30px; }
     .fancy-divider { height: 1px; background-color: #D0D0D0; margin: 40px 0; position: relative; }
     .fancy-divider:after { content: "✦"; position: absolute; left: 50%; top: -12px; background: #F9F9F7; padding: 0 10px; color: #999; }
 
-    /* FOUNDER NOTE */
+    /* FOUNDER NOTE & CARDS */
     .founder-box { background-color: #F0F0EE; background-image: linear-gradient(rgba(249, 249, 247, 0.85), rgba(249, 249, 247, 0.85)), url('https://raw.githubusercontent.com/nehaperrin/pure-dubai/main/family.jpg'); background-size: cover; background-position: top center; min-height: 800px; padding: 40px; border: 1px solid #E0E0E0; margin-bottom: 40px; display: flex; flex-direction: column; justify-content: center; }
     .founder-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #1A1A1A; line-height: 1.8; font-style: italic; text-align: center; max-width: 700px; margin: 0 auto; }
     .founder-sig { font-family: 'Montserrat', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 25px; color: #555; text-align: center; }
 
-    /* CARDS */
     .knowledge-card { background-color: #FFFFFF; border: 1px solid #E6E6E6; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
     .knowledge-card:hover { border-color: #5D0E1D; }
     .knowledge-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #5D0E1D; margin-bottom: 10px; }
@@ -206,7 +225,9 @@ for pack in active_filters: banned_ingredients.extend(FILTER_PACKS[pack])
 # --- 6. MAIN CONTENT ---
 col_center = st.columns([1])[0]
 with col_center:
-    st.markdown('<div class="brand-logo">SIFT KIDS.</div>', unsafe_allow_html=True)
+    # UPDATED LOGO STRUCTURE
+    st.markdown('<div class="brand-logo">S I F T</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand-sub">kids</div>', unsafe_allow_html=True)
     st.markdown('<div class="brand-tagline">The Digital Food Guard for Modern Mums.</div>', unsafe_allow_html=True)
     st.markdown('<div class="fancy-divider"></div>', unsafe_allow_html=True)
 
@@ -225,8 +246,8 @@ with st.expander("The Founder's Note", expanded=True):
     </div>
     """, unsafe_allow_html=True)
 
-# TABS (Admin added as Tab 6)
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["SEARCH", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET", "📊 ADMIN"])
+# TABS (Added SCANNER as Tab 2)
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["SEARCH", "SCANNER", "KNOWLEDGE", "HOW IT WORKS", "FAVOURITES", "BASKET", "📊 ADMIN"])
 
 # --- TAB 1: SEARCH ---
 with tab1:
@@ -317,8 +338,34 @@ with tab1:
                             st.button("UNSAFE", disabled=True, key=f"bad_{index}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TAB 2: KNOWLEDGE (Restored Full) ---
+# --- TAB 2: SCANNER (NEW) ---
 with tab2:
+    st.markdown("### 📷 Product Scanner")
+    st.caption("Post-Purchase Check: Scan a barcode or label to instantly verify safety.")
+    
+    col_cam, col_res = st.columns([1, 1])
+    with col_cam:
+        img_file = st.camera_input("Scan Barcode")
+    
+    with col_res:
+        if img_file:
+            st.success("✅ Barcode Detected: 50100290001")
+            st.markdown("Searching Database...")
+            
+            # SIMULATION OF SCAN RESULT
+            row = kids_db[0] # Use first item (Kiddylicious Wafers) as demo
+            st.markdown(f'<div class="product-card">', unsafe_allow_html=True)
+            st.image(row['Image'], width=80)
+            st.markdown(f"**{row['Product']}**")
+            st.markdown('<span class="safe-tag">✓ VERIFIED SAFE</span>', unsafe_allow_html=True)
+            st.caption("No active filters detected.")
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.info("Waiting for camera input...")
+            st.markdown("*Demo Note: Point your camera at anything to simulate a barcode scan.*")
+
+# --- TAB 3: KNOWLEDGE (Restored Full) ---
+with tab3:
     c_icon, c_text = st.columns([1, 10])
     with c_icon: render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M12 2v20"/><path d="M12 12h8"/><path d="M12 7h8"/><path d="M12 17h8"/></svg>')
     with c_text: st.markdown("### Research Journal")
@@ -358,8 +405,8 @@ with tab2:
         </div>
         """, unsafe_allow_html=True)
 
-# --- TAB 3: HOW IT WORKS (Restored Full) ---
-with tab3:
+# --- TAB 4: HOW IT WORKS (Restored Full) ---
+with tab4:
     st.markdown("### The SIFT Method")
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -392,8 +439,8 @@ with tab3:
             if "Inflammatory Oils" in category: st.markdown('<div class="sage-alert">⚠️ <b>Strict Policy:</b> We flag ANY presence of seed oils.</div>', unsafe_allow_html=True)
             st.write(", ".join(ingredients))
 
-# --- TAB 4: FAVOURITES (Restored Full) ---
-with tab4:
+# --- TAB 5: FAVOURITES (Restored Full) ---
+with tab5:
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>')
     st.caption("Your Shortlist")
     
@@ -409,8 +456,8 @@ with tab4:
                 st.rerun()
             st.divider()
 
-# --- TAB 5: BASKET (Restored Full) ---
-with tab5:
+# --- TAB 6: BASKET (Restored Full) ---
+with tab6:
     render_svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"></path><path d="m19 11-4-7"></path><path d="M2 11h20"></path><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"></path><path d="m9 11 1 9"></path><path d="m4.5 11 4 9"></path><path d="m15 11-1 9"></path></svg>')
     
     if not st.session_state['basket']:
@@ -427,8 +474,8 @@ with tab5:
         with c3: st.button("SPINNEYS ↗", use_container_width=True)
         st.text_area("Or Copy List:", value="SIFT Order:\n" + "\n".join([f"- {i['Product']}" for i in st.session_state['basket']]), height=100)
 
-# --- TAB 6: ADMIN (THE INVESTOR PITCH) ---
-with tab6:
+# --- TAB 7: ADMIN (THE INVESTOR PITCH) ---
+with tab7:
     st.markdown("### 📊 Brand Partner Dashboard (DEMO)")
     st.markdown('<div class="sage-alert">This view shows the <b>High-Intent Data</b> we collect on missed sales opportunities.</div>', unsafe_allow_html=True)
     
@@ -446,5 +493,4 @@ with tab6:
     st.divider()
     st.markdown("**Live Basket Intent (Potential GMV)**")
     st.metric(label="Total Basket Value (Unchecked Out)", value="AED 45,230", delta="+12% vs last week")
-
 
